@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="93de5d4dee9e49beaee20fbae4e7b8b6" Name="Diagram1">
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Game" Width="1.5" PointX="7.5" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Location" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Permission" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Record" Width="1.5" PointX="7.5" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Season" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.State" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Team" Width="1.5" PointX="5.25" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserPick" Width="1.5" PointX="9.75" PointY="7.375" IsExpanded="true" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Favorite" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Location" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Season" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Underdog" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Game" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Location_State" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Team_Location" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Record_Season" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Record_Team" ManuallyRouted="false" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Team" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.User" Width="1.5" PointX="7.5" PointY="1.125" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_User_Permission" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_User" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

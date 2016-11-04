@@ -43,6 +43,17 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(signInVM);
         }
 
+        [HttpGet]
+        public ActionResult SignOut()
+        {
+            if (Utilities.Authentication.IsSignedIn())
+            {
+                Utilities.Authentication.SignOut();
+                return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
         public bool CreateAccount()
         {
             string username = "ascherer1993";

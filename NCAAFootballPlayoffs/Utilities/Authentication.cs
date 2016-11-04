@@ -101,6 +101,11 @@ namespace NCAAFootballPlayoffs.Utilities
 
             return true;
         }
+        public static bool SignOut()
+        {
+            HttpContext.Current.Session["username"] = null;
+            return true;
+        }
 
         //Got from http://codereview.stackexchange.com/questions/93614/salt-generation-in-c
         public static byte[] GetSalt(int maximumSaltLength)

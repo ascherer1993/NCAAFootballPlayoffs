@@ -1,0 +1,26 @@
+﻿.navbar-brand-float-right {
+  float: right;
+  padding: 15px 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+.navbar-title {
+    color: #BABABA;
+    font-size: 18px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.navbar-title:hover {
+    color: #FFF;
+    text-decoration:none;
+}
+
+.navbar-subtitle {
+    color: #BABABA;
+    font-size: 14px;
+}
+
+.navbar-subtitle:hover {
+    color: #FFF;
+    text-decoration:none;
+}

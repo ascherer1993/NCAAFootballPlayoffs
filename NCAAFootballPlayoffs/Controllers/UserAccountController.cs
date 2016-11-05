@@ -35,10 +35,18 @@ namespace NCAAFootballPlayoffs.Controllers
         [HttpPost]
         public ActionResult SignIn(SignInViewModel signInVM)
         {
-            bool successfulSignIn = Utilities.Authentication.SignIn(signInVM.UsernameOrEmail, signInVM.Password);
-            if (successfulSignIn)
+            List<string> errors = new List<string>();
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Home");
+                errors.AddRange(Utilities.Authentication.SignIn(signInVM.UsernameOrEmail, signInVM.Password));
+                if (errors.Count == 0 && ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            foreach (string error in errors)
+            {
+                ModelState.AddModelError(error, error);
             }
             return View(signInVM);
         }
@@ -56,9 +64,9 @@ namespace NCAAFootballPlayoffs.Controllers
 
         public bool CreateAccount()
         {
-            string username = "ascherer1993";
+            string username = "ams0068";
             string password = "ams1990";
-            string email = "ascherer1993@gmail.com";
+            string email = "ams0068@auburn.edu";
 
             byte[] newSalt = Authentication.GetSalt(32);
 
@@ -80,7 +88,7 @@ namespace NCAAFootballPlayoffs.Controllers
             newUser.EmailAddress = email;
             newUser.Archived = false;
             newUser.DisplayName = "Aaron Scherer";
-            newUser.PermissionID = 1;
+            newUser.PermissionID = 2;
 
             db.Users.Add(newUser);
             db.SaveChanges();

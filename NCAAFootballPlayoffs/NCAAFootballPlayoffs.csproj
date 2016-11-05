@@ -175,6 +175,7 @@
     <Compile Include="Models\Location.cs">
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Partial Classes\_User.cs" />
     <Compile Include="Models\NCAAPlayoffsEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

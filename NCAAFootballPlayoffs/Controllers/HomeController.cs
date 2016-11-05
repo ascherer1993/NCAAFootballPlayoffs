@@ -16,7 +16,6 @@ namespace NCAAFootballPlayoffs.Controllers
         {
             //UserAccountController uac = new UserAccountController();
             //uac.CreateAccount();
-            //Authentication.LogIn("ascherer1993", "ams1990");
             return View();
         }
 

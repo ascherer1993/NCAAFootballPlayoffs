@@ -69,37 +69,47 @@ namespace NCAAFootballPlayoffs.Utilities
             return isMember;
         }
 
-        public static bool SignIn(string username, string password)
+        public static List<string> SignIn(string usernameOrEmail, string password)
         {
+            usernameOrEmail = usernameOrEmail.ToLower();
+            password = password.ToLower();
+
+            List<string> errors = new List<string>();
             using (var db = new NCAAFootballPlayoffsEntities())
             {
                 //Fetch a user from the db with the username typed in
-                User user = db.Users.FirstOrDefault(f => f.Username == username);
+                User user = db.Users.FirstOrDefault(f => f.Username.ToLower() == usernameOrEmail);
                 if (user == null)
                 {
-                    //If the user can not be found, return false, logging in has failed
-                    return false;
-                }
-
-                //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
-                //And http://stackoverflow.com/questions/11367727/how-can-i-sha512-a-string-in-c
-                var SHA512 = new SHA512Managed();
-
-                byte[] passwordBytes = Encoding.UTF8.GetBytes(user.Salt + password);
-                MemoryStream stream = new MemoryStream(passwordBytes);
-                var md5Password = SHA512.ComputeHash(stream);
-
-                if (md5Password.SequenceEqual(user.PasswordHash))
-                {
-                    HttpContext.Current.Session["username"] = username;
+                    user = db.Users.FirstOrDefault(f => f.EmailAddress.ToLower() == usernameOrEmail);
+                    if (user == null)
+                    {
+                        //If the user can not be found, a error is added to the list of errors
+                        errors.Add("The username or email address you have entered is invalid.");
+                    }
                 }
                 else
                 {
-                    return false;
+                    //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
+                    //And http://stackoverflow.com/questions/11367727/how-can-i-sha512-a-string-in-c
+                    var SHA512 = new SHA512Managed();
+
+                    byte[] passwordBytes = Encoding.UTF8.GetBytes(user.Salt + password);
+                    MemoryStream stream = new MemoryStream(passwordBytes);
+                    var md5Password = SHA512.ComputeHash(stream);
+
+                    if (md5Password.SequenceEqual(user.PasswordHash))
+                    {
+                        HttpContext.Current.Session["username"] = user.Username;
+                    }
+                    else
+                    {
+                        errors.Add("The password you have entered is invalid.");
+                    }
                 }
             }
 
-            return true;
+            return errors;
         }
         public static bool SignOut()
         {

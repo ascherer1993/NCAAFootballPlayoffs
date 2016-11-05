@@ -33,10 +33,10 @@ namespace NCAAFootballPlayoffs.Models
         public Nullable<short> UnderdogScore { get; set; }
         public bool Archived { get; set; }
     
-        public virtual Team Team { get; set; }
+        public virtual Team Favorite { get; set; }
         public virtual Location Location { get; set; }
         public virtual Season Season { get; set; }
-        public virtual Team Team1 { get; set; }
+        public virtual Team Underdog { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPick> UserPicks { get; set; }
     }

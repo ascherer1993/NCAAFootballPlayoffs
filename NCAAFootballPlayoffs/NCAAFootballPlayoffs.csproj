@@ -85,6 +85,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -130,10 +134,13 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Home\Home.css" />
+    <Content Include="Content\CSS\Home.css" />
+    <Content Include="Content\Javascript\knockout-3.4.0.js" />
+    <Content Include="Content\Javascript\knockout-Mapping.js" />
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Models\KnockoutModels\Bracket\BracketViewModel.js" />
     <Content Include="Models\NCAAPlayoffsEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>NCAAPlayoffsEntities.edmx</DependentUpon>
@@ -163,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BracketController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserAccountController.cs" />
@@ -232,6 +240,7 @@
     <Content Include="scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
     <Content Include="Views\UserAccount\SignIn.cshtml" />
+    <Content Include="Views\Bracket\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

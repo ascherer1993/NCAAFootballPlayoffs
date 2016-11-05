@@ -23,6 +23,7 @@ namespace NCAAFootballPlayoffs.Models
     
         public int SeasonID { get; set; }
         public short SeasonYear { get; set; }
+        public Nullable<bool> ActiveSeason { get; set; }
         public bool Archived { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

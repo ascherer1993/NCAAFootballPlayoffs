@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Bracket";
+}
+
+<h2>Index</h2>
+
+<div data-bind="foreach: games">
+    <div data-bind="text: "></div>
+</div>
+
+
+<script src="~/Models/KnockoutModels/Bracket/BracketViewModel.js"></script>
+<script type="text/javascript">
+    $(function() {
+        var viewmodel = new BracketViewModel();
+        ko.applyBindings(viewmodel);
+        viewmodel.loadGames();
+    });
+</script>

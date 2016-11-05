@@ -25,6 +25,7 @@ namespace NCAAFootballPlayoffs.Models
     
         public int TeamID { get; set; }
         public string TeamName { get; set; }
+        public string TeamNickname { get; set; }
         public Nullable<int> LocationID { get; set; }
         public bool Archived { get; set; }
     

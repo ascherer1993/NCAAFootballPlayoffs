@@ -16,6 +16,8 @@ namespace NCAAFootballPlayoffs.Controllers
         {
             //UserAccountController uac = new UserAccountController();
             //uac.CreateAccount();
+            //BracketController bc = new BracketController();
+            //var test = bc.getGamesJSon();
             return View();
         }
 

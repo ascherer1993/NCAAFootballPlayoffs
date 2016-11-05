@@ -1,0 +1,39 @@
+﻿.center-all {
+    text-align:center;
+}
+
+.center-all:first-child:first-child {
+    color: #1a1a1a;
+    font-size: 18px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.game-style{
+    border: 1px solid black;
+    border-radius:5px;
+    background-color: #f8f8f8;
+    margin:15px 7px;
+    overflow:hidden;
+}
+
+.game-style > div > div:first-child > div:first-child{
+    font-weight:lighter;
+    font-size:22px;
+}
+
+.game-style > div > div:last-child{
+    background-color: #f8f8f8;
+}
+
+.small-text{
+    font-size:10px;
+}
+
+.title{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.title-bar {
+    margin:15px 7px;
+}

@@ -13,7 +13,6 @@
     border-radius:5px;
     background-color: #f8f8f8;
     margin:15px 7px;
-    overflow:hidden;
 }
 
 .game-style > div > div:first-child > div:first-child{
@@ -36,4 +35,20 @@
 
 .title-bar {
     margin:15px 7px;
+}
+
+.top-right {
+    position:absolute;
+    right:4px;
+    top:4px;
+}
+
+.game-style > div > div > .top-right {
+    font-size:11px;
+    cursor:pointer;
+    color: #777;
+}
+
+.game-style > div > div > .top-right:hover {
+    color:#000;
 }

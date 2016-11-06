@@ -1,0 +1,89 @@
+﻿<div class="col-xs-6" data-bind="visible: !isEditing()">
+    <div class="game-style row">
+        <div class="col-xs-12">
+            <div class="row" style="border-bottom:1px solid black">
+                <div data-bind="text: GameName()"></div>
+                <span data-bind="click: $root.editGame" class="top-right glyphicon glyphicon-cog"></span>
+                <div data-bind="text: moment(GameDatetime()).format('LLLL')" class="small-text"></div>
+                <div data-bind="text: Location.City() + ' ' + Location.State().StateName()" class="small-text"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-5">
+                    <div class="row">
+                        <div class="col-xs-11">
+                            <div class="small-text">Favorite</div>
+                            <div data-bind="text: Favorite.TeamName()"></div>
+                        </div>
+                        <div class="col-xs-1" style="position:absolute; right:0; min-height:100%; background-color:#0C95FF; border-left:1px solid black">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2" style="border-right:1px solid black; border-left:1px solid black">
+                    <div class="small-text">Spread</div>
+                    <div data-bind="text: PointSpread()"></div>
+                </div>
+                <div class="col-xs-5">
+                    <div class="row">
+                        <div class="col-xs-1" style="position:absolute; left:0; min-height:100%; background-color:#FFF; border-right:1px solid black">
+                        </div>
+                        <div class="col-xs-11">
+                            <div class="small-text">Underdog</div>
+                            <div data-bind="text: Underdog.TeamName()"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-6" data-bind="visible: isEditing()">
+    <div class="game-style row">
+        <div class="col-xs-12">
+            <div class="row" style="border-bottom:1px solid black">
+                <div>
+                    <input data-bind="value: GameName" />
+                </div>
+                <span data-bind="click: $root.deleteGame" class="top-right glyphicon glyphicon-trash"></span>
+                <span data-bind="click: $root.saveGame" class="top-right glyphicon glyphicon-floppy-disk" style="right:18px"></span>
+                <div>
+                    <input data-bind="datetimepicker: GameDatetime, value: GameDatetime" />
+                </div>
+                <div>
+                    <input data-bind="value: Location.City" />
+                    <select data-bind="value: Location.State,
+                                       options: $root.states,
+                                       optionsText: 'StateName',
+                                       optionsValue: $parent">
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-5">
+                    <div class="row">
+                        <div class="col-xs-11">
+                            <div class="small-text">Favorite</div>
+                            <div data-bind="text: Favorite.TeamName()"></div>
+                        </div>
+                        <div class="col-xs-1" style="position:absolute; right:0; min-height:100%; background-color:#0C95FF; border-left:1px solid black">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2" style="border-right:1px solid black; border-left:1px solid black">
+                    <div class="small-text">Spread</div>
+                    <input data-bind="value: PointSpread" style="width:100%"/>
+                </div>
+                <div class="col-xs-5">
+                    <div class="row">
+                        <div class="col-xs-1" style="position:absolute; left:0; min-height:100%; background-color:#FFF; border-right:1px solid black">
+                        </div>
+                        <div class="col-xs-11">
+                            <div class="small-text">Underdog</div>
+                            <div data-bind="text: Underdog.TeamName()"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

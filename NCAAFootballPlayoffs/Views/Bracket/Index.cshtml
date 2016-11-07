@@ -21,9 +21,8 @@
 <link href="~/Content/CSS/Bracket.css" rel="stylesheet" />
 <script src="~/Models/KnockoutModels/Bracket/BracketViewModel.js"></script>
 <script type="text/javascript">
-    var vm = new BracketViewModel();
-    vm.loadGames();
     $(function () {
-
+        var vm = new BracketViewModel();
+        vm.loadAjax();
     });
 </script>

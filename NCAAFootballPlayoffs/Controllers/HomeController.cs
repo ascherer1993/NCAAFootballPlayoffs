@@ -14,10 +14,6 @@ namespace NCAAFootballPlayoffs.Controllers
         //https://github.com/ascherer1993/NCAAFootballPlayoffs.git
         public ActionResult Index()
         {
-            //UserAccountController uac = new UserAccountController();
-            //uac.CreateAccount();
-            //BracketController bc = new BracketController();
-            //var test = bc.getGamesJSon();
             return View();
         }
 

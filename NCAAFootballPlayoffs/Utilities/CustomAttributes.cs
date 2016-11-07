@@ -18,12 +18,12 @@ namespace NCAAFootballPlayoffs
         private string[] roles = new string[0];
 
 
-        //Constructor
+        //Constructor that takes in a single role
         public AuthorizeUser(string role) : this(new string[] { role })
         {
         }
 
-        //Overload that takes in roles
+        //Overload that takes in multiple roles
         public AuthorizeUser(string[] allowedRoles = null)
         {
             roles = allowedRoles ?? new string[0];
@@ -55,7 +55,7 @@ namespace NCAAFootballPlayoffs
             }
         }
 
-        //This is run if authorize core returns false
+        //This is run if authorize core returns false. If so, redirect to the appropriate page.
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
             if (loggedIn)
@@ -69,6 +69,7 @@ namespace NCAAFootballPlayoffs
         }
     }
 
+    //Attribute that checks to make sure a method is only called via ajax
     public class AjaxOnlyAttribute : ActionMethodSelectorAttribute
     {
         public override bool IsValidForRequest(ControllerContext controllerContext, System.Reflection.MethodInfo methodInfo)

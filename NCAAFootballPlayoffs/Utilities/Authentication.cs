@@ -30,6 +30,7 @@ namespace NCAAFootballPlayoffs.Utilities
             return null;
         }
 
+        //Checks to see if the current user is a member of one of the roles received as a parameter.
         public static bool IsMemberOf(params string[] roles)
         {
             bool isMember = false;
@@ -44,6 +45,7 @@ namespace NCAAFootballPlayoffs.Utilities
                     return false;
                 }
 
+                //Checks each role to make sure the user is one of the required roles
                 foreach (string role in roles)
                 {
                     switch (role)
@@ -69,6 +71,7 @@ namespace NCAAFootballPlayoffs.Utilities
             return isMember;
         }
 
+        //signs the user in if their log in credentials are correct
         public static List<string> SignIn(string usernameOrEmail, string password)
         {
             usernameOrEmail = usernameOrEmail.ToLower();
@@ -88,7 +91,7 @@ namespace NCAAFootballPlayoffs.Utilities
                         errors.Add("The username or email address you have entered is invalid.");
                     }
                 }
-                else
+                if (user != null)
                 {
                     //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
                     //And http://stackoverflow.com/questions/11367727/how-can-i-sha512-a-string-in-c
@@ -111,6 +114,7 @@ namespace NCAAFootballPlayoffs.Utilities
 
             return errors;
         }
+        //Signs the user out
         public static bool SignOut()
         {
             HttpContext.Current.Session["username"] = null;

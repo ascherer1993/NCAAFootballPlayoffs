@@ -14,9 +14,12 @@ namespace NCAAFootballPlayoffs.Controllers
             return View();
         }
 
+        //For when a user is unauthorized.
         public ActionResult Unauthorized()
         {
             return View();
         }
+
+        //todo: add other error pages and set up default error handling
     }
 }

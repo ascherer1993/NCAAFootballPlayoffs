@@ -21,6 +21,11 @@ namespace NCAAFootballPlayoffs.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Ajax call that saves the game received in as a parameter
+        /// </summary>
+        /// <param name="gameIn"></param>
+        /// <returns></returns>
         [AjaxOnly]
         public string saveGame(Game gameIn)
         {
@@ -30,10 +35,12 @@ namespace NCAAFootballPlayoffs.Controllers
             
             using (NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities())
             {
+                //Transaction for multiple edits of the database
                 using (var dbContextTransaction = db.Database.BeginTransaction())
                 {
                     try
                     {
+                        //Finds the location of the game, and edits it if it has changed.
                         Location location = db.Locations.Find(gameIn.LocationID);
                         if (location.StateID != gameIn.Location.StateID || location.City != gameIn.Location.City)
                         {
@@ -57,6 +64,7 @@ namespace NCAAFootballPlayoffs.Controllers
                             }
                         }
 
+                        //Makes changes to the game and saves the changes
                         Game game = db.Games.Find(gameIn.GameID);
                         game.GameDatetime = gameIn.GameDatetime;
                         game.GameName = gameIn.GameName;

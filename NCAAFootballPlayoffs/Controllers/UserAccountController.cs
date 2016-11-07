@@ -16,7 +16,6 @@ namespace NCAAFootballPlayoffs.Controllers
     {
         NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities();
 
-        // GET: UserAccount
         public ActionResult Index()
         {
             return View();
@@ -25,16 +24,19 @@ namespace NCAAFootballPlayoffs.Controllers
         [AuthorizeUser]
         public ActionResult MyAccount()
         {
-            //if (Utilities.Authentication.IsSignedIn())
-            //{
-            //    return RedirectToAction("Index", "Home");
-            //}
+            return View();
+        }
+
+        [AuthorizeUser("Admin")]
+        public ActionResult Admin()
+        {
             return View();
         }
 
         [HttpGet]
         public ActionResult SignIn()
         {
+            //If already signed in, redirect to home page
             if (Utilities.Authentication.IsSignedIn())
             {
                 return RedirectToAction("Index", "Home");
@@ -42,12 +44,14 @@ namespace NCAAFootballPlayoffs.Controllers
             return View();
         }
 
+        //Postback for signing in, redirects 
         [HttpPost]
         public ActionResult SignIn(SignInViewModel signInVM)
         {
             List<string> errors = new List<string>();
             if (ModelState.IsValid)
             {
+                //Calles my authentication utility and adds any returned errors to my error list to be displayed
                 errors.AddRange(Utilities.Authentication.SignIn(signInVM.UsernameOrEmail, signInVM.Password));
                 if (errors.Count == 0 && ModelState.IsValid)
                 {
@@ -61,13 +65,12 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(signInVM);
         }
 
-        [HttpGet]
+        //Signs the user out and redirects them to the home page
         public ActionResult SignOut()
         {
             if (Utilities.Authentication.IsSignedIn())
             {
                 Utilities.Authentication.SignOut();
-                return RedirectToAction("Index", "Home");
             }
             return RedirectToAction("Index", "Home");
         }

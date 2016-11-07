@@ -8,24 +8,32 @@
     //This is used for select lists for states
     self.selectState = ko.observable();
 
+    //This applies bindings after all of the data has been loaded.
+    self.loadAjax = function () {
+        $.when(self.loadGames(), self.loadStates()).done(function (a1, a2) {
+            ko.applyBindings(self);
+        });
+        
+    }
+
+    //Loads all games for the active season
     self.loadGames = function () {
-        $.get("/Bracket/getGamesJSon", function (data) {
+        return $.get("/Bracket/getGamesJSon", function (data) {
             self.games = ko.mapping.fromJSON(data);
 
             $.each(self.games(), function (index, game) {
                 game.isEditing = ko.observable(false);
                 game.Location.State = ko.observable(game.Location.State)
             });
-
-            ko.applyBindings(self);
         });
-    }
+    };
 
+    //Loads all states to be used for dropdown
     self.loadStates = function () {
-        $.get("/Bracket/getStatesJSon", function (data) {
+        return $.get("/Bracket/getStatesJSon", function (data) {
             self.states = ko.mapping.fromJSON(data);
         });
-    }();
+    };
 
     //Utility Functions
     self.editGame = function (game) {
@@ -43,7 +51,7 @@
 
     //This method saves the game
     self.saveGame = function (game) {
-        //Need to get values from t
+        //Need to get values from the temporary state chosen from the dropdown
         game.Location.StateID(self.selectState().StateID());
         game.Location.State(self.selectState());
         gameToSave = ko.toJS(game);
@@ -53,6 +61,7 @@
             response = JSON.parse(returnedData);
             msgs = response.msgs;
             for (i = 0; i < msgs.length; i++) {
+                //Displays all messages
                 response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
             }
             if (response.success) {
@@ -62,6 +71,7 @@
         })
     }
 
+    //Sends the id to a method that archives the selected game
     self.deleteGame = function (game) {
         alertify.confirm("Are you sure you wish to delete this game?", function (e) {
             if (e) {

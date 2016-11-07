@@ -51,11 +51,15 @@
                 </div>
                 <div>
                     <input data-bind="value: Location.City" />
-                    <select data-bind="value: Location.State,
+                    @*<select data-bind="value: Location.State,
                                        options: $root.states,
                                        optionsText: 'StateName',
                                        optionsValue: $parent">
-                    </select>
+                    </select>*@
+                    <select class="stateSelect" data-bind="value: $root.selectState,
+                                       options: $root.states,
+                                       optionsText: 'StateName',
+                                       optionsValue: $parent"></select>
                 </div>
             </div>
             <div class="row">

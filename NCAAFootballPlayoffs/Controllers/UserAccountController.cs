@@ -21,6 +21,16 @@ namespace NCAAFootballPlayoffs.Controllers
         {
             return View();
         }
+        
+        [AuthorizeUser]
+        public ActionResult MyAccount()
+        {
+            //if (Utilities.Authentication.IsSignedIn())
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+            return View();
+        }
 
         [HttpGet]
         public ActionResult SignIn()
@@ -62,6 +72,10 @@ namespace NCAAFootballPlayoffs.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// This was a temporary method used to create my account. This will later be modified to the postback of creating an account
+        /// </summary>
+        /// <returns></returns>
         public bool CreateAccount()
         {
             string username = "ams0068";
@@ -69,13 +83,10 @@ namespace NCAAFootballPlayoffs.Controllers
             string email = "ams0068@auburn.edu";
 
             byte[] newSalt = Authentication.GetSalt(32);
-
             byte[] passwordBytes = Encoding.UTF8.GetBytes(newSalt + password);
-
-            //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
+            
             var SHA512 = new SHA512Managed();
-
-
+            
             MemoryStream stream = new MemoryStream(passwordBytes);
 
             var md5Password = SHA512.ComputeHash(stream);
@@ -89,6 +100,7 @@ namespace NCAAFootballPlayoffs.Controllers
             newUser.Archived = false;
             newUser.DisplayName = "Aaron Scherer";
             newUser.PermissionID = 2;
+            newUser.Approved = false;
 
             db.Users.Add(newUser);
             db.SaveChanges();

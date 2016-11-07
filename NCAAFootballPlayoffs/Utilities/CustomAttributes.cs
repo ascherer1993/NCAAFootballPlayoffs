@@ -64,7 +64,7 @@ namespace NCAAFootballPlayoffs
             }
             else
             {
-                filterContext.Result = new RedirectResult("~/UserAccount/Login", false);
+                filterContext.Result = new RedirectResult("~/UserAccount/SignIn", false);
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Documents\Visual Studio 2015\Projects\NCAAFootballPlayoffs\NCAAFootballPlayoffs\Models\NCAAPlayoffsEntities.edmx'. 
+﻿// T4 code generation is enabled for model 'd:\documents\visual studio 2015\Projects\NCAAFootballPlayoffs\NCAAFootballPlayoffs\Models\NCAAPlayoffsEntities.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

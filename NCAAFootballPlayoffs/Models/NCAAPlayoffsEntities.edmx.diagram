@@ -12,7 +12,6 @@
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Season" Width="1.5" PointX="8.25" PointY="0.75" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.State" Width="1.5" PointX="0.75" PointY="5" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Team" Width="1.5" PointX="5.25" PointY="4.375" />
-        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.User" Width="1.5" PointX="10.5" PointY="9.375" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserPick" Width="1.5" PointX="12.75" PointY="4.625" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Favorite" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Location" />
@@ -21,10 +20,11 @@
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Game" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Location_State" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Team_Location" />
-        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_User_Permission" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Record_Season" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Record_Team" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Team" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.User" Width="1.5" PointX="10.5" PointY="9.25" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_User_Permission" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_User" />
       </Diagram>
     </edmx:Diagrams>

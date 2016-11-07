@@ -272,6 +272,7 @@
     <Content Include="Views\UserAccount\SignIn.cshtml" />
     <Content Include="Views\Bracket\Index.cshtml" />
     <Content Include="Views\Bracket\_Game.cshtml" />
+    <Content Include="Views\UserAccount\MyAccount.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

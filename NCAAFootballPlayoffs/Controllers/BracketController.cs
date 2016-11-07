@@ -12,17 +12,21 @@ namespace NCAAFootballPlayoffs.Controllers
 {
     public class BracketController : Controller
     {
-        // GET: Bracket
+        /// <summary>
+        /// View for bracket page
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             return View();
         }
 
-
+        [AjaxOnly]
         public string saveGame(Game gameIn)
         {
+            //Messages to return to ajax call
             List<string> msgs = new List<string>();
-
+            bool success = false;
             
             using (NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities())
             {
@@ -33,20 +37,30 @@ namespace NCAAFootballPlayoffs.Controllers
                         Location location = db.Locations.Find(gameIn.LocationID);
                         if (location.StateID != gameIn.Location.StateID || location.City != gameIn.Location.City)
                         {
-                            Location newLocation = new Location();
-                            newLocation.StateID = gameIn.Location.StateID;
-                            newLocation.City = gameIn.Location.City;
+                            //This is a check to make sure that the location doesn't already exist in the db. If it does, it uses that location
+                            Location locationCheck = db.Locations.FirstOrDefault(f => f.StateID == gameIn.Location.StateID && f.City == gameIn.Location.City);
+                            if (locationCheck == null)
+                            {
+                                //New location to save
+                                Location newLocation = new Location();
+                                newLocation.StateID = gameIn.Location.StateID;
+                                newLocation.City = gameIn.Location.City;
 
-                            db.Locations.Add(newLocation);
-                            db.SaveChanges();
+                                db.Locations.Add(newLocation);
+                                db.SaveChanges();
 
-                            gameIn.Location = newLocation;
+                                gameIn.LocationID = newLocation.LocationID;
+                            }
+                            else
+                            {
+                                gameIn.LocationID = locationCheck.LocationID;
+                            }
                         }
 
                         Game game = db.Games.Find(gameIn.GameID);
                         game.GameDatetime = gameIn.GameDatetime;
                         game.GameName = gameIn.GameName;
-                        game.LocationID = gameIn.Location.LocationID;
+                        game.LocationID = gameIn.LocationID;
                         game.PointSpread = gameIn.PointSpread;
                         game.TVStation = game.TVStation;
                         
@@ -56,11 +70,12 @@ namespace NCAAFootballPlayoffs.Controllers
 
                         dbContextTransaction.Commit();
                         msgs.Add("Saved Changes.");
+                        success = true;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         dbContextTransaction.Rollback();
-                        msgs.Add(e.Message);
+                        msgs.Add("There was an error saving changes to the game. Please try again.");
                     }
                 }
             }
@@ -68,13 +83,13 @@ namespace NCAAFootballPlayoffs.Controllers
             var responseObject = new
             {
                 msgs = msgs,
-                success = true
+                success = success
             };
 
-            var returnString = JsonConvert.SerializeObject(responseObject);
-            return returnString;
+            return JsonConvert.SerializeObject(responseObject);
         }
 
+        [AjaxOnly]
         public string deleteGame(int gameID)
         {
             List<string> msgs = new List<string>();
@@ -104,6 +119,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// </summary>
         /// <param name="seasonID">optional</param>
         /// <returns></returns>
+        [AjaxOnly]
         public string getGamesJSon(int seasonID = -1)
         {
             using (NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities())
@@ -128,6 +144,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// Gets all states and returns them as JSON
         /// </summary>
         /// <returns></returns>
+        [AjaxOnly]
         public string getStatesJSon()
         {
             using (NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities())

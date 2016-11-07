@@ -4,10 +4,12 @@
     self.isLoading = ko.observable(true);
     self.games = ko.observableArray();
     self.states = [];
-    self.tempState = ko.observable();
+
+    //This is used for select lists for states
+    self.selectState = ko.observable();
 
     self.loadGames = function () {
-        $.get("getGamesJSon", function (data) {
+        $.get("/Bracket/getGamesJSon", function (data) {
             self.games = ko.mapping.fromJSON(data);
 
             $.each(self.games(), function (index, game) {
@@ -20,31 +22,30 @@
     }
 
     self.loadStates = function () {
-        $.get("getStatesJSon", function (data) {
+        $.get("/Bracket/getStatesJSon", function (data) {
             self.states = ko.mapping.fromJSON(data);
         });
     }();
-    
-    //self.updateState = function (game) {
-    //    if (self.tempState() != null)
-    //    {
-    //        game.Location.State.StateName(self.tempState().StateName);
-    //        game.Location.State.StateID(self.tempState().StateID);
-    //        game.Location.State.StateAbbreviation(self.tempState().StateAbbreviation);
-    //    }
-    //}
-
-    //self.getStateName = ko.purecomputed(function (state) {
-    //    return 7;
-    //});
 
     //Utility Functions
     self.editGame = function (game) {
+        self.selectState = ko.observable(game.Location.State());
+
+        //Selects option from dropdown that matches the state.
+        //This was necessary because the correct value was not being selected.
+        $(".stateSelect option").filter(function () {
+            return $(this).text() == self.selectState().StateName();
+        }).prop('selected', true);
+
+        //Makes fields editable
         game.isEditing(true);
-        //self.tempState(game.Location.State)
     }
+
+    //This method saves the game
     self.saveGame = function (game) {
-        game.isEditing(false);
+        //Need to get values from t
+        game.Location.StateID(self.selectState().StateID());
+        game.Location.State(self.selectState());
         gameToSave = ko.toJS(game);
 
         gameToSave.GameDatetime = moment(gameToSave.GameDatetime).format("YYYY-MM-DD HH:mm:ss")
@@ -55,6 +56,8 @@
                 response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
             }
             if (response.success) {
+                game.isEditing(false);
+                
             }
         })
     }

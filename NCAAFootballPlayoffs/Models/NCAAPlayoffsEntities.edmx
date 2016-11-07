@@ -81,12 +81,13 @@
           </Key>
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="70" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar" MaxLength="50" />
           <Property Name="PasswordHash" Type="varbinary(max)" Nullable="false" />
           <Property Name="Salt" Type="varbinary(max)" Nullable="false" />
           <Property Name="EmailAddress" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="PermissionID" Type="int" Nullable="false" />
           <Property Name="Archived" Type="bit" Nullable="false" />
-          <Property Name="DisplayName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Approved" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="UserPick">
           <Key>
@@ -312,7 +313,6 @@
           <EntitySet Name="Seasons" EntityType="NCAAFootballPlayoffsModel.Season" />
           <EntitySet Name="States" EntityType="NCAAFootballPlayoffsModel.State" />
           <EntitySet Name="Teams" EntityType="NCAAFootballPlayoffsModel.Team" />
-          <EntitySet Name="Users" EntityType="NCAAFootballPlayoffsModel.User" />
           <EntitySet Name="UserPicks" EntityType="NCAAFootballPlayoffsModel.UserPick" />
           <AssociationSet Name="FK_Game_Favorite" Association="NCAAFootballPlayoffsModel.FK_Game_Favorite">
             <End Role="Team" EntitySet="Teams" />
@@ -342,10 +342,6 @@
             <End Role="Location" EntitySet="Locations" />
             <End Role="Team" EntitySet="Teams" />
           </AssociationSet>
-          <AssociationSet Name="FK_User_Permission" Association="NCAAFootballPlayoffsModel.FK_User_Permission">
-            <End Role="Permission" EntitySet="Permissions" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="FK_Record_Season" Association="NCAAFootballPlayoffsModel.FK_Record_Season">
             <End Role="Season" EntitySet="Seasons" />
             <End Role="Record" EntitySet="Records" />
@@ -357,6 +353,11 @@
           <AssociationSet Name="FK_UserPick_Team" Association="NCAAFootballPlayoffsModel.FK_UserPick_Team">
             <End Role="Team" EntitySet="Teams" />
             <End Role="UserPick" EntitySet="UserPicks" />
+          </AssociationSet>
+          <EntitySet Name="Users" EntityType="NCAAFootballPlayoffsModel.User" />
+          <AssociationSet Name="FK_User_Permission" Association="NCAAFootballPlayoffsModel.FK_User_Permission">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="User" EntitySet="Users" />
           </AssociationSet>
           <AssociationSet Name="FK_UserPick_User" Association="NCAAFootballPlayoffsModel.FK_UserPick_User">
             <End Role="User" EntitySet="Users" />
@@ -451,21 +452,6 @@
           <NavigationProperty Name="Location" Relationship="NCAAFootballPlayoffsModel.FK_Team_Location" FromRole="Team" ToRole="Location" />
           <NavigationProperty Name="Records" Relationship="NCAAFootballPlayoffsModel.FK_Record_Team" FromRole="Team" ToRole="Record" />
           <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Team" FromRole="Team" ToRole="UserPick" />
-        </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserID" />
-          </Key>
-          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="70" FixedLength="false" Unicode="true" />
-          <Property Name="PasswordHash" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
-          <Property Name="Salt" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
-          <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PermissionID" Type="Int32" Nullable="false" />
-          <Property Name="Archived" Type="Boolean" Nullable="false" />
-          <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Permission" Relationship="NCAAFootballPlayoffsModel.FK_User_Permission" FromRole="User" ToRole="Permission" />
-          <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_User" FromRole="User" ToRole="UserPick" />
         </EntityType>
         <EntityType Name="UserPick">
           <Key>
@@ -563,18 +549,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Permission">
-          <End Type="NCAAFootballPlayoffsModel.Permission" Role="Permission" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Permission">
-              <PropertyRef Name="PermissionID" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="PermissionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Record_Season">
           <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.Record" Role="Record" Multiplicity="*" />
@@ -608,6 +582,34 @@
             </Principal>
             <Dependent Role="UserPick">
               <PropertyRef Name="ChosenTeamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="70" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordHash" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="Salt" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PermissionID" Type="Int32" Nullable="false" />
+          <Property Name="Archived" Type="Boolean" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Permission" Relationship="NCAAFootballPlayoffsModel.FK_User_Permission" FromRole="User" ToRole="Permission" />
+          <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_User" FromRole="User" ToRole="UserPick" />
+        </EntityType>
+        <Association Name="FK_User_Permission">
+          <End Type="NCAAFootballPlayoffsModel.Permission" Role="Permission" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="PermissionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -706,20 +708,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
-                <ScalarProperty Name="Archived" ColumnName="Archived" />
-                <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
-                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
-                <ScalarProperty Name="Salt" ColumnName="Salt" />
-                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserPicks">
             <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.UserPick">
               <MappingFragment StoreEntitySet="UserPick">
@@ -727,6 +715,21 @@
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="ChosenTeamID" ColumnName="ChosenTeamID" />
                 <ScalarProperty Name="UserPickID" ColumnName="UserPickID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+                <ScalarProperty Name="Archived" ColumnName="Archived" />
+                <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -2,12 +2,59 @@
 @{
     ViewBag.Title = "Bracket";
 }
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title" id="exampleModalLabel">Add Game</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="form-control-label">Bowl Name</label>
+                        <input type="text" class="form-control" id="new-bowl-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Bowl Time:</label>
+                        <input type="text" class="form-control" id="new-bowl-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Bowl City:</label>
+                        <input type="text" class="form-control" id="new-bowl-city">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Bowl State:</label>
+                        <input type="text" class="form-control" id="new-bowl-state">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Favorite:</label>
+                        <input type="text" class="form-control" id="new-bowl-favorite">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Underdog:</label>
+                        <input type="text" class="form-control" id="new-bowl-underdog">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row title-bar">
     <div class="col-xs-6">
         <span class="title">2016</span>
     </div>
     <div class="col-xs-6" style="text-align:right">
-        <button class="btn btn-default" data-bind="">Add Game</button>
+        @*<button class="btn btn-default" data-bind="">Add Game</button>*@
+        <button class="btn btn-default" data-toggle="modal" data-target=".bd-example-modal-lg">Add Game</button>
     </div>
 </div>
 

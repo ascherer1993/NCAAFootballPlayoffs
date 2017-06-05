@@ -82,7 +82,7 @@ namespace NCAAFootballPlayoffs.Controllers
         public bool CreateAccount()
         {
             string username = "ams0068";
-            string password = "ams1990";
+            string password = "1234";
             string email = "ams0068@auburn.edu";
 
             byte[] newSalt = Authentication.GetSalt(32);
@@ -96,16 +96,24 @@ namespace NCAAFootballPlayoffs.Controllers
 
 
             User newUser = new User();
-            newUser.Username = username;
             newUser.Salt = newSalt;
             newUser.PasswordHash = md5Password;
             newUser.EmailAddress = email;
             newUser.Archived = false;
             newUser.DisplayName = "Aaron Scherer";
             newUser.PermissionID = 2;
-            newUser.Approved = false;
+
+            
 
             db.Users.Add(newUser);
+
+            UserName newUsername = new UserName();
+            newUsername.UserNameText = username;
+            newUsername.UserID = newUser.UserID;
+            newUsername.Approved = false;
+            newUsername.Archived = false;
+
+            db.UserNames.Add(newUsername);
             db.SaveChanges();
 
             return true;

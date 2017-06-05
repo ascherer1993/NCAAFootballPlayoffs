@@ -4,23 +4,48 @@
     self.isLoading = ko.observable(true);
     self.games = ko.observableArray();
     self.states = [];
+    self.teams = [];
 
     //This is used for select lists for states
     self.selectState = ko.observable();
+    self.selectFavorite = ko.observable();
+    self.favoriteOptionValue
+    self.selectUnderdog = ko.observable();
+
+    //These are used for the new game modal
+    self.newGameBowlName = ko.observable();
+    self.newGameTime = ko.observable(null);
+    self.newGameCity = ko.observable();
+    self.newGameSelectedStateID = ko.observable();
+    self.newGameFavoriteID = ko.observable();
+    self.newGameUnderdogID = ko.observable();
+    self.newGameSpread = ko.observable();
+    self.isBCSBowl = ko.observable();
 
     //This applies bindings after all of the data has been loaded.
     self.loadAjax = function () {
-        $.when(self.loadGames(), self.loadStates()).done(function (a1, a2) {
+        $.when(self.loadGames(), self.loadStates(), self.loadTeams()).done(function (a1, a2) {
             ko.applyBindings(self);
         });
-        
     }
+
+    self.loadTeams = function () {
+        return $.get("/Bracket/getTeamsJSon", function (data) {
+            self.teams = ko.mapping.fromJSON(data);
+            var createNewGameOption = { 'TeamName': 'Create new team', 'TeamID': -1 };
+            self.teams.splice(0, 0, createNewGameOption);
+
+            //$.each(self.teams(), function (index, team) {
+            //    team.isEditing = ko.observable(false);
+            //    game.Location.State = ko.observable(game.Location.State)
+            //});
+        });
+    };
 
     //Loads all games for the active season
     self.loadGames = function () {
         return $.get("/Bracket/getGamesJSon", function (data) {
             self.games = ko.mapping.fromJSON(data);
-
             $.each(self.games(), function (index, game) {
                 game.isEditing = ko.observable(false);
                 game.Location.State = ko.observable(game.Location.State)
@@ -44,6 +69,10 @@
         $(".stateSelect option").filter(function () {
             return $(this).text() == self.selectState().StateName();
         }).prop('selected', true);
+
+        //$(".stateSelect option").filter(function () {
+        //    return $(this).text() == self.selectState().StateName();
+        //}).prop('selected', true);
 
         //Makes fields editable
         game.isEditing(true);

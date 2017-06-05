@@ -177,5 +177,35 @@ namespace NCAAFootballPlayoffs.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Gets all states and returns them as JSON
+        /// </summary>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string getTeamsJSon()
+        {
+            using (NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities())
+            {
+                IEnumerable<Team> teams = db.Teams;
+
+                //This selects out the items we want in order to get rid of self referencing
+                teams = teams.Select(f => new Team
+                {
+                    TeamName = f.TeamName,
+                    TeamNickname = f.TeamNickname,
+                    TeamID = f.TeamID
+                });
+
+                var json = JsonConvert.SerializeObject(teams, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+
+                return json;
+            }
+
+        }
     }
 }

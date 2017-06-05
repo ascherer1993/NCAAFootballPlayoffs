@@ -29,7 +29,7 @@
                 @Html.ActionLink("NCAA Bracket", "Index", "Home", new { area = "" }, new { @class = "navbar-brand navbar-title" })
             </div>
             <div class="navbar-header" style="float: right">
-                @if (Session["username"] == null)
+                @if (Session["loginEmail"] == null)
                 {
                     @Html.ActionLink("Sign In", "SignIn", "UserAccount", new { area = "" }, new { @class = "navbar-brand-float-right navbar-subtitle", @style = "" })
                 }

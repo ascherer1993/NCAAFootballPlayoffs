@@ -207,6 +207,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BonusQuestion.cs">
+      <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Game.cs">
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
     </Compile>
@@ -232,6 +235,9 @@
     <Compile Include="Models\Permission.cs">
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\QuestionAnswer.cs">
+      <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Record.cs">
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
     </Compile>
@@ -245,6 +251,9 @@
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
+      <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserName.cs">
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserPick.cs">

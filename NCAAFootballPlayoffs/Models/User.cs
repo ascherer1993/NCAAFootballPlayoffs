@@ -17,21 +17,19 @@ namespace NCAAFootballPlayoffs.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.UserPicks = new HashSet<UserPick>();
+            this.UserNames = new HashSet<UserName>();
         }
     
         public int UserID { get; set; }
-        public string Username { get; set; }
         public string DisplayName { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] Salt { get; set; }
         public string EmailAddress { get; set; }
         public int PermissionID { get; set; }
         public bool Archived { get; set; }
-        public bool Approved { get; set; }
     
         public virtual Permission Permission { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPick> UserPicks { get; set; }
+        public virtual ICollection<UserName> UserNames { get; set; }
     }
 }

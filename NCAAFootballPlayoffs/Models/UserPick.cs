@@ -17,10 +17,11 @@ namespace NCAAFootballPlayoffs.Models
         public int UserPickID { get; set; }
         public int ChosenTeamID { get; set; }
         public int GameID { get; set; }
-        public int UserID { get; set; }
+        public int UserNameID { get; set; }
+        public bool IsSurePick { get; set; }
     
-        public virtual Game Game { get; set; }
         public virtual Team Team { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserName UserName { get; set; }
+        public virtual Game Game { get; set; }
     }
 }

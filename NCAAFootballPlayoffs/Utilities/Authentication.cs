@@ -13,22 +13,28 @@ namespace NCAAFootballPlayoffs.Utilities
     {
         public static bool IsSignedIn()
         {
-            if (HttpContext.Current.Session["username"] != null)
+            //if (HttpContext.Current.Session["username"] != null)
+            //{
+            //    return true;
+            //}
+            if (HttpContext.Current.Session["loginEmail"] != null)
             {
                 return true;
             }
             return false;
         }
 
-        public static string GetUsername()
+        public static string GetLoginInfo()
         {
             if (IsSignedIn())
             {
-                string username = (string) HttpContext.Current.Session["username"];
+                //string username = (string) HttpContext.Current.Session["username"];
+                string username = (string)HttpContext.Current.Session["loginEmail"];
                 return username;
             }
             return null;
         }
+
 
         //Checks to see if the current user is a member of one of the roles received as a parameter.
         public static bool IsMemberOf(params string[] roles)
@@ -37,8 +43,8 @@ namespace NCAAFootballPlayoffs.Utilities
 
             using (NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities())
             {
-                string username = GetUsername();
-                User user = db.Users.FirstOrDefault(f => f.Username == username);
+                string emailAddress = GetLoginInfo();
+                User user = db.Users.FirstOrDefault(f => f.EmailAddress == emailAddress);
                 if (user == null)
                 {
                     //If the user can not be found, return false, logging in has failed
@@ -72,24 +78,21 @@ namespace NCAAFootballPlayoffs.Utilities
         }
 
         //signs the user in if their log in credentials are correct
-        public static List<string> SignIn(string usernameOrEmail, string password)
+        public static List<string> SignIn(string email, string password)
         {
-            usernameOrEmail = usernameOrEmail.ToLower();
+            email = email.ToLower();
             password = password.ToLower();
 
             List<string> errors = new List<string>();
             using (var db = new NCAAFootballPlayoffsEntities())
             {
                 //Fetch a user from the db with the username typed in
-                User user = db.Users.FirstOrDefault(f => f.Username.ToLower() == usernameOrEmail);
+                User user = db.Users.FirstOrDefault(f => f.EmailAddress.ToLower() == email);
                 if (user == null)
                 {
-                    user = db.Users.FirstOrDefault(f => f.EmailAddress.ToLower() == usernameOrEmail);
-                    if (user == null)
-                    {
-                        //If the user can not be found, a error is added to the list of errors
-                        errors.Add("The username or email address you have entered is invalid.");
-                    }
+                    //If the user can not be found, a error is added to the list of errors
+                    errors.Add("The username or email address you have entered is invalid.");
+                    
                 }
                 if (user != null)
                 {
@@ -103,7 +106,7 @@ namespace NCAAFootballPlayoffs.Utilities
 
                     if (md5Password.SequenceEqual(user.PasswordHash))
                     {
-                        HttpContext.Current.Session["username"] = user.Username;
+                        HttpContext.Current.Session["loginEmail"] = user.EmailAddress;
                     }
                     else
                     {
@@ -117,7 +120,7 @@ namespace NCAAFootballPlayoffs.Utilities
         //Signs the user out
         public static bool SignOut()
         {
-            HttpContext.Current.Session["username"] = null;
+            HttpContext.Current.Session["loginEmail"] = null;
             return true;
         }
 

@@ -12,24 +12,20 @@ namespace NCAAFootballPlayoffs.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Location
+    public partial class QuestionAnswer
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Location()
+        public QuestionAnswer()
         {
-            this.Teams = new HashSet<Team>();
-            this.Games = new HashSet<Game>();
+            this.BonusQuestions = new HashSet<BonusQuestion>();
         }
     
-        public int LocationID { get; set; }
-        public string City { get; set; }
-        public Nullable<int> StateID { get; set; }
-        public bool Archived { get; set; }
+        public int QuestionAnswerID { get; set; }
+        public string Text { get; set; }
+        public int BonusQuestionID { get; set; }
     
-        public virtual State State { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Team> Teams { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Game> Games { get; set; }
+        public virtual ICollection<BonusQuestion> BonusQuestions { get; set; }
+        public virtual BonusQuestion BonusQuestion { get; set; }
     }
 }

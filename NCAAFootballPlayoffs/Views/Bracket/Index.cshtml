@@ -20,7 +20,9 @@
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Bowl Time:</label>
-                        <input type="text" class="form-control" id="new-bowl-time">
+                        <div>
+                            <input data-bind="datetimepicker: $root.newGameTime, value: $root.newGameTime" />
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Bowl City:</label>
@@ -28,21 +30,34 @@
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Bowl State:</label>
-                        <input type="text" class="form-control" id="new-bowl-state">
+                        <select class="stateSelect" data-bind="value: $root.newGameSelectedStateID,
+                                       options: states,
+                                       optionsText: 'StateName',
+                                       optionsValue: 'StateID'"></select>
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Favorite:</label>
-                        <input type="text" class="form-control" id="new-bowl-favorite">
+                        <div>
+                            <select class="favoriteSelect" data-bind="value: $root.selectFavorite,
+                                       options: teams,
+                                       optionsText: 'TeamName',
+                                       optionsValue: 'TeamID'"></select>
+                        </div>
+                        <input type="text" class="form-control" id="new-bowl-favorite" data-bind="visible: $root.selectFavorite() == -1">
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Underdog:</label>
                         <input type="text" class="form-control" id="new-bowl-underdog">
                     </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">Point Spread:</label>
+                        <input type="text" class="form-control" id="new-bowl-spread">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
+                <button type="button" class="btn btn-primary">Add Game</button>
             </div>
         </div>
     </div>
@@ -68,8 +83,10 @@
 <link href="~/Content/CSS/Bracket.css" rel="stylesheet" />
 <script src="~/Models/KnockoutModels/Bracket/BracketViewModel.js"></script>
 <script type="text/javascript">
+    //bad. this is for testing
+    var vm;
     $(function () {
-        var vm = new BracketViewModel();
+        vm = new BracketViewModel();
         vm.loadAjax();
     });
 </script>

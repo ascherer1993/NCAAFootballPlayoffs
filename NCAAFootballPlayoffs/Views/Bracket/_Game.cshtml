@@ -48,6 +48,8 @@
                 <span data-bind="click: $root.saveGame" class="top-right glyphicon glyphicon-floppy-disk" style="right:18px"></span>
                 <div>
                     <input data-bind="datetimepicker: GameDatetime, value: GameDatetime" />
+                    BCS Bowl:
+                    <input type="checkbox" data-bind="checked: IsBCSBowl" />
                 </div>
                 <div>
                     <input data-bind="value: Location.City" />

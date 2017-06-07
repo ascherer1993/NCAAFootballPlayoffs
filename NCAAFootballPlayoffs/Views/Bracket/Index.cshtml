@@ -3,7 +3,7 @@
     ViewBag.Title = "Bracket";
 }
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,17 +16,17 @@
                 <form>
                     <div class="form-group">
                         <label for="recipient-name" class="form-control-label">Bowl Name</label>
-                        <input type="text" class="form-control" id="new-bowl-name">
+                        <input type="text" class="form-control" id="new-bowl-name"  data-bind="value: newGameBowlName">
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Bowl Time:</label>
                         <div>
-                            <input data-bind="datetimepicker: $root.newGameTime, value: $root.newGameTime" />
+                            <input data-bind="datetimepicker: $root.newGameDatetime, value: $root.newGameDatetime" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Bowl City:</label>
-                        <input type="text" class="form-control" id="new-bowl-city">
+                        <input type="text" class="form-control" id="new-bowl-city"  data-bind="value: newGameCity">
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Bowl State:</label>
@@ -38,26 +38,55 @@
                     <div class="form-group">
                         <label for="message-text" class="form-control-label">Favorite:</label>
                         <div>
-                            <select class="favoriteSelect" data-bind="value: $root.selectFavorite,
+                            <select class="favoriteSelect" data-bind="value: $root.newGameSelectFavorite,
                                        options: teams,
                                        optionsText: 'TeamName',
                                        optionsValue: 'TeamID'"></select>
                         </div>
-                        <input type="text" class="form-control" id="new-bowl-favorite" data-bind="visible: $root.selectFavorite() == -1">
+                        <div data-bind="visible: $root.newGameSelectFavorite() == -1">
+                            <div>
+                                <label for="new-bowl-favorite-name" class="form-control-label">Team Name:</label>
+                                <input type="text" class="form-control" id="new-bowl-favorite-name" data-bind="value: $root.newGameFavoriteName">
+                            </div>
+                            <div>
+                                <label for="new-bowl-favorite-nickname" class="form-control-label">Team Nickname:</label>
+                                <input type="text" class="form-control" id="new-bowl-favorite-nickname" data-bind="value: $root.newGameFavoriteNickname">
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="message-text" class="form-control-label">Underdog:</label>
-                        <input type="text" class="form-control" id="new-bowl-underdog">
+                        <label for="underdogSelect" class="form-control-label">Underdog:</label>
+                        <div>
+                            <select class="underdogSelect" data-bind="value: $root.newGameSelectUnderdog,
+                                       options: teams,
+                                       optionsText: 'TeamName',
+                                       optionsValue: 'TeamID'"></select>
+                        </div>
+                        <div data-bind="visible: $root.newGameSelectUnderdog() == -1">
+                            <div>
+                                <label for="new-bowl-underdog-name">Team Name:</label>
+                                <input type="text" id="new-bowl-favorite-name" data-bind="value: $root.newGameUnderdogName">
+                            </div>
+                            <div>
+                                <label for="new-bowl-underdog-nickname">Team Nickname:</label>
+                                <input type="text" id="new-bowl-favorite-nickname" data-bind="value: $root.newGameUnderdogNickname">
+                            </div>
+                        </div>
+                       
                     </div>
                     <div class="form-group">
-                        <label for="message-text" class="form-control-label">Point Spread:</label>
-                        <input type="text" class="form-control" id="new-bowl-spread">
+                        <label for="new-bowl-spread" class="form-control-label">Point Spread:</label>
+                        <input type="text" class="form-control" id="new-bowl-spread" data-bind="value: newGamePointSpread">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="form-control-label">BCS Bowl:</label>
+                        <input type="checkbox" id="new-bowl-bcs-check" data-bind="checked: newGameIsBCSBowl">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add Game</button>
+                <button type="button" class="btn btn-primary"  data-bind="click: $root.addGame">Add Game</button>
             </div>
         </div>
     </div>

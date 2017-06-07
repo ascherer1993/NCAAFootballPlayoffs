@@ -46,11 +46,16 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
+        
         <footer>
-            <p>@DateTime.Now.Year - Aaron Scherer</p>
         </footer>
     </div>
-
+    <div class="container footer">
+        <div class="row">
+            <hr />
+            <br />
+            <div class="col-sm-12">@DateTime.Now.Year - Aaron Scherer</div>
+        </div>
+    </div>
 </body>
 </html>

@@ -8,19 +8,22 @@
 
     //This is used for select lists for states
     self.selectState = ko.observable();
-    self.selectFavorite = ko.observable();
-    self.favoriteOptionValue
-    self.selectUnderdog = ko.observable();
+    self.newGameSelectFavorite = ko.observable();
+    self.newGameSelectUnderdog = ko.observable();
 
     //These are used for the new game modal
     self.newGameBowlName = ko.observable();
-    self.newGameTime = ko.observable(null);
+    self.newGameDatetime = ko.observable(null);
     self.newGameCity = ko.observable();
     self.newGameSelectedStateID = ko.observable();
     self.newGameFavoriteID = ko.observable();
     self.newGameUnderdogID = ko.observable();
-    self.newGameSpread = ko.observable();
-    self.isBCSBowl = ko.observable();
+    self.newGamePointSpread = ko.observable();
+    self.newGameIsBCSBowl = ko.observable();
+    self.newGameFavoriteName = ko.observable();
+    self.newGameFavoriteNickname = ko.observable();
+    self.newGameUnderdogName = ko.observable();
+    self.newGameUnderdogNickname = ko.observable();
 
     //This applies bindings after all of the data has been loaded.
     self.loadAjax = function () {
@@ -76,6 +79,51 @@
 
         //Makes fields editable
         game.isEditing(true);
+    }
+
+    //This method saves the game
+    self.addGame = function () {
+
+        var newGame = {
+            'GameName': self.newGameBowlName,
+            'GameDatetime': moment(self.newGameTime).format("YYYY-MM-DD HH:mm:ss"),
+            'Location.City': self.newGameCity,
+            'Location.StateID': self.newGameSelectedStateID,
+            'FavoriteID': self.newGameSelectFavorite,
+            'UnderdogID': self.newGameSelectUnderdog,
+            'PointSpread': self.newGamePointSpread,
+            'IsBCSBowl': self.newGameIsBCSBowl
+        }
+
+        //Need to get values from the temporary state chosen from the dropdown
+        //game.Location.StateID(self.selectState().StateID());
+        //game.Location.State(self.selectState());
+        var gameToSave = ko.toJS(newGame);
+
+        //gameToSave.GameDatetime = moment(gameToSave.GameDatetime).format("YYYY-MM-DD HH:mm:ss")
+        $.post("/Bracket/addGame", {
+            gameIn: gameToSave,
+            favoriteNameIn: self.newGameFavoriteName(),
+            favoriteNicknameIn: self.newGameFavoriteNickname(),
+            underdogNameIn: self.newGameUnderdogName(),
+            underdogNicknameIn: self.newGameUnderdogNickname()
+        }, function (returnedData) {
+            response = JSON.parse(returnedData);
+            msgs = response.msgs;
+            
+            for (i = 0; i < msgs.length; i++) {
+                //Displays all messages
+                response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+            }
+            if (response.success) {
+                var returnedGame = ko.mapping.fromJS(response.game);
+                returnedGame.isEditing = ko.observable(false);
+                returnedGame.Location.State = ko.observable(returnedGame.Location.State)
+                self.games.push(returnedGame);
+                $("#myModal").modal('hide');
+                
+            }
+        })
     }
 
     //This method saves the game

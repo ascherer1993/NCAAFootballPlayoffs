@@ -1,0 +1,80 @@
+﻿@model NCAAFootballPlayoffs.Models.ViewModels.SignInViewModel
+
+@{
+    ViewBag.Title = "Create Account";
+}
+
+<h2>Create Account</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger">
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                @Html.LabelFor(model => model.EmailAddress, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-sm-12">
+                @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                @Html.LabelFor(model => model.DisplayName, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-sm-12">
+                @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-sm-12">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @id = "passwordField", @class = "form-control", @type = "password" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-sm-12">
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+            </div>
+        </div>
+
+        <hr />
+        <p>
+            Below you can enter the name of your first bracket. You can create more brackets later. 
+        </p>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                @Html.LabelFor(model => model.BracketName, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-sm-12">
+                @Html.EditorFor(model => model.BracketName, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

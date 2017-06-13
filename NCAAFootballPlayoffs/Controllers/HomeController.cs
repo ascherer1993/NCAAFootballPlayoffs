@@ -22,7 +22,7 @@ namespace NCAAFootballPlayoffs.Controllers
         {
             List<string> msgs = new List<string>();
             UserAccountController uac = new UserAccountController();
-            uac.CreateAccount();
+            //uac.CreateAccount();
 
             msgs.Add("Done.");
             var responseObject = new

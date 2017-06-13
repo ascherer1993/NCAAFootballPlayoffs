@@ -170,4 +170,8 @@
         });
     }
 
+    //focuses when modal opens
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#new-bowl-name').focus();
+    })
 }

@@ -69,18 +69,17 @@
                             </div>
                             <div>
                                 <label for="new-bowl-underdog-nickname">Team Nickname:</label>
-                                <input type="text" id="new-bowl-favorite-nickname" data-bind="value: $root.newGameUnderdogNickname">
+                                <input type="text" id="new-bowl-underdog-nickname" data-bind="value: $root.newGameUnderdogNickname">
                             </div>
                         </div>
-                       
+                    </div>
+                    <div class="form-group">
+                        <label for="new-bowl-bcs-check" class="form-control-label">BCS Bowl:</label>
+                        <input type="checkbox" id="new-bowl-bcs-check" data-bind="checked: newGameIsBCSBowl">
                     </div>
                     <div class="form-group">
                         <label for="new-bowl-spread" class="form-control-label">Point Spread:</label>
                         <input type="text" class="form-control" id="new-bowl-spread" data-bind="value: newGamePointSpread">
-                    </div>
-                    <div class="form-group">
-                        <label for="message-text" class="form-control-label">BCS Bowl:</label>
-                        <input type="checkbox" id="new-bowl-bcs-check" data-bind="checked: newGameIsBCSBowl">
                     </div>
                 </form>
             </div>

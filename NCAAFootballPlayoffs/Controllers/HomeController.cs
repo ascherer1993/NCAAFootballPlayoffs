@@ -41,7 +41,7 @@ namespace NCAAFootballPlayoffs.Controllers
         public FileStreamResult doWhatIWant()
         {
             ExcelManager em = new ExcelManager();
-            var memStream = em.Download();
+            var memStream = em.DownloadPicks();
             return File(memStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "NCAAFootballPicks.xlsx");
 
         }

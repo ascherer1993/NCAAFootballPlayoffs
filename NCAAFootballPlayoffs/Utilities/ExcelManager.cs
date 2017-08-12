@@ -44,7 +44,7 @@ namespace NCAAFootballPlayoffs.Utilities
             xlWorkBook.SaveAs("your-file-name.xls");
         }
 
-        public MemoryStream DownloadPicks(int? seasonID)
+        public MemoryStream DownloadPicks(int? seasonID = 1)
         {
             MemoryStream memStream;
 

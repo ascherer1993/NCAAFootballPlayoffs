@@ -65,7 +65,7 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(signInVM);
         }
 
-        //Signs the user out and redirects them to the home page
+        //Signs t he user out and redirects them to the home page
         public ActionResult SignOut()
         {
             if (Utilities.Authentication.IsSignedIn())
@@ -112,16 +112,6 @@ namespace NCAAFootballPlayoffs.Controllers
             }
             return View(signInVM);
         }
-
-
-
-
-
-
-
-
-
-
 
         /// <summary>
         /// This was a temporary method used to create my account. This will later be modified to the postback of creating an account

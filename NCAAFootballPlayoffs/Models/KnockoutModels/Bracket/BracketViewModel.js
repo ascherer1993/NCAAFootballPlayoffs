@@ -24,6 +24,7 @@
     self.newGameFavoriteNickname = ko.observable();
     self.newGameUnderdogName = ko.observable();
     self.newGameUnderdogNickname = ko.observable();
+    self.surePickCount = ko.observable(0);
 
     //This applies bindings after all of the data has been loaded.
     self.loadAjax = function () {
@@ -52,6 +53,19 @@
             $.each(self.games(), function (index, game) {
                 game.isEditing = ko.observable(false);
                 game.Location.State = ko.observable(game.Location.State)
+                game.teamPickID = ko.observable();
+
+                game.isSurePick = ko.observable();
+                game.isSurePick.subscribe(function (value) {
+                    if (value)
+                    {
+                        self.surePickCount(self.surePickCount() + 1);
+                    }
+                    else
+                    {
+                        self.surePickCount(self.surePickCount() - 1);
+                    }
+                });
             });
         });
     };
@@ -119,6 +133,18 @@
                 var returnedGame = ko.mapping.fromJS(response.game);
                 returnedGame.isEditing = ko.observable(false);
                 returnedGame.Location.State = ko.observable(returnedGame.Location.State)
+                returnedGame.teamPickID = ko.observable();
+
+                returnedGame.isSurePick = ko.observable(false);
+                returnedGame.isSurePick.subscribe(function (value) {
+                    if (value) {
+                        self.surePickCount(self.surePickCount() + 1);
+                    }
+                    else {
+                        self.surePickCount(self.surePickCount() - 1);
+                    }
+                });
+
                 self.games.push(returnedGame);
                 $("#myModal").modal('hide');
                 

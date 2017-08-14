@@ -121,7 +121,7 @@
           <Key>
             <PropertyRef Name="UserPickID" />
           </Key>
-          <Property Name="UserPickID" Type="int" Nullable="false" />
+          <Property Name="UserPickID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ChosenTeamID" Type="int" Nullable="false" />
           <Property Name="GameID" Type="int" Nullable="false" />
           <Property Name="UserNameID" Type="int" Nullable="false" />
@@ -428,7 +428,6 @@
           <EntitySet Name="Teams" EntityType="NCAAFootballPlayoffsModel.Team" />
           <EntitySet Name="Users" EntityType="NCAAFootballPlayoffsModel.User" />
           <EntitySet Name="UserNames" EntityType="NCAAFootballPlayoffsModel.UserName" />
-          <EntitySet Name="UserPicks" EntityType="NCAAFootballPlayoffsModel.UserPick" />
           <AssociationSet Name="FK_BonusQuestion_QuestionAnswer" Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_QuestionAnswer">
             <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
             <End Role="BonusQuestion" EntitySet="BonusQuestions" />
@@ -461,17 +460,9 @@
             <End Role="Team" EntitySet="Teams" />
             <End Role="Record" EntitySet="Records" />
           </AssociationSet>
-          <AssociationSet Name="FK_UserPick_Team" Association="NCAAFootballPlayoffsModel.FK_UserPick_Team">
-            <End Role="Team" EntitySet="Teams" />
-            <End Role="UserPick" EntitySet="UserPicks" />
-          </AssociationSet>
           <AssociationSet Name="FK_UserName_User" Association="NCAAFootballPlayoffsModel.FK_UserName_User">
             <End Role="User" EntitySet="Users" />
             <End Role="UserName" EntitySet="UserNames" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserPick_UserName" Association="NCAAFootballPlayoffsModel.FK_UserPick_UserName">
-            <End Role="UserName" EntitySet="UserNames" />
-            <End Role="UserPick" EntitySet="UserPicks" />
           </AssociationSet>
           <EntitySet Name="Games" EntityType="NCAAFootballPlayoffsModel.Game" />
           <AssociationSet Name="FK_Game_Favorite" Association="NCAAFootballPlayoffsModel.FK_Game_Favorite">
@@ -494,8 +485,17 @@
             <End Role="Team" EntitySet="Teams" />
             <End Role="Game" EntitySet="Games" />
           </AssociationSet>
+          <EntitySet Name="UserPicks" EntityType="NCAAFootballPlayoffsModel.UserPick" />
           <AssociationSet Name="FK_UserPick_Game" Association="NCAAFootballPlayoffsModel.FK_UserPick_Game">
             <End Role="Game" EntitySet="Games" />
+            <End Role="UserPick" EntitySet="UserPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPick_Team" Association="NCAAFootballPlayoffsModel.FK_UserPick_Team">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="UserPick" EntitySet="UserPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPick_UserName" Association="NCAAFootballPlayoffsModel.FK_UserPick_UserName">
+            <End Role="UserName" EntitySet="UserNames" />
             <End Role="UserPick" EntitySet="UserPicks" />
           </AssociationSet>
         </EntityContainer>
@@ -586,10 +586,10 @@
           <Property Name="Archived" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Location" Relationship="NCAAFootballPlayoffsModel.FK_Team_Location" FromRole="Team" ToRole="Location" />
           <NavigationProperty Name="Records" Relationship="NCAAFootballPlayoffsModel.FK_Record_Team" FromRole="Team" ToRole="Record" />
-          <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Team" FromRole="Team" ToRole="UserPick" />
           <NavigationProperty Name="GamesAsFavorite" Relationship="NCAAFootballPlayoffsModel.FK_Game_Favorite" FromRole="Team" ToRole="Game" />
           <NavigationProperty Name="GamesWon" Relationship="NCAAFootballPlayoffsModel.FK_Game_Team" FromRole="Team" ToRole="Game" />
           <NavigationProperty Name="GamesAsUnderdog" Relationship="NCAAFootballPlayoffsModel.FK_Game_Underdog" FromRole="Team" ToRole="Game" />
+          <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Team" FromRole="Team" ToRole="UserPick" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -616,19 +616,6 @@
           <Property Name="Approved" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="User" Relationship="NCAAFootballPlayoffsModel.FK_UserName_User" FromRole="UserName" ToRole="User" />
           <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="UserName" ToRole="UserPick" />
-        </EntityType>
-        <EntityType Name="UserPick">
-          <Key>
-            <PropertyRef Name="UserPickID" />
-          </Key>
-          <Property Name="UserPickID" Type="Int32" Nullable="false" />
-          <Property Name="ChosenTeamID" Type="Int32" Nullable="false" />
-          <Property Name="GameID" Type="Int32" Nullable="false" />
-          <Property Name="UserNameID" Type="Int32" Nullable="false" />
-          <Property Name="IsSurePick" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Team" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Team" FromRole="UserPick" ToRole="Team" />
-          <NavigationProperty Name="UserName" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="UserPick" ToRole="UserName" />
-          <NavigationProperty Name="Game" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Game" FromRole="UserPick" ToRole="Game" />
         </EntityType>
         <Association Name="FK_BonusQuestion_QuestionAnswer">
           <End Type="NCAAFootballPlayoffsModel.QuestionAnswer" Role="QuestionAnswer" Multiplicity="1" />
@@ -726,18 +713,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_UserPick_Team">
-          <End Type="NCAAFootballPlayoffsModel.Team" Role="Team" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Team">
-              <PropertyRef Name="TeamID" />
-            </Principal>
-            <Dependent Role="UserPick">
-              <PropertyRef Name="ChosenTeamID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_UserName_User">
           <End Type="NCAAFootballPlayoffsModel.User" Role="User" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.UserName" Role="UserName" Multiplicity="*" />
@@ -747,18 +722,6 @@
             </Principal>
             <Dependent Role="UserName">
               <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserPick_UserName">
-          <End Type="NCAAFootballPlayoffsModel.UserName" Role="UserName" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UserName">
-              <PropertyRef Name="UserNameID" />
-            </Principal>
-            <Dependent Role="UserPick">
-              <PropertyRef Name="UserNameID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -847,6 +810,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="UserPick">
+          <Key>
+            <PropertyRef Name="UserPickID" />
+          </Key>
+          <Property Name="UserPickID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChosenTeamID" Type="Int32" Nullable="false" />
+          <Property Name="GameID" Type="Int32" Nullable="false" />
+          <Property Name="UserNameID" Type="Int32" Nullable="false" />
+          <Property Name="IsSurePick" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Game" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Game" FromRole="UserPick" ToRole="Game" />
+          <NavigationProperty Name="Team" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Team" FromRole="UserPick" ToRole="Team" />
+          <NavigationProperty Name="UserName" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="UserPick" ToRole="UserName" />
+        </EntityType>
         <Association Name="FK_UserPick_Game">
           <End Type="NCAAFootballPlayoffsModel.Game" Role="Game" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
@@ -856,6 +832,30 @@
             </Principal>
             <Dependent Role="UserPick">
               <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPick_Team">
+          <End Type="NCAAFootballPlayoffsModel.Team" Role="Team" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="TeamID" />
+            </Principal>
+            <Dependent Role="UserPick">
+              <PropertyRef Name="ChosenTeamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPick_UserName">
+          <End Type="NCAAFootballPlayoffsModel.UserName" Role="UserName" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserName">
+              <PropertyRef Name="UserNameID" />
+            </Principal>
+            <Dependent Role="UserPick">
+              <PropertyRef Name="UserNameID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -968,17 +968,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserPicks">
-            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.UserPick">
-              <MappingFragment StoreEntitySet="UserPick">
-                <ScalarProperty Name="IsSurePick" ColumnName="IsSurePick" />
-                <ScalarProperty Name="UserNameID" ColumnName="UserNameID" />
-                <ScalarProperty Name="GameID" ColumnName="GameID" />
-                <ScalarProperty Name="ChosenTeamID" ColumnName="ChosenTeamID" />
-                <ScalarProperty Name="UserPickID" ColumnName="UserPickID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Games">
             <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Game">
               <MappingFragment StoreEntitySet="Game">
@@ -996,6 +985,17 @@
                 <ScalarProperty Name="GameName" ColumnName="GameName" />
                 <ScalarProperty Name="SeasonID" ColumnName="SeasonID" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPicks">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.UserPick">
+              <MappingFragment StoreEntitySet="UserPick">
+                <ScalarProperty Name="IsSurePick" ColumnName="IsSurePick" />
+                <ScalarProperty Name="UserNameID" ColumnName="UserNameID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="ChosenTeamID" ColumnName="ChosenTeamID" />
+                <ScalarProperty Name="UserPickID" ColumnName="UserPickID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

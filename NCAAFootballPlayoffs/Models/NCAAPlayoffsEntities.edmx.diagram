@@ -15,7 +15,6 @@
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Team" Width="1.5" PointX="5.25" PointY="10.375" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.User" Width="1.5" PointX="5.25" PointY="0.75" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserName" Width="1.5" PointX="7.5" PointY="1.125" />
-        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserPick" Width="1.5" PointX="9.75" PointY="9" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_QuestionAnswer" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" />
@@ -24,16 +23,17 @@
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_User_Permission" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Record_Season" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Record_Team" />
-        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Team" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserName_User" />
-        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_UserName" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Game" Width="1.5" PointX="7.5" PointY="7" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Favorite" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Location" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Season" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Team" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Underdog" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserPick" Width="1.5" PointX="9.75" PointY="9" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Game" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Team" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_UserName" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

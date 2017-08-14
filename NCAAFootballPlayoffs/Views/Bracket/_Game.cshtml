@@ -12,18 +12,20 @@
                 <div class="col-xs-4">
                     <div class="small-text">Favorite</div>
                     <div data-bind="text: Favorite.TeamName()"></div>
+                    <div data-bind="text: Favorite.TeamNickname()"></div>
                     <input type="radio" data-bind="checked: teamPickID, value: Favorite.TeamID" />
                 </div>
                 <div class="col-xs-4">
                     <div class="small-text">Spread</div>
                     <div data-bind="text: PointSpread()"></div>
                     <div>
-                        <span>Sure Pick: </span><input type="checkbox" data-bind="checked: isSurePick, disable: $root.surePickCount() >= 1 && !isSurePick()" />
+                        <span>Sure Pick: </span><input type="checkbox" data-bind="checked: isSurePick, disable: $root.surePickCount() >= 3 && !isSurePick()" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="small-text">Underdog</div>
                     <div data-bind="text: Underdog.TeamName()"></div>
+                    <div data-bind="text: Underdog.TeamNickname()"></div>
                     <input type="radio" data-bind="checked: teamPickID, value: Underdog.TeamID" />
                 </div>
             </div>

@@ -35,7 +35,7 @@ namespace NCAAFootballPlayoffs.Models
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserName> UserNames { get; set; }
-        public virtual DbSet<UserPick> UserPicks { get; set; }
         public virtual DbSet<Game> Games { get; set; }
+        public virtual DbSet<UserPick> UserPicks { get; set; }
     }
 }

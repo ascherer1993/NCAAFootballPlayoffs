@@ -63,14 +63,15 @@ namespace NCAAFootballPlayoffs.Utilities
                 //worksheet.Cells[3, 2].Value = "Two";
                 using (var db = new NCAAFootballPlayoffsEntities())
                 {
+                    games = db.Games.Where(f => !f.Archived).ToList();
                     if (seasonID != null)
                     {
-                        games = db.Games.Where(f => f.SeasonID == seasonID).ToList();
+                        games = games.Where(f => f.SeasonID == seasonID).ToList();
                         usernames = db.UserNames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == seasonID)).OrderBy(h => h.UserNameText).ToList();
                     }
                     else
                     {
-                        games = db.Games.Where(f => f.SeasonID == 1).ToList();
+                        games = games.Where(f => f.SeasonID == 1).ToList();
                         usernames = db.UserNames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UserNameText).ToList();
                     }
 

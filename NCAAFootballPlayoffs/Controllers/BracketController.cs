@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Newtonsoft;
+using NCAAFootballPlayoffs.Models.ViewModels;
+using System.Data.Entity;
 
 namespace NCAAFootballPlayoffs.Controllers
 {
@@ -20,7 +22,68 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            return View();
+            BracketViewModel bvm = new BracketViewModel();
+            bvm.UsernameID = 1;
+            bvm.Username = "ams0068";
+            return View(bvm);
+        }
+
+
+        /// <summary>
+        /// Ajax call that saves the game received in as a parameter
+        /// </summary>
+        /// <param name="gameIn"></param>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string submitBracket(IEnumerable<UserPick> userPicks)
+        {
+            //Messages to return to ajax call
+            List<string> msgs = new List<string>();
+            bool success = false;
+
+            //Transaction for multiple edits of the database
+            using (var dbContextTransaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach(var userPick in userPicks)
+                    {
+                        UserPick temp = db.UserPicks.FirstOrDefault(f => f.UserNameID == userPick.UserNameID && f.GameID == userPick.GameID);
+                        if (temp == null)
+                        {
+                            db.UserPicks.Add(userPick);
+                        }
+                        else
+                        {
+                            temp.ChosenTeamID = userPick.ChosenTeamID;
+                            temp.IsSurePick = userPick.IsSurePick;
+                            db.Entry(temp).State = EntityState.Modified;
+                        }
+                    }
+
+                    db.SaveChanges();
+                    dbContextTransaction.Commit();
+                    msgs.Add("Saved Changes.");
+                    success = true;
+                }
+                catch (Exception e)
+                {
+                    dbContextTransaction.Rollback();
+                    msgs.Add("There was an error saving changes. Please try again.");
+                }
+            }
+
+            var responseObject = new
+            {
+                msgs = msgs,
+                success = success
+            };
+            var json = JsonConvert.SerializeObject(responseObject, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+            return json;
         }
 
         /// <summary>

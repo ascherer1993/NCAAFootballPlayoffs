@@ -1,6 +1,9 @@
-﻿function BracketViewModel(urls) {
+﻿function BracketViewModel(ModelIn) {
     var self = this;
     //Setup
+    self.username = ModelIn.Username;
+    self.usernameID = ModelIn.UsernameID;
+
     self.isLoading = ko.observable(true);
     self.games = ko.observableArray();
     self.states = [];
@@ -25,6 +28,16 @@
     self.newGameUnderdogName = ko.observable();
     self.newGameUnderdogNickname = ko.observable();
     self.surePickCount = ko.observable(0);
+    self.pickMadeCount = ko.pureComputed(function () {
+        var count = 0;
+        self.games().forEach(function (game) {
+            if (game.teamPickID() != undefined)
+            {
+                count++;
+            }
+        });
+        return count;
+    }, this);
 
     //This applies bindings after all of the data has been loaded.
     self.loadAjax = function () {
@@ -200,4 +213,33 @@
     $('#myModal').on('shown.bs.modal', function () {
         $('#new-bowl-name').focus();
     })
+
+    self.submitBracket = function ()
+    {
+        var gamePickInfo = [];
+        self.games().forEach(function (game) {
+            var gameInfo = {
+                GameID: game.GameID(),
+                ChosenTeamID: game.teamPickID(),
+                IsSurePick: game.isSurePick(),
+                UsernameID: self.usernameID
+            };
+            gamePickInfo.push(gameInfo);
+        });
+        $.post("/Bracket/submitBracket", {
+            userPicks: gamePickInfo
+        }, function (returnedData) {
+            response = JSON.parse(returnedData);
+            msgs = response.msgs;
+
+            for (i = 0; i < msgs.length; i++) {
+                //Displays all messages
+                response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+            }
+            if (response.success) {
+
+            }
+        })
+    }
+
 }

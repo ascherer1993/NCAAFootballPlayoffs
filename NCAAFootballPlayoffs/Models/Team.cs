@@ -18,10 +18,10 @@ namespace NCAAFootballPlayoffs.Models
         public Team()
         {
             this.Records = new HashSet<Record>();
-            this.UserPicks = new HashSet<UserPick>();
             this.GamesAsFavorite = new HashSet<Game>();
             this.GamesWon = new HashSet<Game>();
             this.GamesAsUnderdog = new HashSet<Game>();
+            this.UserPicks = new HashSet<UserPick>();
         }
     
         public int TeamID { get; set; }
@@ -34,12 +34,12 @@ namespace NCAAFootballPlayoffs.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Record> Records { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPick> UserPicks { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Game> GamesAsFavorite { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Game> GamesWon { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Game> GamesAsUnderdog { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPick> UserPicks { get; set; }
     }
 }

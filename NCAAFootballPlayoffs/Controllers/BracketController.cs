@@ -25,6 +25,7 @@ namespace NCAAFootballPlayoffs.Controllers
             BracketViewModel bvm = new BracketViewModel();
             bvm.UsernameID = 1;
             bvm.Username = "ams0068";
+            bvm.SeasonID = 1;
             return View(bvm);
         }
 
@@ -454,6 +455,31 @@ namespace NCAAFootballPlayoffs.Controllers
             return json;
         }
 
+
+        /// <summary>
+        /// Gets all states and returns them as JSON
+        /// </summary>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string getPicksJSon(int usernameID, int seasonID)
+        {
+            IEnumerable<UserPick> userpicks = db.UserPicks.Where(f => f.UserNameID == usernameID && f.Game.SeasonID == seasonID);
+
+            userpicks = userpicks.Select(f => new UserPick()
+            {
+                ChosenTeamID = f.ChosenTeamID,
+                GameID = f.GameID,
+                IsSurePick = f.IsSurePick
+            });
+
+            var json = JsonConvert.SerializeObject(userpicks, Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+
+            return json;
+        }
 
     }
 }

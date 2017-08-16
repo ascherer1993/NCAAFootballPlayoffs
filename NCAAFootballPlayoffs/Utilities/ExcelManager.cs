@@ -50,6 +50,9 @@ namespace NCAAFootballPlayoffs.Utilities
 
             List<Game> games;
             List<UserName> usernames;
+            int maxX = 0;
+            int maxY = 0;
+
 
             using (var package = new ExcelPackage())
             {
@@ -78,20 +81,63 @@ namespace NCAAFootballPlayoffs.Utilities
 
                     for (int i = 1; i <= usernames.Count; i++)
                     {
-                        worksheet.Cells[1, i].Value = usernames[i - 1].UserNameText;
+                        worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UserNameText;
                     }
 
                     for (int i = 1; i <= games.Count; i++)
                     {
+                        maxY = i;
+                        Game game = games[i - 1];
+                        worksheet.Cells[i + 1, 1].Value = game.Favorite.TeamName + " vs. " + game.Underdog.TeamName;
 
-                        worksheet.Cells[i + 1, 1].Value = games[i - 1].Favorite.TeamName + " vs. " + games[i - 1].Underdog.TeamName;
+                        if (game.IsBCSBowl)
+                        {
+                            worksheet.Cells[i + 1, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#79B979");
+                            worksheet.Cells[i + 1, 1].Style.Fill.BackgroundColor.SetColor(bcsBackground);
+
+                            worksheet.Cells[i + 1, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 1, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 1, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 1, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        }
 
                         for (int j = 1; j <= usernames.Count; j++)
                         {
-                            UserPick userpick = usernames[j - 1].UserPicks.FirstOrDefault(f => f.GameID == games[i - 1].GameID);
+                            UserName username = usernames[j - 1];
+
+                            if (game.IsBCSBowl)
+                            {
+                                worksheet.Cells[i + 1, j + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#79B979");
+                                worksheet.Cells[i + 1, j + 1].Style.Fill.BackgroundColor.SetColor(bcsBackground);
+
+                                worksheet.Cells[i + 1, j + 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 1, j + 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 1, j + 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 1, j + 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            }
+
+
+                            UserPick userpick = username.UserPicks.FirstOrDefault(f => f.GameID == games[i - 1].GameID);
                             if (userpick != null)
                             {
-                                worksheet.Cells[i + 1, j + 1].Value = "test";
+                                if (userpick.ChosenTeamID == game.FavoriteID)
+                                {
+                                    worksheet.Cells[i + 1, j + 1].Value = "F";
+                                }
+                                else if (userpick.ChosenTeamID == game.UnderdogID)
+                                {
+                                    worksheet.Cells[i + 1, j + 1].Value = "U";
+                                }
+                                else
+                                {
+                                }
+
+                                if (userpick.IsSurePick)
+                                {
+                                    worksheet.Cells[i + 1, j + 1].Value += "S";
+                                }
                             }
                         }
                     }
@@ -109,6 +155,7 @@ namespace NCAAFootballPlayoffs.Utilities
                 worksheet.Cells[1, 1, 1, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                 worksheet.Cells[1, 1, 1, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
+                worksheet.Cells[1, 1, maxY, 1].AutoFitColumns();
 
 
                 memStream = new MemoryStream(package.GetAsByteArray());

@@ -3,8 +3,9 @@
     //Setup
     self.username = ModelIn.Username;
     self.usernameID = ModelIn.UsernameID;
+    self.seasonID = ko.observable(ModelIn.SeasonID);
 
-    self.isLoading = ko.observable(true);
+    self.isLoaded = ko.observable(false);
     self.games = ko.observableArray();
     self.states = [];
     self.teams = [];
@@ -42,7 +43,10 @@
     //This applies bindings after all of the data has been loaded.
     self.loadAjax = function () {
         $.when(self.loadGames(), self.loadStates(), self.loadTeams()).done(function (a1, a2) {
-            ko.applyBindings(self);
+            $.when(self.loadPicks()).done(function (b1, b2) {
+                ko.applyBindings(self);
+                $("#gamesDiv").css("visibility", "visible");
+            });
         });
     }
 
@@ -87,6 +91,31 @@
     self.loadStates = function () {
         return $.get("/Bracket/getStatesJSon", function (data) {
             self.states = ko.mapping.fromJSON(data);
+        });
+    };
+
+    self.loadPicks = function () {
+        return $.get("/Bracket/getPicksJSon",
+            {
+                usernameID: self.usernameID,
+                seasonID: self.seasonID()
+            },
+            function (data) {
+            var picks = ko.mapping.fromJSON(data);
+            
+            self.games().forEach(function (game) {
+                picks().forEach(function (pick) {
+                    if (pick.GameID() == game.GameID())
+                    {
+                        game.teamPickID(pick.ChosenTeamID());
+                        game.isSurePick(pick.IsSurePick());
+                    }
+                });
+            });
+            //$.each(self.teams(), function (index, team) {
+            //    team.isEditing = ko.observable(false);
+            //    game.Location.State = ko.observable(game.Location.State)
+            //});
         });
     };
 

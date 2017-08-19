@@ -11,11 +11,20 @@ namespace NCAAFootballPlayoffs.Controllers
 {
     public class HomeController : Controller
     {
+        NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities();
+
         // GET: Home
         //https://github.com/ascherer1993/NCAAFootballPlayoffs.git
         public ActionResult Index()
         {
-            return View();
+            User user = null;
+            string email = Authentication.GetLoginInfo();
+            if (email != null)
+            {
+                user = db.Users.FirstOrDefault(f => f.EmailAddress == email);
+            }
+
+            return View(user);
         }
         
         //public void doWhatIWant()

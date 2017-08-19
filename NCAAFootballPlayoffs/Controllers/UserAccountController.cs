@@ -113,6 +113,45 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(signInVM);
         }
 
+        [HttpGet]
+        public ActionResult CreateBracket()
+        {
+            //If already signed in, redirect to home page
+            if (!Utilities.Authentication.IsSignedIn())
+            {
+                return RedirectToAction("SignIn", "UserAccount");
+            }
+            UserName username = new UserName();
+            string email = Authentication.GetLoginInfo();
+            username.User = db.Users.FirstOrDefault(f => f.EmailAddress == email);
+            username.UserID = username.User.UserID;
+            return View(username);
+        }
+
+        //Postback for signing in, redirects 
+        [HttpPost]
+        public ActionResult CreateBracket(UserName username)
+        {
+            List<string> errors = new List<string>();
+
+            if (ModelState.IsValid)
+            {
+                //Calles my authentication utility and adds any returned errors to my error list to be displayed
+                db.UserNames.Add(username);
+                db.SaveChanges();
+
+                if (errors.Count == 0 && ModelState.IsValid)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            foreach (string error in errors)
+            {
+                ModelState.AddModelError(error, error);
+            }
+            return View(username);
+        }
+
         /// <summary>
         /// This was a temporary method used to create my account. This will later be modified to the postback of creating an account
         /// </summary>

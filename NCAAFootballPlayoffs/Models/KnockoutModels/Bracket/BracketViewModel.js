@@ -28,7 +28,16 @@
     self.newGameFavoriteNickname = ko.observable();
     self.newGameUnderdogName = ko.observable();
     self.newGameUnderdogNickname = ko.observable();
-    self.surePickCount = ko.observable(0);
+    //self.surePickCount = ko.observable(3);
+    self.surePickCount = ko.pureComputed(function () {
+        var count = 0;
+        self.games().forEach(function (game) {
+            if (game.isSurePick()) {
+                count++;
+            }
+        });
+        return count;
+    }, this);
     self.pickMadeCount = ko.pureComputed(function () {
         var count = 0;
         self.games().forEach(function (game) {
@@ -73,16 +82,16 @@
                 game.teamPickID = ko.observable();
 
                 game.isSurePick = ko.observable();
-                game.isSurePick.subscribe(function (value) {
-                    if (value)
-                    {
-                        self.surePickCount(self.surePickCount() + 1);
-                    }
-                    else
-                    {
-                        self.surePickCount(self.surePickCount() - 1);
-                    }
-                });
+                //game.isSurePick.subscribe(function (value) {
+                //    if (value)
+                //    {
+                //        self.surePickCount(self.surePickCount() + 1);
+                //    }
+                //    else
+                //    {
+                //        self.surePickCount(self.surePickCount() - 1);
+                //    }
+                //});
             });
         });
     };
@@ -178,14 +187,14 @@
                 returnedGame.teamPickID = ko.observable();
 
                 returnedGame.isSurePick = ko.observable(false);
-                returnedGame.isSurePick.subscribe(function (value) {
-                    if (value) {
-                        self.surePickCount(self.surePickCount() + 1);
-                    }
-                    else {
-                        self.surePickCount(self.surePickCount() - 1);
-                    }
-                });
+                //returnedGame.isSurePick.subscribe(function (value) {
+                //    if (value) {
+                //        self.surePickCount(self.surePickCount() + 1);
+                //    }
+                //    else {
+                //        self.surePickCount(self.surePickCount() - 1);
+                //    }
+                //});
 
                 self.games.push(returnedGame);
                 $("#myModal").modal('hide');

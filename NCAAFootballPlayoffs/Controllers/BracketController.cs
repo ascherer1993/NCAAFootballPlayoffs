@@ -20,13 +20,18 @@ namespace NCAAFootballPlayoffs.Controllers
         /// View for bracket page
         /// </summary>
         /// <returns></returns>
-        public ActionResult Index()
+        public ActionResult Index(int usernameID)
         {
             BracketViewModel bvm = new BracketViewModel();
-            bvm.UsernameID = 1;
-            bvm.Username = "ams0068";
-            bvm.SeasonID = 1;
-            return View(bvm);
+            UserName username = db.UserNames.FirstOrDefault(f => f.UserNameID == usernameID);
+            if (username != null)
+            {
+                bvm.UsernameID = usernameID;
+                bvm.Username = username.UserNameText;
+                bvm.SeasonID = 1;
+                return View(bvm);
+            }
+            return RedirectToAction("Unauthorized", "Error");
         }
 
 

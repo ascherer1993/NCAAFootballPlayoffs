@@ -1,4 +1,6 @@
-﻿
+﻿@model NCAAFootballPlayoffs.Models.User
+
+
 @{
     ViewBag.Title = "NCAA Bracket - Home";
 }
@@ -7,3 +9,22 @@
 @Html.ActionLink("My bracket", "Index", "Bracket")
 
 @Html.ActionLink("DoStuff", "doWhatIWant", "Home")
+
+
+
+<div class="row">
+    <div class="col-sm-12">
+        @if (Model != null) {
+            <div>
+                @Model.EmailAddress;
+            </div>
+            foreach (var username in Model.UserNames)
+            {
+                <div>
+                    @Html.ActionLink(username.UserNameText, "Index", "Bracket", new { usernameID = username.UserNameID}, new { })
+                </div>
+            }
+        }
+        
+    </div>
+</div>

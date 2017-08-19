@@ -44,14 +44,13 @@ namespace NCAAFootballPlayoffs.Utilities
             xlWorkBook.SaveAs("your-file-name.xls");
         }
 
+        //THIS USES EPPLUS
         public MemoryStream DownloadPicks(int? seasonID = 1)
         {
             MemoryStream memStream;
 
             List<Game> games;
             List<UserName> usernames;
-            int maxX = 0;
-            int maxY = 0;
 
 
             using (var package = new ExcelPackage())
@@ -82,11 +81,20 @@ namespace NCAAFootballPlayoffs.Utilities
                     for (int i = 1; i <= usernames.Count; i++)
                     {
                         worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UserNameText;
+
+                        worksheet.Cells[1, 1 + i].Style.TextRotation = 90;
+                        worksheet.Cells[1, 1 + i].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        Color usernameColor = System.Drawing.ColorTranslator.FromHtml("#B7DEE8");
+                        worksheet.Cells[1, 1 + i].Style.Fill.BackgroundColor.SetColor(usernameColor);
+                        
+                        worksheet.Cells[1, 1 + i].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                     }
 
                     for (int i = 1; i <= games.Count; i++)
                     {
-                        maxY = i;
                         Game game = games[i - 1];
                         worksheet.Cells[i + 1, 1].Value = game.Favorite.TeamName + " vs. " + game.Underdog.TeamName;
 
@@ -145,18 +153,19 @@ namespace NCAAFootballPlayoffs.Utilities
                     
 
 
-                worksheet.Cells[1, 1, 1, 2].Style.TextRotation = 90;
-                worksheet.Cells[1, 1, 1, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#B7DEE8");
-                worksheet.Cells[1, 1, 1, 2].Style.Fill.BackgroundColor.SetColor(colFromHex);
+                //worksheet.Cells[1, 1, 1, 2].Style.TextRotation = 90;
+                //worksheet.Cells[1, 1, 1, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                //Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#B7DEE8");
+                //worksheet.Cells[1, 1, 1, 2].Style.Fill.BackgroundColor.SetColor(colFromHex);
 
-                worksheet.Cells[1, 1, 1, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells[1, 1, 1, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells[1, 1, 1, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                worksheet.Cells[1, 1, 1, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells[1, 1, 1, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells[1, 1, 1, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells[1, 1, 1, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                //worksheet.Cells[1, 1, 1, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
-                worksheet.Cells[1, 1, maxY, 1].AutoFitColumns();
-
+                worksheet.Cells[1, 1, games.Count() + 1, 1].AutoFitColumns();
+                //worksheet.Cells[1, 1, maxY, 1].
+                worksheet.View.FreezePanes(2, 2);
 
                 memStream = new MemoryStream(package.GetAsByteArray());
             }

@@ -17,9 +17,9 @@ namespace NCAAFootballPlayoffs.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Season()
         {
-            this.BonusQuestions = new HashSet<BonusQuestion>();
             this.Records = new HashSet<Record>();
             this.Games = new HashSet<Game>();
+            this.BonusQuestions = new HashSet<BonusQuestion>();
         }
     
         public int SeasonID { get; set; }
@@ -28,10 +28,10 @@ namespace NCAAFootballPlayoffs.Models
         public bool Archived { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BonusQuestion> BonusQuestions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Record> Records { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Game> Games { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BonusQuestion> BonusQuestions { get; set; }
     }
 }

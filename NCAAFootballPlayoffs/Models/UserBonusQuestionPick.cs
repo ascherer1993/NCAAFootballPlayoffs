@@ -12,16 +12,13 @@ namespace NCAAFootballPlayoffs.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserPick
+    public partial class UserBonusQuestionPick
     {
-        public int UserPickID { get; set; }
-        public int ChosenTeamID { get; set; }
-        public int GameID { get; set; }
+        public int UserBonusQuestionPickID { get; set; }
+        public int SelectedAnswerID { get; set; }
         public int UsernameID { get; set; }
-        public bool IsSurePick { get; set; }
     
-        public virtual Game Game { get; set; }
-        public virtual Team Team { get; set; }
+        public virtual QuestionAnswer QuestionAnswer { get; set; }
         public virtual Username Username { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace NCAAFootballPlayoffs.Utilities
             MemoryStream memStream;
 
             List<Game> games;
-            List<UserName> usernames;
+            List<Username> usernames;
 
 
             using (var package = new ExcelPackage())
@@ -69,18 +69,24 @@ namespace NCAAFootballPlayoffs.Utilities
                     if (seasonID != null)
                     {
                         games = games.Where(f => f.SeasonID == seasonID).ToList();
-                        usernames = db.UserNames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == seasonID)).OrderBy(h => h.UserNameText).ToList();
+                        usernames = db.Usernames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == seasonID)).OrderBy(h => h.UsernameText).ToList();
                     }
                     else
                     {
                         games = games.Where(f => f.SeasonID == 1).ToList();
-                        usernames = db.UserNames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UserNameText).ToList();
+                        usernames = db.Usernames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UsernameText).ToList();
                     }
 
 
                     for (int i = 1; i <= usernames.Count; i++)
                     {
-                        worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UserNameText;
+                        worksheet.Cells[1, 1 + i].Style.WrapText = true;
+
+                        worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UsernameText + "\n"
+                            + usernames[i - 1].User.EmailAddress + "\n"
+                            + usernames[i - 1].User.DisplayName;
+
+                        //worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UserNameText;
 
                         worksheet.Cells[1, 1 + i].Style.TextRotation = 90;
                         worksheet.Cells[1, 1 + i].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -112,7 +118,7 @@ namespace NCAAFootballPlayoffs.Utilities
 
                         for (int j = 1; j <= usernames.Count; j++)
                         {
-                            UserName username = usernames[j - 1];
+                            Username username = usernames[j - 1];
 
                             if (game.IsBCSBowl)
                             {

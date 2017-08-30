@@ -22,11 +22,9 @@ namespace NCAAFootballPlayoffs.Models
     
         public int BonusQuestionID { get; set; }
         public string Text { get; set; }
-        public int CorrectAnswerID { get; set; }
         public bool DisplayAsMultChoice { get; set; }
         public int SeasonID { get; set; }
     
-        public virtual QuestionAnswer QuestionAnswer { get; set; }
         public virtual Season Season { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }

@@ -9,6 +9,6 @@ namespace NCAAFootballPlayoffs.Models.ViewModels
     {
         public User User { get; set; }
 
-        public IEnumerable<UserName> Usernames { get; set; }
+        public IEnumerable<Username> Usernames { get; set; }
     }
 }

@@ -121,7 +121,7 @@ namespace NCAAFootballPlayoffs.Controllers
             {
                 return RedirectToAction("SignIn", "UserAccount");
             }
-            UserName username = new UserName();
+            Username username = new Username();
             string email = Authentication.GetLoginInfo();
             username.User = db.Users.FirstOrDefault(f => f.EmailAddress == email);
             username.UserID = username.User.UserID;
@@ -130,14 +130,14 @@ namespace NCAAFootballPlayoffs.Controllers
 
         //Postback for signing in, redirects 
         [HttpPost]
-        public ActionResult CreateBracket(UserName username)
+        public ActionResult CreateBracket(Username username)
         {
             List<string> errors = new List<string>();
 
             if (ModelState.IsValid)
             {
                 //Calles my authentication utility and adds any returned errors to my error list to be displayed
-                db.UserNames.Add(username);
+                db.Usernames.Add(username);
                 db.SaveChanges();
 
                 if (errors.Count == 0 && ModelState.IsValid)

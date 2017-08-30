@@ -12,21 +12,24 @@ namespace NCAAFootballPlayoffs.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserName
+    public partial class Username
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public UserName()
+        public Username()
         {
+            this.UserBonusQuestionPicks = new HashSet<UserBonusQuestionPick>();
             this.UserPicks = new HashSet<UserPick>();
         }
     
-        public int UserNameID { get; set; }
-        public string UserNameText { get; set; }
+        public int UsernameID { get; set; }
+        public string UsernameText { get; set; }
         public int UserID { get; set; }
         public bool Archived { get; set; }
         public bool Approved { get; set; }
     
         public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserBonusQuestionPick> UserBonusQuestionPicks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPick> UserPicks { get; set; }
     }

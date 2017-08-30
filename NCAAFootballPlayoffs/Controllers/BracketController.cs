@@ -20,14 +20,18 @@ namespace NCAAFootballPlayoffs.Controllers
         /// View for bracket page
         /// </summary>
         /// <returns></returns>
-        public ActionResult Index(int usernameID)
+        public ActionResult Index(int? usernameID)
         {
+            if (usernameID == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             BracketViewModel bvm = new BracketViewModel();
-            UserName username = db.UserNames.FirstOrDefault(f => f.UserNameID == usernameID);
+            Username username = db.Usernames.FirstOrDefault(f => f.UsernameID == usernameID);
             if (username != null)
             {
-                bvm.UsernameID = usernameID;
-                bvm.Username = username.UserNameText;
+                bvm.UsernameID = (int)usernameID;
+                bvm.Username = username.UsernameText;
                 bvm.SeasonID = 1;
                 return View(bvm);
             }
@@ -54,7 +58,7 @@ namespace NCAAFootballPlayoffs.Controllers
                 {
                     foreach(var userPick in userPicks)
                     {
-                        UserPick temp = db.UserPicks.FirstOrDefault(f => f.UserNameID == userPick.UserNameID && f.GameID == userPick.GameID);
+                        UserPick temp = db.UserPicks.FirstOrDefault(f => f.UsernameID == userPick.UsernameID && f.GameID == userPick.GameID);
                         if (temp == null)
                         {
                             db.UserPicks.Add(userPick);
@@ -468,7 +472,7 @@ namespace NCAAFootballPlayoffs.Controllers
         [AjaxOnly]
         public string getPicksJSon(int usernameID, int seasonID)
         {
-            IEnumerable<UserPick> userpicks = db.UserPicks.Where(f => f.UserNameID == usernameID && f.Game.SeasonID == seasonID);
+            IEnumerable<UserPick> userpicks = db.UserPicks.Where(f => f.UsernameID == usernameID && f.Game.SeasonID == seasonID);
 
             userpicks = userpicks.Select(f => new UserPick()
             {

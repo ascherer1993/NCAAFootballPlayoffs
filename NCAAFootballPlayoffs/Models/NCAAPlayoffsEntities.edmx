@@ -11,7 +11,6 @@
           </Key>
           <Property Name="BonusQuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Text" Type="varchar" MaxLength="500" Nullable="false" />
-          <Property Name="CorrectAnswerID" Type="int" Nullable="false" />
           <Property Name="DisplayAsMultChoice" Type="bit" Nullable="false" />
           <Property Name="SeasonID" Type="int" Nullable="false" />
         </EntityType>
@@ -57,6 +56,7 @@
           <Property Name="QuestionAnswerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Text" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="BonusQuestionID" Type="int" Nullable="false" />
+          <Property Name="IsCorrectAnswer" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Record">
           <Key>
@@ -107,12 +107,20 @@
           <Property Name="PermissionID" Type="int" Nullable="false" />
           <Property Name="Archived" Type="bit" Nullable="false" />
         </EntityType>
-        <EntityType Name="UserName">
+        <EntityType Name="UserBonusQuestionPick">
           <Key>
-            <PropertyRef Name="UserNameID" />
+            <PropertyRef Name="UserBonusQuestionPickID" />
           </Key>
-          <Property Name="UserNameID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserNameText" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="UserBonusQuestionPickID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SelectedAnswerID" Type="int" Nullable="false" />
+          <Property Name="UsernameID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Username">
+          <Key>
+            <PropertyRef Name="UsernameID" />
+          </Key>
+          <Property Name="UsernameID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UsernameText" Type="varchar" MaxLength="150" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="Archived" Type="bit" Nullable="false" />
           <Property Name="Approved" Type="bit" Nullable="false" />
@@ -124,21 +132,9 @@
           <Property Name="UserPickID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ChosenTeamID" Type="int" Nullable="false" />
           <Property Name="GameID" Type="int" Nullable="false" />
-          <Property Name="UserNameID" Type="int" Nullable="false" />
+          <Property Name="UsernameID" Type="int" Nullable="false" />
           <Property Name="IsSurePick" Type="bit" Nullable="false" />
         </EntityType>
-        <Association Name="FK_BonusQuestion_QuestionAnswer">
-          <End Role="QuestionAnswer" Type="Self.QuestionAnswer" Multiplicity="1" />
-          <End Role="BonusQuestion" Type="Self.BonusQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuestionAnswer">
-              <PropertyRef Name="QuestionAnswerID" />
-            </Principal>
-            <Dependent Role="BonusQuestion">
-              <PropertyRef Name="CorrectAnswerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_BonusQuestion_Season">
           <End Role="Season" Type="Self.Season" Multiplicity="1" />
           <End Role="BonusQuestion" Type="Self.BonusQuestion" Multiplicity="*" />
@@ -283,14 +279,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserBonusQuestionPick_QuestionAnswer">
+          <End Role="QuestionAnswer" Type="Self.QuestionAnswer" Multiplicity="1" />
+          <End Role="UserBonusQuestionPick" Type="Self.UserBonusQuestionPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionAnswer">
+              <PropertyRef Name="QuestionAnswerID" />
+            </Principal>
+            <Dependent Role="UserBonusQuestionPick">
+              <PropertyRef Name="SelectedAnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserBonusQuestionPick_Username1">
+          <End Role="Username" Type="Self.Username" Multiplicity="1" />
+          <End Role="UserBonusQuestionPick" Type="Self.UserBonusQuestionPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Username">
+              <PropertyRef Name="UsernameID" />
+            </Principal>
+            <Dependent Role="UserBonusQuestionPick">
+              <PropertyRef Name="UsernameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserName_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
-          <End Role="UserName" Type="Self.UserName" Multiplicity="*" />
+          <End Role="Username" Type="Self.Username" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="UserID" />
             </Principal>
-            <Dependent Role="UserName">
+            <Dependent Role="Username">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
@@ -320,14 +340,14 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserPick_UserName">
-          <End Role="UserName" Type="Self.UserName" Multiplicity="1" />
+          <End Role="Username" Type="Self.Username" Multiplicity="1" />
           <End Role="UserPick" Type="Self.UserPick" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="UserName">
-              <PropertyRef Name="UserNameID" />
+            <Principal Role="Username">
+              <PropertyRef Name="UsernameID" />
             </Principal>
             <Dependent Role="UserPick">
-              <PropertyRef Name="UserNameID" />
+              <PropertyRef Name="UsernameID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -342,12 +362,9 @@
           <EntitySet Name="State" EntityType="Self.State" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Team" EntityType="Self.Team" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserName" EntityType="Self.UserName" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserBonusQuestionPick" EntityType="Self.UserBonusQuestionPick" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Username" EntityType="Self.Username" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPick" EntityType="Self.UserPick" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_BonusQuestion_QuestionAnswer" Association="Self.FK_BonusQuestion_QuestionAnswer">
-            <End Role="QuestionAnswer" EntitySet="QuestionAnswer" />
-            <End Role="BonusQuestion" EntitySet="BonusQuestion" />
-          </AssociationSet>
           <AssociationSet Name="FK_BonusQuestion_Season" Association="Self.FK_BonusQuestion_Season">
             <End Role="Season" EntitySet="Season" />
             <End Role="BonusQuestion" EntitySet="BonusQuestion" />
@@ -396,9 +413,17 @@
             <End Role="Permission" EntitySet="Permission" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserBonusQuestionPick_QuestionAnswer" Association="Self.FK_UserBonusQuestionPick_QuestionAnswer">
+            <End Role="QuestionAnswer" EntitySet="QuestionAnswer" />
+            <End Role="UserBonusQuestionPick" EntitySet="UserBonusQuestionPick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserBonusQuestionPick_Username1" Association="Self.FK_UserBonusQuestionPick_Username1">
+            <End Role="Username" EntitySet="Username" />
+            <End Role="UserBonusQuestionPick" EntitySet="UserBonusQuestionPick" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserName_User" Association="Self.FK_UserName_User">
             <End Role="User" EntitySet="User" />
-            <End Role="UserName" EntitySet="UserName" />
+            <End Role="Username" EntitySet="Username" />
           </AssociationSet>
           <AssociationSet Name="FK_UserPick_Game" Association="Self.FK_UserPick_Game">
             <End Role="Game" EntitySet="Game" />
@@ -409,7 +434,7 @@
             <End Role="UserPick" EntitySet="UserPick" />
           </AssociationSet>
           <AssociationSet Name="FK_UserPick_UserName" Association="Self.FK_UserPick_UserName">
-            <End Role="UserName" EntitySet="UserName" />
+            <End Role="Username" EntitySet="Username" />
             <End Role="UserPick" EntitySet="UserPick" />
           </AssociationSet>
         </EntityContainer>
@@ -418,28 +443,13 @@
     <edmx:ConceptualModels>
       <Schema Namespace="NCAAFootballPlayoffsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="NCAAFootballPlayoffsEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="BonusQuestions" EntityType="NCAAFootballPlayoffsModel.BonusQuestion" />
           <EntitySet Name="Locations" EntityType="NCAAFootballPlayoffsModel.Location" />
           <EntitySet Name="Permissions" EntityType="NCAAFootballPlayoffsModel.Permission" />
-          <EntitySet Name="QuestionAnswers" EntityType="NCAAFootballPlayoffsModel.QuestionAnswer" />
           <EntitySet Name="Records" EntityType="NCAAFootballPlayoffsModel.Record" />
           <EntitySet Name="Seasons" EntityType="NCAAFootballPlayoffsModel.Season" />
           <EntitySet Name="States" EntityType="NCAAFootballPlayoffsModel.State" />
           <EntitySet Name="Teams" EntityType="NCAAFootballPlayoffsModel.Team" />
           <EntitySet Name="Users" EntityType="NCAAFootballPlayoffsModel.User" />
-          <EntitySet Name="UserNames" EntityType="NCAAFootballPlayoffsModel.UserName" />
-          <AssociationSet Name="FK_BonusQuestion_QuestionAnswer" Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_QuestionAnswer">
-            <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
-            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BonusQuestion_Season" Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season">
-            <End Role="Season" EntitySet="Seasons" />
-            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_QuestionAnswer_BonusQuestion" Association="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion">
-            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
-            <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
-          </AssociationSet>
           <AssociationSet Name="FK_Location_State" Association="NCAAFootballPlayoffsModel.FK_Location_State">
             <End Role="State" EntitySet="States" />
             <End Role="Location" EntitySet="Locations" />
@@ -459,10 +469,6 @@
           <AssociationSet Name="FK_Record_Team" Association="NCAAFootballPlayoffsModel.FK_Record_Team">
             <End Role="Team" EntitySet="Teams" />
             <End Role="Record" EntitySet="Records" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserName_User" Association="NCAAFootballPlayoffsModel.FK_UserName_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="UserName" EntitySet="UserNames" />
           </AssociationSet>
           <EntitySet Name="Games" EntityType="NCAAFootballPlayoffsModel.Game" />
           <AssociationSet Name="FK_Game_Favorite" Association="NCAAFootballPlayoffsModel.FK_Game_Favorite">
@@ -485,33 +491,44 @@
             <End Role="Team" EntitySet="Teams" />
             <End Role="Game" EntitySet="Games" />
           </AssociationSet>
+          <EntitySet Name="BonusQuestions" EntityType="NCAAFootballPlayoffsModel.BonusQuestion" />
+          <EntitySet Name="QuestionAnswers" EntityType="NCAAFootballPlayoffsModel.QuestionAnswer" />
+          <EntitySet Name="UserBonusQuestionPicks" EntityType="NCAAFootballPlayoffsModel.UserBonusQuestionPick" />
+          <EntitySet Name="Usernames" EntityType="NCAAFootballPlayoffsModel.Username" />
           <EntitySet Name="UserPicks" EntityType="NCAAFootballPlayoffsModel.UserPick" />
+          <AssociationSet Name="FK_BonusQuestion_Season" Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionAnswer_BonusQuestion" Association="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion">
+            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
+            <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserPick_Game" Association="NCAAFootballPlayoffsModel.FK_UserPick_Game">
             <End Role="Game" EntitySet="Games" />
             <End Role="UserPick" EntitySet="UserPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserBonusQuestionPick_QuestionAnswer" Association="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer">
+            <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
+            <End Role="UserBonusQuestionPick" EntitySet="UserBonusQuestionPicks" />
           </AssociationSet>
           <AssociationSet Name="FK_UserPick_Team" Association="NCAAFootballPlayoffsModel.FK_UserPick_Team">
             <End Role="Team" EntitySet="Teams" />
             <End Role="UserPick" EntitySet="UserPicks" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserName_User" Association="NCAAFootballPlayoffsModel.FK_UserName_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Username" EntitySet="Usernames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserBonusQuestionPick_Username1" Association="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_Username1">
+            <End Role="Username" EntitySet="Usernames" />
+            <End Role="UserBonusQuestionPick" EntitySet="UserBonusQuestionPicks" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserPick_UserName" Association="NCAAFootballPlayoffsModel.FK_UserPick_UserName">
-            <End Role="UserName" EntitySet="UserNames" />
+            <End Role="Username" EntitySet="Usernames" />
             <End Role="UserPick" EntitySet="UserPicks" />
           </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="BonusQuestion">
-          <Key>
-            <PropertyRef Name="BonusQuestionID" />
-          </Key>
-          <Property Name="BonusQuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Text" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="CorrectAnswerID" Type="Int32" Nullable="false" />
-          <Property Name="DisplayAsMultChoice" Type="Boolean" Nullable="false" />
-          <Property Name="SeasonID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="QuestionAnswer" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_QuestionAnswer" FromRole="BonusQuestion" ToRole="QuestionAnswer" />
-          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="BonusQuestion" ToRole="Season" />
-          <NavigationProperty Name="QuestionAnswers" Relationship="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" FromRole="BonusQuestion" ToRole="QuestionAnswer" />
-        </EntityType>
+          </EntityContainer>
         <EntityType Name="Location">
           <Key>
             <PropertyRef Name="LocationID" />
@@ -531,16 +548,6 @@
           <Property Name="PermissionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PermissionName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Users" Relationship="NCAAFootballPlayoffsModel.FK_User_Permission" FromRole="Permission" ToRole="User" />
-        </EntityType>
-        <EntityType Name="QuestionAnswer">
-          <Key>
-            <PropertyRef Name="QuestionAnswerID" />
-          </Key>
-          <Property Name="QuestionAnswerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Text" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="BonusQuestionID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="BonusQuestions" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_QuestionAnswer" FromRole="QuestionAnswer" ToRole="BonusQuestion" />
-          <NavigationProperty Name="BonusQuestion" Relationship="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" FromRole="QuestionAnswer" ToRole="BonusQuestion" />
         </EntityType>
         <EntityType Name="Record">
           <Key>
@@ -562,9 +569,9 @@
           <Property Name="SeasonYear" Type="Int16" Nullable="false" />
           <Property Name="ActiveSeason" Type="Boolean" />
           <Property Name="Archived" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="BonusQuestions" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="Season" ToRole="BonusQuestion" />
           <NavigationProperty Name="Records" Relationship="NCAAFootballPlayoffsModel.FK_Record_Season" FromRole="Season" ToRole="Record" />
           <NavigationProperty Name="Games" Relationship="NCAAFootballPlayoffsModel.FK_Game_Season" FromRole="Season" ToRole="Game" />
+          <NavigationProperty Name="BonusQuestions" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="Season" ToRole="BonusQuestion" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -603,56 +610,8 @@
           <Property Name="PermissionID" Type="Int32" Nullable="false" />
           <Property Name="Archived" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Permission" Relationship="NCAAFootballPlayoffsModel.FK_User_Permission" FromRole="User" ToRole="Permission" />
-          <NavigationProperty Name="UserNames" Relationship="NCAAFootballPlayoffsModel.FK_UserName_User" FromRole="User" ToRole="UserName" />
+          <NavigationProperty Name="Usernames" Relationship="NCAAFootballPlayoffsModel.FK_UserName_User" FromRole="User" ToRole="Username" />
         </EntityType>
-        <EntityType Name="UserName">
-          <Key>
-            <PropertyRef Name="UserNameID" />
-          </Key>
-          <Property Name="UserNameID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserNameText" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="Archived" Type="Boolean" Nullable="false" />
-          <Property Name="Approved" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="NCAAFootballPlayoffsModel.FK_UserName_User" FromRole="UserName" ToRole="User" />
-          <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="UserName" ToRole="UserPick" />
-        </EntityType>
-        <Association Name="FK_BonusQuestion_QuestionAnswer">
-          <End Type="NCAAFootballPlayoffsModel.QuestionAnswer" Role="QuestionAnswer" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuestionAnswer">
-              <PropertyRef Name="QuestionAnswerID" />
-            </Principal>
-            <Dependent Role="BonusQuestion">
-              <PropertyRef Name="CorrectAnswerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_BonusQuestion_Season">
-          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Season">
-              <PropertyRef Name="SeasonID" />
-            </Principal>
-            <Dependent Role="BonusQuestion">
-              <PropertyRef Name="SeasonID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_QuestionAnswer_BonusQuestion">
-          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.QuestionAnswer" Role="QuestionAnswer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BonusQuestion">
-              <PropertyRef Name="BonusQuestionID" />
-            </Principal>
-            <Dependent Role="QuestionAnswer">
-              <PropertyRef Name="BonusQuestionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Location_State">
           <End Type="NCAAFootballPlayoffsModel.State" Role="State" Multiplicity="0..1" />
           <End Type="NCAAFootballPlayoffsModel.Location" Role="Location" Multiplicity="*" />
@@ -710,18 +669,6 @@
             </Principal>
             <Dependent Role="Record">
               <PropertyRef Name="TeamID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UserName_User">
-          <End Type="NCAAFootballPlayoffsModel.User" Role="User" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.UserName" Role="UserName" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="UserName">
-              <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -810,6 +757,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="BonusQuestion">
+          <Key>
+            <PropertyRef Name="BonusQuestionID" />
+          </Key>
+          <Property Name="BonusQuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DisplayAsMultChoice" Type="Boolean" Nullable="false" />
+          <Property Name="SeasonID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="BonusQuestion" ToRole="Season" />
+          <NavigationProperty Name="QuestionAnswers" Relationship="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" FromRole="BonusQuestion" ToRole="QuestionAnswer" />
+        </EntityType>
+        <EntityType Name="QuestionAnswer">
+          <Key>
+            <PropertyRef Name="QuestionAnswerID" />
+          </Key>
+          <Property Name="QuestionAnswerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="BonusQuestionID" Type="Int32" Nullable="false" />
+          <Property Name="IsCorrectAnswer" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BonusQuestion" Relationship="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" FromRole="QuestionAnswer" ToRole="BonusQuestion" />
+          <NavigationProperty Name="UserBonusQuestionPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer" FromRole="QuestionAnswer" ToRole="UserBonusQuestionPick" />
+        </EntityType>
+        <EntityType Name="UserBonusQuestionPick">
+          <Key>
+            <PropertyRef Name="UserBonusQuestionPickID" />
+          </Key>
+          <Property Name="UserBonusQuestionPickID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SelectedAnswerID" Type="Int32" Nullable="false" />
+          <Property Name="UsernameID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="QuestionAnswer" Relationship="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer" FromRole="UserBonusQuestionPick" ToRole="QuestionAnswer" />
+          <NavigationProperty Name="Username" Relationship="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_Username1" FromRole="UserBonusQuestionPick" ToRole="Username" />
+        </EntityType>
+        <EntityType Name="Username">
+          <Key>
+            <PropertyRef Name="UsernameID" />
+          </Key>
+          <Property Name="UsernameID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UsernameText" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Archived" Type="Boolean" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="NCAAFootballPlayoffsModel.FK_UserName_User" FromRole="Username" ToRole="User" />
+          <NavigationProperty Name="UserBonusQuestionPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_Username1" FromRole="Username" ToRole="UserBonusQuestionPick" />
+          <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="Username" ToRole="UserPick" />
+        </EntityType>
         <EntityType Name="UserPick">
           <Key>
             <PropertyRef Name="UserPickID" />
@@ -817,12 +809,36 @@
           <Property Name="UserPickID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ChosenTeamID" Type="Int32" Nullable="false" />
           <Property Name="GameID" Type="Int32" Nullable="false" />
-          <Property Name="UserNameID" Type="Int32" Nullable="false" />
+          <Property Name="UsernameID" Type="Int32" Nullable="false" />
           <Property Name="IsSurePick" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Game" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Game" FromRole="UserPick" ToRole="Game" />
           <NavigationProperty Name="Team" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Team" FromRole="UserPick" ToRole="Team" />
-          <NavigationProperty Name="UserName" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="UserPick" ToRole="UserName" />
+          <NavigationProperty Name="Username" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_UserName" FromRole="UserPick" ToRole="Username" />
         </EntityType>
+        <Association Name="FK_BonusQuestion_Season">
+          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="SeasonID" />
+            </Principal>
+            <Dependent Role="BonusQuestion">
+              <PropertyRef Name="SeasonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionAnswer_BonusQuestion">
+          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.QuestionAnswer" Role="QuestionAnswer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BonusQuestion">
+              <PropertyRef Name="BonusQuestionID" />
+            </Principal>
+            <Dependent Role="QuestionAnswer">
+              <PropertyRef Name="BonusQuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserPick_Game">
           <End Type="NCAAFootballPlayoffsModel.Game" Role="Game" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
@@ -832,6 +848,18 @@
             </Principal>
             <Dependent Role="UserPick">
               <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserBonusQuestionPick_QuestionAnswer">
+          <End Type="NCAAFootballPlayoffsModel.QuestionAnswer" Role="QuestionAnswer" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.UserBonusQuestionPick" Role="UserBonusQuestionPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionAnswer">
+              <PropertyRef Name="QuestionAnswerID" />
+            </Principal>
+            <Dependent Role="UserBonusQuestionPick">
+              <PropertyRef Name="SelectedAnswerID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -847,15 +875,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserName_User">
+          <End Type="NCAAFootballPlayoffsModel.User" Role="User" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.Username" Role="Username" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Username">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserBonusQuestionPick_Username1">
+          <End Type="NCAAFootballPlayoffsModel.Username" Role="Username" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.UserBonusQuestionPick" Role="UserBonusQuestionPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Username">
+              <PropertyRef Name="UsernameID" />
+            </Principal>
+            <Dependent Role="UserBonusQuestionPick">
+              <PropertyRef Name="UsernameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserPick_UserName">
-          <End Type="NCAAFootballPlayoffsModel.UserName" Role="UserName" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.Username" Role="Username" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.UserPick" Role="UserPick" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="UserName">
-              <PropertyRef Name="UserNameID" />
+            <Principal Role="Username">
+              <PropertyRef Name="UsernameID" />
             </Principal>
             <Dependent Role="UserPick">
-              <PropertyRef Name="UserNameID" />
+              <PropertyRef Name="UsernameID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -865,17 +917,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="NCAAFootballPlayoffsModelStoreContainer" CdmEntityContainer="NCAAFootballPlayoffsEntities">
-          <EntitySetMapping Name="BonusQuestions">
-            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.BonusQuestion">
-              <MappingFragment StoreEntitySet="BonusQuestion">
-                <ScalarProperty Name="SeasonID" ColumnName="SeasonID" />
-                <ScalarProperty Name="DisplayAsMultChoice" ColumnName="DisplayAsMultChoice" />
-                <ScalarProperty Name="CorrectAnswerID" ColumnName="CorrectAnswerID" />
-                <ScalarProperty Name="Text" ColumnName="Text" />
-                <ScalarProperty Name="BonusQuestionID" ColumnName="BonusQuestionID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Location">
               <MappingFragment StoreEntitySet="Location">
@@ -891,15 +932,6 @@
               <MappingFragment StoreEntitySet="Permission">
                 <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
                 <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="QuestionAnswers">
-            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.QuestionAnswer">
-              <MappingFragment StoreEntitySet="QuestionAnswer">
-                <ScalarProperty Name="BonusQuestionID" ColumnName="BonusQuestionID" />
-                <ScalarProperty Name="Text" ColumnName="Text" />
-                <ScalarProperty Name="QuestionAnswerID" ColumnName="QuestionAnswerID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -957,17 +989,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserNames">
-            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.UserName">
-              <MappingFragment StoreEntitySet="UserName">
-                <ScalarProperty Name="Approved" ColumnName="Approved" />
-                <ScalarProperty Name="Archived" ColumnName="Archived" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="UserNameText" ColumnName="UserNameText" />
-                <ScalarProperty Name="UserNameID" ColumnName="UserNameID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Games">
             <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Game">
               <MappingFragment StoreEntitySet="Game">
@@ -988,11 +1009,51 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BonusQuestions">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.BonusQuestion">
+              <MappingFragment StoreEntitySet="BonusQuestion">
+                <ScalarProperty Name="SeasonID" ColumnName="SeasonID" />
+                <ScalarProperty Name="DisplayAsMultChoice" ColumnName="DisplayAsMultChoice" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="BonusQuestionID" ColumnName="BonusQuestionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionAnswers">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.QuestionAnswer">
+              <MappingFragment StoreEntitySet="QuestionAnswer">
+                <ScalarProperty Name="IsCorrectAnswer" ColumnName="IsCorrectAnswer" />
+                <ScalarProperty Name="BonusQuestionID" ColumnName="BonusQuestionID" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="QuestionAnswerID" ColumnName="QuestionAnswerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserBonusQuestionPicks">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.UserBonusQuestionPick">
+              <MappingFragment StoreEntitySet="UserBonusQuestionPick">
+                <ScalarProperty Name="UsernameID" ColumnName="UsernameID" />
+                <ScalarProperty Name="SelectedAnswerID" ColumnName="SelectedAnswerID" />
+                <ScalarProperty Name="UserBonusQuestionPickID" ColumnName="UserBonusQuestionPickID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usernames">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Username">
+              <MappingFragment StoreEntitySet="Username">
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+                <ScalarProperty Name="Archived" ColumnName="Archived" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UsernameText" ColumnName="UsernameText" />
+                <ScalarProperty Name="UsernameID" ColumnName="UsernameID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UserPicks">
             <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.UserPick">
               <MappingFragment StoreEntitySet="UserPick">
                 <ScalarProperty Name="IsSurePick" ColumnName="IsSurePick" />
-                <ScalarProperty Name="UserNameID" ColumnName="UserNameID" />
+                <ScalarProperty Name="UsernameID" ColumnName="UsernameID" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="ChosenTeamID" ColumnName="ChosenTeamID" />
                 <ScalarProperty Name="UserPickID" ColumnName="UserPickID" />

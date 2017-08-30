@@ -18,10 +18,10 @@
             <div>
                 @Model.EmailAddress;
             </div>
-            foreach (var username in Model.UserNames)
+            foreach (var username in Model.Usernames)
             {
                 <div>
-                    @Html.ActionLink(username.UserNameText, "Index", "Bracket", new { usernameID = username.UserNameID}, new { })
+                    @Html.ActionLink(username.UsernameText, "Index", "Bracket", new { usernameID = username.UsernameID}, new { })
                 </div>
             }
         }

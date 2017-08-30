@@ -17,7 +17,7 @@ namespace NCAAFootballPlayoffs.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.UserNames = new HashSet<UserName>();
+            this.Usernames = new HashSet<Username>();
         }
     
         public int UserID { get; set; }
@@ -30,6 +30,6 @@ namespace NCAAFootballPlayoffs.Models
     
         public virtual Permission Permission { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserName> UserNames { get; set; }
+        public virtual ICollection<Username> Usernames { get; set; }
     }
 }

@@ -10,11 +10,11 @@ namespace NCAAFootballPlayoffs.Models
     {
         [Required(ErrorMessage = "A bracket name is required.")]
         [Display(Name = "Bracket Name")]
-        public string UserNameText { get; set; }
+        public string UsernameText { get; set; }
     }
 
     [MetadataType(typeof(UsernameMetadata))]
-    public partial class UserName
+    public partial class Username
     {
     }
 }

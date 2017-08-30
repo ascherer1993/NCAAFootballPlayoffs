@@ -17,15 +17,16 @@ namespace NCAAFootballPlayoffs.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public QuestionAnswer()
         {
-            this.BonusQuestions = new HashSet<BonusQuestion>();
+            this.UserBonusQuestionPicks = new HashSet<UserBonusQuestionPick>();
         }
     
         public int QuestionAnswerID { get; set; }
         public string Text { get; set; }
         public int BonusQuestionID { get; set; }
+        public bool IsCorrectAnswer { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BonusQuestion> BonusQuestions { get; set; }
         public virtual BonusQuestion BonusQuestion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserBonusQuestionPick> UserBonusQuestionPicks { get; set; }
     }
 }

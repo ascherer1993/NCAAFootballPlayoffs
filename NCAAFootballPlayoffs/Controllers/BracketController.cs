@@ -346,10 +346,150 @@ namespace NCAAFootballPlayoffs.Controllers
             return returnString;
         }
 
+        /// <summary>
+        /// Gets JSon of all the information needed to load the BracketViewModel
+        /// </summary>
+        /// <param name="seasonID">optional</param>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string getBracketPageJSon(int seasonID = -1, int usernameID = -1)
+        {
+            List<Game> seasonGames = getGames(seasonID);
+            List<State> states = getStates();
+            List<Team> teams = getTeams();
+            List<UserPick> userPicks = getPicks(usernameID, seasonID);
+
+            var BracketJson = new {
+                games = seasonGames,
+                states = states,
+                teams = teams,
+                picks = userPicks
+            };
+
+            // Serializes the data into json, ignoring self referencing loops
+            var json = JsonConvert.SerializeObject(BracketJson, Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+
+            return json;
+        }
+
+        /// <summary>
+        /// Gets all the games that aren't archived for the season sent in as a parameter
+        /// </summary>
+        /// <param name="seasonID">optional</param>
+        /// <returns></returns>
+        public List<Game> getGames(int seasonID = -1)
+        {
+
+            int currentSeasonID = seasonID == -1 ? db.Seasons.FirstOrDefault(f => f.ActiveSeason == true).SeasonID : (int)seasonID;
+            IEnumerable<Game> seasonGames = db.Games.Where(f => f.SeasonID == currentSeasonID && f.Archived == false);
+
+            #region GetGames
+            seasonGames = seasonGames.Select(g => new Game
+            {
+                FavoriteID = g.FavoriteID,
+                Favorite = new Team
+                {
+                    TeamID = g.FavoriteID,
+                    TeamName = g.Favorite.TeamName,
+                    TeamNickname = g.Favorite.TeamNickname
+                },
+                UnderdogID = g.UnderdogID,
+                Underdog = new Team
+                {
+                    TeamID = g.UnderdogID,
+                    TeamName = g.Underdog.TeamName,
+                    TeamNickname = g.Underdog.TeamNickname
+                },
+                LocationID = g.LocationID,
+                Location = g.LocationID != null ? new Location()
+                {
+                    LocationID = g.Location.LocationID,
+                    City = g.Location.City,
+                    StateID = g.Location.StateID,
+
+                    State = g.Location.StateID != null ? new State
+                    {
+                        StateID = g.Location.State.StateID,
+                        StateName = g.Location.State.StateName,
+                        StateAbbreviation = g.Location.State.StateAbbreviation
+                    } : null
+                } : null,
+                GameDatetime = g.GameDatetime,
+                GameName = g.GameName,
+                GameID = g.GameID,
+                PointSpread = g.PointSpread,
+                IsBCSBowl = g.IsBCSBowl
+            });
+            #endregion
+
+            return seasonGames.ToList(); ;
+        }
+
+        /// <summary>
+        /// Gets all states and returns them
+        /// </summary>
+        /// <returns></returns>
+        public List<State> getStates()
+        {
+            IEnumerable<State> states = db.States;
+
+            //This selects out the items we want in order to get rid of self referencing
+            states = states.Select(f => new State
+            {
+                StateAbbreviation = f.StateAbbreviation,
+                StateID = f.StateID,
+                StateName = f.StateName
+            });
+
+            return states.ToList();
+        }
 
 
         /// <summary>
-        /// Gets JSon of all the games that aren't archived for the active season or the season sent in as a parameter
+        /// Gets all teams and returns them
+        /// </summary>
+        /// <returns></returns>
+        public List<Team> getTeams()
+        {
+            IEnumerable<Team> teams = db.Teams.OrderBy(f => f.TeamName);
+
+            //This selects out the items we want in order to get rid of self referencing
+            teams = teams.Select(f => new Team
+            {
+                TeamName = f.TeamName,
+                TeamNickname = f.TeamNickname,
+                TeamID = f.TeamID
+            });
+
+            return teams.ToList();
+        }
+
+
+        /// <summary>
+        /// Gets all states and returns them
+        /// </summary>
+        /// <returns></returns>
+        public List<UserPick> getPicks(int usernameID, int seasonID)
+        {
+            IEnumerable<UserPick> userpicks = db.UserPicks.Where(f => f.UsernameID == usernameID && f.Game.SeasonID == seasonID);
+
+            userpicks = userpicks.Select(f => new UserPick()
+            {
+                ChosenTeamID = f.ChosenTeamID,
+                GameID = f.GameID,
+                IsSurePick = f.IsSurePick
+            });
+
+            return userpicks.ToList();
+        }
+
+        #region ajaxCalls
+        /// <summary>
+        /// Gets all the games that aren't archived for the selected season and returns them as json.
         /// </summary>
         /// <param name="seasonID">optional</param>
         /// <returns></returns>
@@ -409,6 +549,8 @@ namespace NCAAFootballPlayoffs.Controllers
             return json;
         }
 
+        
+
         /// <summary>
         /// Gets all states and returns them as JSON
         /// </summary>
@@ -439,7 +581,7 @@ namespace NCAAFootballPlayoffs.Controllers
         }
 
         /// <summary>
-        /// Gets all states and returns them as JSON
+        /// Gets all teams and returns them as JSON
         /// </summary>
         /// <returns></returns>
         [AjaxOnly]
@@ -489,6 +631,6 @@ namespace NCAAFootballPlayoffs.Controllers
 
             return json;
         }
-
+        #endregion
     }
 }

@@ -50,14 +50,62 @@
     }, this);
 
     //This applies bindings after all of the data has been loaded.
+    //self.loadAjax = function () {
+    //    $.when(self.loadGames(), self.loadStates(), self.loadTeams()).done(function (a1, a2) {
+    //        $.when(self.loadPicks()).done(function (b1, b2) {
+    //            ko.applyBindings(self);
+    //            $("#gamesDiv").css("visibility", "visible");
+    //            $("#loadingDiv").hide();
+    //        });
+    //    });
+    //}
+
     self.loadAjax = function () {
-        $.when(self.loadGames(), self.loadStates(), self.loadTeams()).done(function (a1, a2) {
-            $.when(self.loadPicks()).done(function (b1, b2) {
-                ko.applyBindings(self);
-                $("#gamesDiv").css("visibility", "visible");
-            });
+        $.when(self.loadBracketData()).done(function (a1, a2) {
+            ko.applyBindings(self);
+            $("#gamesDiv").css("visibility", "visible");
+            $("#loadingDiv").hide();
         });
     }
+
+    //Loads all games for the active season
+    self.loadBracketData = function () {
+        return $.get("/Bracket/getBracketPageJSon",
+            {
+                usernameID: self.usernameID,
+                seasonID: self.seasonID()
+            }, function (data) {
+                var returnObject = ko.mapping.fromJSON(data);
+
+                //Games
+                self.games = returnObject.games;
+                $.each(self.games(), function (index, game) {
+                    game.isEditing = ko.observable(false);
+                    game.Location.State = ko.observable(game.Location.State)
+                    game.teamPickID = ko.observable();
+                    game.isSurePick = ko.observable();
+                });
+
+                //States
+                self.states = returnObject.states;
+
+                //Teams
+                self.teams = returnObject.teams;
+                var createNewGameOption = { 'TeamName': 'Create new team', 'TeamID': -1 };
+                self.teams.splice(0, 0, createNewGameOption);
+
+                //Picks
+                var picks = returnObject.picks;
+                self.games().forEach(function (game) {
+                    picks().forEach(function (pick) {
+                        if (pick.GameID() == game.GameID()) {
+                            game.teamPickID(pick.ChosenTeamID());
+                            game.isSurePick(pick.IsSurePick());
+                        }
+                    });
+                });
+        });
+    };
 
     self.loadTeams = function () {
         return $.get("/Bracket/getTeamsJSon", function (data) {

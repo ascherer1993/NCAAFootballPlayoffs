@@ -29,6 +29,13 @@
     self.newGameUnderdogName = ko.observable();
     self.newGameUnderdogNickname = ko.observable();
     //self.surePickCount = ko.observable(3);
+
+    //These are used for the new bonus question modal
+    self.newQuestionText = ko.observable();
+    self.newQuestionMultipleChoice = ko.observable();
+    self.newQuestionAnswer = ko.observable();
+    self.newQuestionAnswerArray = ko.observableArray();
+
     self.surePickCount = ko.pureComputed(function () {
         var count = 0;
         self.games().forEach(function (game) {
@@ -294,6 +301,18 @@
             }
         });
     }
+
+    //Add answer to question
+    self.addQuestionAnswer = function () {
+        var test = {
+            answerID: null,
+            questionAnswerText: self.newQuestionAnswer()
+        }
+        self.newQuestionAnswerArray.push(test);
+        self.newQuestionAnswer("");
+    }
+
+    self.removeSeat = function (answer) { self.newQuestionAnswerArray.remove(answer) }
 
     //focuses when modal opens
     $('#myModal').on('shown.bs.modal', function () {

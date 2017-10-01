@@ -7,6 +7,7 @@
 
     self.isLoaded = ko.observable(false);
     self.games = ko.observableArray();
+    self.bonusQuestions = ko.observableArray();
     self.states = [];
     self.teams = [];
 
@@ -91,6 +92,12 @@
                     game.Location.State = ko.observable(game.Location.State)
                     game.teamPickID = ko.observable();
                     game.isSurePick = ko.observable();
+                });
+
+                //Bonus Questions
+                self.bonusQuestions = returnObject.bonusQuestions;
+                $.each(self.bonusQuestions(), function (index, bonusQuestion) {
+                    bonusQuestion.isEditing = ko.observable(false);
                 });
 
                 //States
@@ -183,6 +190,17 @@
         });
     };
 
+
+    //Loads all bonus questions for the active season
+    self.loadBonusQuestions = function () {
+        return $.get("/Bracket/getBonusQuestionsJSon", function (data) {
+            self.bonusQuestions = ko.mapping.fromJSON(data);
+            $.each(self.bonusQuestions(), function (index, question) {
+                question.isEditing = ko.observable(false);
+            });
+        });
+    };
+
     //Utility Functions
     self.editGame = function (game) {
         self.selectState = ko.observable(game.Location.State());
@@ -203,7 +221,6 @@
 
     //This method saves the game
     self.addGame = function () {
-
         var newGame = {
             'GameName': self.newGameBowlName,
             'GameDatetime': moment(self.newGameTime).format("YYYY-MM-DD HH:mm:ss"),
@@ -304,19 +321,57 @@
 
     //Add answer to question
     self.addQuestionAnswer = function () {
-        var test = {
-            answerID: null,
-            questionAnswerText: self.newQuestionAnswer()
+        var newQAnswer = {
+            QuestionAnswerID: null,
+            Text: self.newQuestionAnswer()
         }
-        self.newQuestionAnswerArray.push(test);
+        self.newQuestionAnswerArray.push(newQAnswer);
         self.newQuestionAnswer("");
     }
 
     self.removeSeat = function (answer) { self.newQuestionAnswerArray.remove(answer) }
 
+    //This method saves the game
+    self.addQuestion = function () {
+        var newQuestion = {
+            'Text': self.newQuestionText,
+            'DisplayAsMultChoice': self.newQuestionMultipleChoice,
+            'SeasonID': self.seasonID
+        }
+
+        var questionToSave = ko.toJS(newQuestion);
+        var questionAnswers = ko.toJS(self.newQuestionAnswerArray);
+
+        //gameToSave.GameDatetime = moment(gameToSave.GameDatetime).format("YYYY-MM-DD HH:mm:ss")
+        $.post("/Bracket/addQuestion", {
+            questionIn: questionToSave,
+            questionAnswersIn: questionAnswers
+        }, function (returnedData) {
+            response = JSON.parse(returnedData);
+            msgs = response.msgs;
+
+            for (i = 0; i < msgs.length; i++) {
+                //Displays all messages
+                response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+            }
+            if (response.success) {
+                var returnedQuestion = ko.mapping.fromJS(response.question);
+                returnedQuestion.isEditing = ko.observable(false);
+                self.bonusQuestions.push(returnedQuestion);
+                $("#myModal").modal('hide');
+
+            }
+        })
+    }
+
+
     //focuses when modal opens
     $('#myModal').on('shown.bs.modal', function () {
         $('#new-bowl-name').focus();
+    })
+
+    $('#myModal2').on('shown.bs.modal', function () {
+        $('#new-question-question-text').focus();
     })
 
     self.submitBracket = function ()

@@ -347,6 +347,59 @@ namespace NCAAFootballPlayoffs.Controllers
         }
 
         /// <summary>
+        /// Ajax call that saves the game received in as a parameter
+        /// </summary>
+        /// <param name="gameIn"></param>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string addQuestion(BonusQuestion questionIn, IEnumerable<QuestionAnswer> questionAnswersIn)
+        {
+            //Messages to return to ajax call
+            List<string> msgs = new List<string>();
+            bool success = false;
+            BonusQuestion returnQuestion = new BonusQuestion();
+
+            //Transaction for multiple edits of the database
+            using (var dbContextTransaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    db.BonusQuestions.Add(questionIn);
+                    db.SaveChanges();
+
+                    foreach(var answer in questionAnswersIn)
+                    {
+                        answer.BonusQuestionID = questionIn.BonusQuestionID;
+                        db.QuestionAnswers.Add(answer);
+                    }
+
+                    db.SaveChanges();
+                    dbContextTransaction.Commit();
+                    msgs.Add("Saved Changes.");
+                    success = true;
+                }
+                catch (Exception e)
+                {
+                    dbContextTransaction.Rollback();
+                    msgs.Add("There was an error saving changes to the game. Please try again.");
+                }
+            }
+
+            var responseObject = new
+            {
+                msgs = msgs,
+                question = questionIn,
+                success = success
+            };
+            var json = JsonConvert.SerializeObject(responseObject, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+            return json;
+        }
+
+        /// <summary>
         /// Gets JSon of all the information needed to load the BracketViewModel
         /// </summary>
         /// <param name="seasonID">optional</param>
@@ -358,12 +411,14 @@ namespace NCAAFootballPlayoffs.Controllers
             List<State> states = getStates();
             List<Team> teams = getTeams();
             List<UserPick> userPicks = getPicks(usernameID, seasonID);
+            List<BonusQuestion> bonusQuestions = getBonusQuestions(seasonID);
 
             var BracketJson = new {
                 games = seasonGames,
                 states = states,
                 teams = teams,
-                picks = userPicks
+                picks = userPicks,
+                bonusQuestions = bonusQuestions
             };
 
             // Serializes the data into json, ignoring self referencing loops
@@ -470,7 +525,7 @@ namespace NCAAFootballPlayoffs.Controllers
 
 
         /// <summary>
-        /// Gets all states and returns them
+        /// Gets all user picks
         /// </summary>
         /// <returns></returns>
         public List<UserPick> getPicks(int usernameID, int seasonID)
@@ -485,6 +540,29 @@ namespace NCAAFootballPlayoffs.Controllers
             });
 
             return userpicks.ToList();
+        }
+
+        /// <summary>
+        /// Gets all bonus questions for a season
+        /// </summary>
+        /// <returns></returns>
+        public List<BonusQuestion> getBonusQuestions(int seasonID)
+        {
+            IEnumerable<BonusQuestion> bonusQuestions = db.BonusQuestions.Where(f => f.SeasonID == seasonID);
+            bonusQuestions = bonusQuestions.Select(f => new BonusQuestion()
+            {
+                BonusQuestionID = f.BonusQuestionID,
+                SeasonID = f.SeasonID,
+                Text = f.Text,
+                DisplayAsMultChoice = f.DisplayAsMultChoice,
+                QuestionAnswers = f.QuestionAnswers.Select(g => new QuestionAnswer()
+                    {
+                    BonusQuestionID = f.BonusQuestionID,
+                    QuestionAnswerID = g.QuestionAnswerID,
+                    Text = g.Text
+                    }).ToList()
+            });
+            return bonusQuestions.ToList();
         }
 
         #region ajaxCalls
@@ -624,6 +702,22 @@ namespace NCAAFootballPlayoffs.Controllers
             });
 
             var json = JsonConvert.SerializeObject(userpicks, Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+
+            return json;
+        }
+
+        /// <summary>
+        /// Gets all states and returns them as JSON
+        /// </summary>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string getBonusQuestionsJSon(int seasonID)
+        {
+            var json = JsonConvert.SerializeObject(null, Formatting.None,
                     new JsonSerializerSettings()
                     {
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore

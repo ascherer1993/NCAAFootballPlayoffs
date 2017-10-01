@@ -302,6 +302,7 @@
     <Content Include="Views\UserAccount\MyAccount.cshtml" />
     <Content Include="Views\UserAccount\CreateAccount.cshtml" />
     <Content Include="Views\UserAccount\CreateBracket.cshtml" />
+    <Content Include="Views\Bracket\_BonusQuestion.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

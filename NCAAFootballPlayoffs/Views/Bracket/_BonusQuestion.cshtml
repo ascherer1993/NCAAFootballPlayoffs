@@ -1,14 +1,18 @@
-﻿<div class="col-md-12" data-bind="visible: !isEditing()">
+﻿<div class="col-md-12" data-bind="visible: !isEditing()"  style="text-align:left">
     <div class="game-style row">
         <div class="col-md-12">
             @*<div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff,">*@
             <div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff; -webkit-font-smoothing: antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased;">
-                <div data-bind="text: Text()"></div>
+                <div class="col-md-12" data-bind="text: 'Bonus Question ' + ($index() + 1)"></div>
                 <span data-bind="" class="top-right glyphicon glyphicon-cog"></span>
             </div>
             <div class="row">
-                <div class="col-xs-12">
-                    hi
+                <div class="col-md-12" data-bind="text: Text()"></div>
+            </div>
+            <div class="row" data-bind="foreach: QuestionAnswers">
+                <div class="col-md-12">
+                    @*<input type="radio" data-bind="checked: teamPickID, value: Favorite.T" />*@
+                    <input type="radio" data-bind="" /><span data-bind="text: ' ' + Text()"></span>
                 </div>
             </div>
         </div>

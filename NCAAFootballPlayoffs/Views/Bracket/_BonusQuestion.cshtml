@@ -12,7 +12,7 @@
             <div class="row" data-bind="foreach: QuestionAnswers">
                 <div class="col-md-12">
                     @*<input type="radio" data-bind="checked: teamPickID, value: Favorite.T" />*@
-                    <input type="radio" data-bind="" /><span data-bind="text: ' ' + Text()"></span>
+                    <input type="radio" data-bind="checked: $parent.answerPickID, value: QuestionAnswerID" /><span data-bind="text: ' ' + Text()"></span>
                 </div>
             </div>
         </div>

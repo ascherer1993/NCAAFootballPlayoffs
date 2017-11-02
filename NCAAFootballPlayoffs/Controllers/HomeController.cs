@@ -52,8 +52,12 @@ namespace NCAAFootballPlayoffs.Controllers
             ExcelManager em = new ExcelManager();
             var memStream = em.DownloadPicks();
             return File(memStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "NCAAFootballPicks.xlsx");
-
         }
 
+        public ActionResult doWhatIWantTwo()
+        {
+            Utilities.Authentication.SignIn("ams0068@auburn.edu", "1234");
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

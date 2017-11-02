@@ -29,7 +29,6 @@
     self.newGameFavoriteNickname = ko.observable();
     self.newGameUnderdogName = ko.observable();
     self.newGameUnderdogNickname = ko.observable();
-    //self.surePickCount = ko.observable(3);
 
     //These are used for the new bonus question modal
     self.newQuestionText = ko.observable();
@@ -56,17 +55,6 @@
         });
         return count;
     }, this);
-
-    //This applies bindings after all of the data has been loaded.
-    //self.loadAjax = function () {
-    //    $.when(self.loadGames(), self.loadStates(), self.loadTeams()).done(function (a1, a2) {
-    //        $.when(self.loadPicks()).done(function (b1, b2) {
-    //            ko.applyBindings(self);
-    //            $("#gamesDiv").css("visibility", "visible");
-    //            $("#loadingDiv").hide();
-    //        });
-    //    });
-    //}
 
     self.loadAjax = function () {
         $.when(self.loadBracketData()).done(function (a1, a2) {
@@ -98,6 +86,17 @@
                 self.bonusQuestions = returnObject.bonusQuestions;
                 $.each(self.bonusQuestions(), function (index, bonusQuestion) {
                     bonusQuestion.isEditing = ko.observable(false);
+                    bonusQuestion.answerPickID = ko.observable();
+                });
+
+                //Bonus Question Picks
+                var userBonusQuestionPicks = returnObject.userBonusQuestionPicks;
+                self.bonusQuestions().forEach(function (bonusQuestion) {
+                    userBonusQuestionPicks().forEach(function (userBonusQuestionPick) {
+                        if (userBonusQuestionPick.SelectedAnswerID() == bonusQuestion.QuestionAnswerID()) {
+                            bonusQuestion.answerPickID(userBonusQuestionPick.UserBonusQuestionPickID());
+                        }
+                    });
                 });
 
                 //States
@@ -144,16 +143,6 @@
                 game.teamPickID = ko.observable();
 
                 game.isSurePick = ko.observable();
-                //game.isSurePick.subscribe(function (value) {
-                //    if (value)
-                //    {
-                //        self.surePickCount(self.surePickCount() + 1);
-                //    }
-                //    else
-                //    {
-                //        self.surePickCount(self.surePickCount() - 1);
-                //    }
-                //});
             });
         });
     };
@@ -183,10 +172,6 @@
                     }
                 });
             });
-            //$.each(self.teams(), function (index, team) {
-            //    team.isEditing = ko.observable(false);
-            //    game.Location.State = ko.observable(game.Location.State)
-            //});
         });
     };
 
@@ -386,8 +371,18 @@
             };
             gamePickInfo.push(gameInfo);
         });
+        var bonusQuestionPickInfo = [];
+        self.bonusQuestions().forEach(function (bonusQuestion) {
+            var bonusQuestionInfo = {
+                UserBonusQuestionPickID: bonusQuestion.BonusQuestionID(),
+                SelectedAnswerID: bonusQuestion.answerPickID(),
+                UsernameID: self.usernameID
+            };
+            bonusQuestionPickInfo.push(bonusQuestionInfo);
+        });
         $.post("/Bracket/submitBracket", {
-            userPicks: gamePickInfo
+            userPicks: gamePickInfo,
+            bonusQuestionPicks: bonusQuestionPickInfo
         }, function (returnedData) {
             response = JSON.parse(returnedData);
             msgs = response.msgs;

@@ -45,7 +45,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <param name="gameIn"></param>
         /// <returns></returns>
         [AjaxOnly]
-        public string submitBracket(IEnumerable<UserPick> userPicks)
+        public string submitBracket(IEnumerable<UserPick> userPicks, IEnumerable<UserBonusQuestionPick> bonusQuestionPicks)
         {
             //Messages to return to ajax call
             List<string> msgs = new List<string>();
@@ -67,6 +67,20 @@ namespace NCAAFootballPlayoffs.Controllers
                         {
                             temp.ChosenTeamID = userPick.ChosenTeamID;
                             temp.IsSurePick = userPick.IsSurePick;
+                            db.Entry(temp).State = EntityState.Modified;
+                        }
+                    }
+
+                    foreach (var bonusQuestionPick in bonusQuestionPicks)
+                    {
+                        UserBonusQuestionPick temp = db.UserBonusQuestionPicks.FirstOrDefault(f => f.UsernameID == bonusQuestionPick.UsernameID && f.UserBonusQuestionPickID == bonusQuestionPick.UserBonusQuestionPickID);
+                        if (temp == null)
+                        {
+                            db.UserBonusQuestionPicks.Add(bonusQuestionPick);
+                        }
+                        else
+                        {
+                            temp.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
                             db.Entry(temp).State = EntityState.Modified;
                         }
                     }
@@ -412,13 +426,15 @@ namespace NCAAFootballPlayoffs.Controllers
             List<Team> teams = getTeams();
             List<UserPick> userPicks = getPicks(usernameID, seasonID);
             List<BonusQuestion> bonusQuestions = getBonusQuestions(seasonID);
+            List<UserBonusQuestionPick> userBonusQuestionPicks = getUserBonusQuestionPicks(usernameID, seasonID);
 
             var BracketJson = new {
                 games = seasonGames,
                 states = states,
                 teams = teams,
                 picks = userPicks,
-                bonusQuestions = bonusQuestions
+                bonusQuestions = bonusQuestions,
+                userBonusQuestionPicks = userBonusQuestionPicks
             };
 
             // Serializes the data into json, ignoring self referencing loops
@@ -563,6 +579,22 @@ namespace NCAAFootballPlayoffs.Controllers
                     }).ToList()
             });
             return bonusQuestions.ToList();
+        }
+
+        /// <summary>
+        /// Gets all bonus question picks for a user in a season
+        /// </summary>
+        /// <returns></returns>
+        public List<UserBonusQuestionPick> getUserBonusQuestionPicks(int usernameID, int seasonID)
+        {
+            IEnumerable<UserBonusQuestionPick> userBonysQuestionPicks = db.UserBonusQuestionPicks.Where(f => f.UsernameID == usernameID && f.QuestionAnswer.BonusQuestion.SeasonID == seasonID);
+
+            userBonysQuestionPicks = userBonysQuestionPicks.Select(f => new UserBonusQuestionPick()
+            {
+                SelectedAnswerID = f.SelectedAnswerID,
+                UserBonusQuestionPickID = f.UserBonusQuestionPickID
+            });
+            return userBonysQuestionPicks.ToList();
         }
 
         #region ajaxCalls

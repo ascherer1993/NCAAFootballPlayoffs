@@ -93,9 +93,16 @@
                 var userBonusQuestionPicks = returnObject.userBonusQuestionPicks;
                 self.bonusQuestions().forEach(function (bonusQuestion) {
                     userBonusQuestionPicks().forEach(function (userBonusQuestionPick) {
-                        if (userBonusQuestionPick.SelectedAnswerID() == bonusQuestion.QuestionAnswerID()) {
-                            bonusQuestion.answerPickID(userBonusQuestionPick.UserBonusQuestionPickID());
+                        //IF THEY HAVE THE SAME QUESTION, THEN THE ANSWER IS THE ONE FOR THAT ONE
+                        if (bonusQuestion.BonusQuestionID() == userBonusQuestionPick.QuestionAnswer.BonusQuestionID())
+                        {
+                            bonusQuestion.answerPickID(userBonusQuestionPick.SelectedAnswerID());
                         }
+                        //bonusQuestion.QuestionAnswers().forEach(function (questionAnswer) {
+                        //    if (userBonusQuestionPick.SelectedAnswerID() == questionAnswer.QuestionAnswerID()) {
+                        //        bonusQuestion.answerPickID(userBonusQuestionPick.UserBonusQuestionPickID());
+                        //    }
+                        //});
                     });
                 });
 
@@ -204,6 +211,10 @@
         game.isEditing(true);
     }
 
+    self.editBonusQuestion = function (bonusQuestion) {
+        bonusQuestion.isEditing(true);
+    }
+
     //This method saves the game
     self.addGame = function () {
         var newGame = {
@@ -302,6 +313,27 @@
                 // user clicked "cancel"
             }
         });
+    }
+
+
+    //This method saves the game
+    self.saveBonusQuestion = function (bonusQuestion) {
+        //gameToSave = ko.toJS(game);
+
+        //gameToSave.GameDatetime = moment(gameToSave.GameDatetime).format("YYYY-MM-DD HH:mm:ss")
+        //$.post("/Bracket/saveGame", { gameIn: gameToSave }, function (returnedData) {
+        //    response = JSON.parse(returnedData);
+        //    msgs = response.msgs;
+        //    for (i = 0; i < msgs.length; i++) {
+        //        //Displays all messages
+        //        response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+        //    }
+        //    if (response.success) {
+        //        game.isEditing(false);
+
+        //    }
+        //})
+        bonusQuestion.isEditing(false);
     }
 
     //Add answer to question

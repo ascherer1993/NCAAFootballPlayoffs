@@ -414,6 +414,91 @@ namespace NCAAFootballPlayoffs.Controllers
         }
 
         /// <summary>
+        /// Ajax call that saves the game received in as a parameter
+        /// </summary>
+        /// <param name="gameIn"></param>
+        /// <returns></returns>
+        [AjaxOnly]
+        public string saveQuestion(BonusQuestion questionIn, IEnumerable<QuestionAnswer> questionAnswersIn)
+        {
+            //Messages to return to ajax call
+            List<string> msgs = new List<string>();
+            bool success = false;
+            BonusQuestion returnQuestion = new BonusQuestion();
+
+            //Transaction for multiple edits of the database
+            using (var dbContextTransaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    //Makes changes to the game and saves the changes
+                    BonusQuestion bonusQuestion = db.BonusQuestions.Find(questionIn.BonusQuestionID);
+                    bonusQuestion.DisplayAsMultChoice = questionIn.DisplayAsMultChoice;
+                    bonusQuestion.SeasonID = questionIn.SeasonID;
+                    bonusQuestion.Text = questionIn.Text;
+
+                    db.Entry(bonusQuestion).State = System.Data.Entity.EntityState.Modified;
+
+                    foreach(var questionAnswerIn in questionAnswersIn)
+                    {
+                        QuestionAnswer questionAnswer = db.QuestionAnswers.Find(questionAnswerIn.QuestionAnswerID);
+                        questionAnswer.Text = questionAnswerIn.Text;
+                        questionAnswer.IsCorrectAnswer = questionAnswerIn.IsCorrectAnswer;
+
+                        db.Entry(questionAnswer).State = System.Data.Entity.EntityState.Modified;
+                    }
+
+                    db.SaveChanges();
+
+                    db.SaveChanges();
+                    dbContextTransaction.Commit();
+                    msgs.Add("Saved Changes.");
+                    success = true;
+                }
+                catch (Exception e)
+                {
+                    dbContextTransaction.Rollback();
+                    msgs.Add("There was an error saving changes to the game. Please try again.");
+                }
+            }
+
+            var responseObject = new
+            {
+                msgs = msgs,
+                question = questionIn,
+                success = success
+            };
+            var json = JsonConvert.SerializeObject(responseObject, Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+            return json;
+        }
+
+        [AjaxOnly]
+        public string deleteQuestion(int questionID)
+        {
+            List<string> msgs = new List<string>();
+
+
+            BonusQuestion question = db.BonusQuestions.Find(questionID);
+            //question.Archived = true;
+            //db.Entry(deleteGame).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+
+            msgs.Add("Question has been succesfully deleted.");
+            var responseObject = new
+            {
+                msgs = msgs,
+                success = true
+            };
+
+            var returnString = JsonConvert.SerializeObject(responseObject);
+            return returnString;
+        }
+
+        /// <summary>
         /// Gets JSon of all the information needed to load the BracketViewModel
         /// </summary>
         /// <param name="seasonID">optional</param>
@@ -592,7 +677,11 @@ namespace NCAAFootballPlayoffs.Controllers
             userBonysQuestionPicks = userBonysQuestionPicks.Select(f => new UserBonusQuestionPick()
             {
                 SelectedAnswerID = f.SelectedAnswerID,
-                UserBonusQuestionPickID = f.UserBonusQuestionPickID
+                UserBonusQuestionPickID = f.UserBonusQuestionPickID,
+                QuestionAnswer = new QuestionAnswer()
+                {
+                    BonusQuestionID = f.QuestionAnswer.BonusQuestionID
+                }
             });
             return userBonysQuestionPicks.ToList();
         }

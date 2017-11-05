@@ -4,7 +4,7 @@
             @*<div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff,">*@
             <div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff; -webkit-font-smoothing: antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased;">
                 <div class="col-md-12" data-bind="text: 'Bonus Question ' + ($index() + 1)"></div>
-                <span data-bind="" class="top-right glyphicon glyphicon-cog"></span>
+                <span data-bind="click: $root.editBonusQuestion" class="top-right glyphicon glyphicon-cog"></span>
             </div>
             <div class="row">
                 <div class="col-md-12" data-bind="text: Text()"></div>
@@ -24,10 +24,10 @@
         <div class="col-md-12">
             <div class="row" style="border-bottom:1px solid black">
                 <div>
-                    <input data-bind="" />
+                    <input data-bind="value: Text" />
                 </div>
                 <span data-bind="" class="top-right glyphicon glyphicon-trash"></span>
-                <span data-bind="" class="top-right glyphicon glyphicon-floppy-disk" style="right:18px"></span>
+                <span data-bind="click: $root.saveBonusQuestion" class="top-right glyphicon glyphicon-floppy-disk" style="right:18px"></span>
             </div>
             <div class="row">
                 <div class="col-xs-12">

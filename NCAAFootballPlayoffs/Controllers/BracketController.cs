@@ -439,16 +439,34 @@ namespace NCAAFootballPlayoffs.Controllers
 
                     db.Entry(bonusQuestion).State = System.Data.Entity.EntityState.Modified;
 
-                    foreach(var questionAnswerIn in questionAnswersIn)
-                    {
-                        QuestionAnswer questionAnswer = db.QuestionAnswers.Find(questionAnswerIn.QuestionAnswerID);
-                        questionAnswer.Text = questionAnswerIn.Text;
-                        questionAnswer.IsCorrectAnswer = questionAnswerIn.IsCorrectAnswer;
+                    IEnumerable<QuestionAnswer> dbQuestionAnswers = db.QuestionAnswers.Where(f => f.BonusQuestionID == bonusQuestion.BonusQuestionID);
 
-                        db.Entry(questionAnswer).State = System.Data.Entity.EntityState.Modified;
+                    foreach (var questionAnswer in dbQuestionAnswers)
+                    {
+                        if (!questionAnswersIn.Select(f => f.QuestionAnswerID).Contains(questionAnswer.QuestionAnswerID))
+                        {
+
+                        }
                     }
 
-                    db.SaveChanges();
+                    foreach (var questionAnswerIn in questionAnswersIn)
+                    {
+                        if (!dbQuestionAnswers.Select(f => f.QuestionAnswerID).Contains(questionAnswerIn.QuestionAnswerID))
+                        {
+                            db.QuestionAnswers.Add(questionAnswerIn);
+                        }
+                        else if (dbQuestionAnswers.Select(f => f.QuestionAnswerID).Contains(questionAnswerIn.QuestionAnswerID))
+                        {
+                            QuestionAnswer questionAnswer = db.QuestionAnswers.Find(questionAnswerIn.QuestionAnswerID);
+                            questionAnswer.Text = questionAnswerIn.Text;
+                            questionAnswer.IsCorrectAnswer = questionAnswerIn.IsCorrectAnswer;
+
+                            db.Entry(questionAnswer).State = System.Data.Entity.EntityState.Modified;
+                        }
+                    }
+                    //Gets all db question answers 
+                    IEnumerable<QuestionAnswer> toRemove = dbQuestionAnswers.Where(f => !questionAnswersIn.Select(g => g.QuestionAnswerID).Contains(f.QuestionAnswerID));
+
 
                     db.SaveChanges();
                     dbContextTransaction.Commit();

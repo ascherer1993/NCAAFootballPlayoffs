@@ -18,7 +18,7 @@ namespace NCAAFootballPlayoffs.Models
         public int SelectedAnswerID { get; set; }
         public int UsernameID { get; set; }
     
-        public virtual QuestionAnswer QuestionAnswer { get; set; }
         public virtual Username Username { get; set; }
+        public virtual QuestionAnswer QuestionAnswer { get; set; }
     }
 }

@@ -76,10 +76,23 @@ namespace NCAAFootballPlayoffs.Controllers
                         UserBonusQuestionPick temp = db.UserBonusQuestionPicks.FirstOrDefault(f => f.UsernameID == bonusQuestionPick.UsernameID && f.UserBonusQuestionPickID == bonusQuestionPick.UserBonusQuestionPickID);
                         if (temp == null)
                         {
+                            if (!bonusQuestionPick.DisplayAsMultChoice)
+                            {
+                                QuestionAnswer questionAnswer = new QuestionAnswer();
+                                questionAnswer.Text = bonusQuestionPick.Text;
+                                questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
+                                db.QuestionAnswers.Add(questionAnswer);
+                                db.SaveChanges();
+                                bonusQuestionPick.SelectedAnswerID = questionAnswer.QuestionAnswerID;
+                            }
                             db.UserBonusQuestionPicks.Add(bonusQuestionPick);
                         }
                         else
                         {
+                            if (!bonusQuestionPick.DisplayAsMultChoice)
+                            {
+                                db.Entry(temp.QuestionAnswer).State = EntityState.Modified;
+                            }
                             temp.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
                             db.Entry(temp).State = EntityState.Modified;
                         }
@@ -366,7 +379,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <param name="gameIn"></param>
         /// <returns></returns>
         [AjaxOnly]
-        public string addQuestion(BonusQuestion questionIn, IEnumerable<QuestionAnswer> questionAnswersIn)
+        public string addQuestion(BonusQuestion questionIn)
         {
             //Messages to return to ajax call
             List<string> msgs = new List<string>();
@@ -379,14 +392,6 @@ namespace NCAAFootballPlayoffs.Controllers
                 try
                 {
                     db.BonusQuestions.Add(questionIn);
-                    db.SaveChanges();
-
-                    foreach(var answer in questionAnswersIn)
-                    {
-                        answer.BonusQuestionID = questionIn.BonusQuestionID;
-                        db.QuestionAnswers.Add(answer);
-                    }
-
                     db.SaveChanges();
                     dbContextTransaction.Commit();
                     msgs.Add("Saved Changes.");
@@ -419,7 +424,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <param name="gameIn"></param>
         /// <returns></returns>
         [AjaxOnly]
-        public string saveQuestion(BonusQuestion questionIn, IEnumerable<QuestionAnswer> questionAnswersIn)
+        public string saveQuestion(BonusQuestion questionIn)
         {
             //Messages to return to ajax call
             List<string> msgs = new List<string>();
@@ -441,15 +446,7 @@ namespace NCAAFootballPlayoffs.Controllers
 
                     IEnumerable<QuestionAnswer> dbQuestionAnswers = db.QuestionAnswers.Where(f => f.BonusQuestionID == bonusQuestion.BonusQuestionID);
 
-                    foreach (var questionAnswer in dbQuestionAnswers)
-                    {
-                        if (!questionAnswersIn.Select(f => f.QuestionAnswerID).Contains(questionAnswer.QuestionAnswerID))
-                        {
-
-                        }
-                    }
-
-                    foreach (var questionAnswerIn in questionAnswersIn)
+                    foreach (var questionAnswerIn in questionIn.QuestionAnswers)
                     {
                         if (!dbQuestionAnswers.Select(f => f.QuestionAnswerID).Contains(questionAnswerIn.QuestionAnswerID))
                         {
@@ -465,8 +462,13 @@ namespace NCAAFootballPlayoffs.Controllers
                         }
                     }
                     //Gets all db question answers 
-                    IEnumerable<QuestionAnswer> toRemove = dbQuestionAnswers.Where(f => !questionAnswersIn.Select(g => g.QuestionAnswerID).Contains(f.QuestionAnswerID));
-
+                    IEnumerable<QuestionAnswer> questionsToRemoveFromDB = dbQuestionAnswers.Where(f => !questionIn.QuestionAnswers.Select(g => g.QuestionAnswerID).Contains(f.QuestionAnswerID));
+                    foreach (var toRemove in questionsToRemoveFromDB)
+                    {
+                        QuestionAnswer questionAnswer = db.QuestionAnswers.Find(toRemove.QuestionAnswerID);
+                        questionAnswer.Archived = true;
+                        db.Entry(questionAnswer).State = System.Data.Entity.EntityState.Modified;
+                    }
 
                     db.SaveChanges();
                     dbContextTransaction.Commit();
@@ -476,7 +478,7 @@ namespace NCAAFootballPlayoffs.Controllers
                 catch (Exception e)
                 {
                     dbContextTransaction.Rollback();
-                    msgs.Add("There was an error saving changes to the game. Please try again.");
+                    msgs.Add("There was an error saving changes to the question. Please try again.");
                 }
             }
 
@@ -495,14 +497,14 @@ namespace NCAAFootballPlayoffs.Controllers
         }
 
         [AjaxOnly]
-        public string deleteQuestion(int questionID)
+        public string deleteQuestion(int bonusQuestionID)
         {
             List<string> msgs = new List<string>();
 
 
-            BonusQuestion question = db.BonusQuestions.Find(questionID);
-            //question.Archived = true;
-            //db.Entry(deleteGame).State = System.Data.Entity.EntityState.Modified;
+            BonusQuestion question = db.BonusQuestions.Find(bonusQuestionID);
+            question.Archived = true;
+            db.Entry(question).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
 
             msgs.Add("Question has been succesfully deleted.");
@@ -667,7 +669,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <returns></returns>
         public List<BonusQuestion> getBonusQuestions(int seasonID)
         {
-            IEnumerable<BonusQuestion> bonusQuestions = db.BonusQuestions.Where(f => f.SeasonID == seasonID);
+            IEnumerable<BonusQuestion> bonusQuestions = db.BonusQuestions.Where(f => f.SeasonID == seasonID && f.Archived == false);
             bonusQuestions = bonusQuestions.Select(f => new BonusQuestion()
             {
                 BonusQuestionID = f.BonusQuestionID,
@@ -690,7 +692,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <returns></returns>
         public List<UserBonusQuestionPick> getUserBonusQuestionPicks(int usernameID, int seasonID)
         {
-            IEnumerable<UserBonusQuestionPick> userBonysQuestionPicks = db.UserBonusQuestionPicks.Where(f => f.UsernameID == usernameID && f.QuestionAnswer.BonusQuestion.SeasonID == seasonID);
+            IEnumerable<UserBonusQuestionPick> userBonysQuestionPicks = db.UserBonusQuestionPicks.Where(f => f.QuestionAnswer.Archived == false && f.UsernameID == usernameID && f.QuestionAnswer.BonusQuestion.SeasonID == seasonID);
 
             userBonysQuestionPicks = userBonysQuestionPicks.Select(f => new UserBonusQuestionPick()
             {

@@ -24,6 +24,7 @@ namespace NCAAFootballPlayoffs.Models
         public string Text { get; set; }
         public int BonusQuestionID { get; set; }
         public bool IsCorrectAnswer { get; set; }
+        public bool Archived { get; set; }
     
         public virtual BonusQuestion BonusQuestion { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

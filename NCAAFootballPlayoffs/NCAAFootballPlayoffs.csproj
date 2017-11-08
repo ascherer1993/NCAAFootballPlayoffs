@@ -243,6 +243,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>NCAAPlayoffsEntities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Partial Classes\_UserBonusQuestionPick.cs" />
     <Compile Include="Models\Partial Classes\_Username.cs" />
     <Compile Include="Models\Permission.cs">
       <DependentUpon>NCAAPlayoffsEntities.tt</DependentUpon>
@@ -303,6 +304,8 @@
     <Content Include="Views\UserAccount\CreateAccount.cshtml" />
     <Content Include="Views\UserAccount\CreateBracket.cshtml" />
     <Content Include="Views\Bracket\_BonusQuestion.cshtml" />
+    <Content Include="Views\Bracket\_GameModal.cshtml" />
+    <Content Include="Views\Bracket\_BonusQuestionModal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

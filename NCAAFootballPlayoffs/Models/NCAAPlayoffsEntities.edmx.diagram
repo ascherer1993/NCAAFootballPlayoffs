@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="93de5d4dee9e49beaee20fbae4e7b8b6" Name="Diagram1">
+      <Diagram DiagramId="93de5d4dee9e49beaee20fbae4e7b8b6" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Location" Width="1.5" PointX="3" PointY="5.25" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Permission" Width="1.5" PointX="3" PointY="2.5" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Record" Width="1.5" PointX="7.5" PointY="12.75" />
@@ -23,19 +23,19 @@
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Season" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Team" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_Game_Underdog" />
-        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.BonusQuestion" Width="1.5" PointX="6.75" PointY="4.125" />
-        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.QuestionAnswer" Width="1.5" PointX="9" PointY="4.25" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserBonusQuestionPick" Width="1.5" PointX="11.125" PointY="4.25" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.Username" Width="1.5" PointX="9" PointY="0.5" />
         <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.UserPick" Width="1.5" PointX="11.25" PointY="10.25" />
-        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" />
-        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Game" />
-        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_Team" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserName_User" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_Username1" />
         <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserPick_UserName" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.BonusQuestion" Width="1.5" PointX="6" PointY="4.125" />
+        <EntityTypeShape EntityType="NCAAFootballPlayoffsModel.QuestionAnswer" Width="1.5" PointX="8.25" PointY="4.125" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" />
+        <AssociationConnector Association="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

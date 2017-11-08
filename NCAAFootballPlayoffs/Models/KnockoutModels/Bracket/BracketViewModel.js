@@ -32,7 +32,7 @@
 
     //These are used for the new bonus question modal
     self.newQuestionText = ko.observable();
-    self.newQuestionMultipleChoice = ko.observable();
+    self.newQuestionMultipleChoice = ko.observable(false);
     self.newQuestionAnswer = ko.observable();
     self.newQuestionAnswerArray = ko.observableArray();
 
@@ -87,22 +87,25 @@
                 $.each(self.bonusQuestions(), function (index, bonusQuestion) {
                     bonusQuestion.isEditing = ko.observable(false);
                     bonusQuestion.answerPickID = ko.observable();
+                    if (bonusQuestion.QuestionAnswers().length == 0)
+                    {
+                        bonusQuestion.QuestionAnswers = ko.observableArray();
+                        var questionAnswer = {
+                            Text: "",
+                            BonusQuestionID: bonusQuestion.BonusQuestionID()
+                        }
+                        bonusQuestion.QuestionAnswers.push(ko.mapping.fromJS(questionAnswer));
+                    }
                 });
 
                 //Bonus Question Picks
                 var userBonusQuestionPicks = returnObject.userBonusQuestionPicks;
                 self.bonusQuestions().forEach(function (bonusQuestion) {
                     userBonusQuestionPicks().forEach(function (userBonusQuestionPick) {
-                        //IF THEY HAVE THE SAME QUESTION, THEN THE ANSWER IS THE ONE FOR THAT ONE
                         if (bonusQuestion.BonusQuestionID() == userBonusQuestionPick.QuestionAnswer.BonusQuestionID())
                         {
                             bonusQuestion.answerPickID(userBonusQuestionPick.SelectedAnswerID());
                         }
-                        //bonusQuestion.QuestionAnswers().forEach(function (questionAnswer) {
-                        //    if (userBonusQuestionPick.SelectedAnswerID() == questionAnswer.QuestionAnswerID()) {
-                        //        bonusQuestion.answerPickID(userBonusQuestionPick.UserBonusQuestionPickID());
-                        //    }
-                        //});
                     });
                 });
 
@@ -211,9 +214,7 @@
         game.isEditing(true);
     }
 
-    self.editBonusQuestion = function (bonusQuestion) {
-        bonusQuestion.isEditing(true);
-    }
+    
 
     //This method saves the game
     self.addGame = function () {
@@ -315,26 +316,9 @@
         });
     }
 
+    
 
-    //This method saves the game
-    self.saveBonusQuestion = function (bonusQuestion) {
-        //gameToSave = ko.toJS(game);
 
-        //gameToSave.GameDatetime = moment(gameToSave.GameDatetime).format("YYYY-MM-DD HH:mm:ss")
-        //$.post("/Bracket/saveGame", { gameIn: gameToSave }, function (returnedData) {
-        //    response = JSON.parse(returnedData);
-        //    msgs = response.msgs;
-        //    for (i = 0; i < msgs.length; i++) {
-        //        //Displays all messages
-        //        response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
-        //    }
-        //    if (response.success) {
-        //        game.isEditing(false);
-
-        //    }
-        //})
-        bonusQuestion.isEditing(false);
-    }
 
     //Add answer to question
     self.addQuestionAnswer = function () {
@@ -353,16 +337,25 @@
         var newQuestion = {
             'Text': self.newQuestionText,
             'DisplayAsMultChoice': self.newQuestionMultipleChoice,
-            'SeasonID': self.seasonID
+            'SeasonID': self.seasonID,
+            'QuestionAnswers': self.newQuestionAnswerArray
+        }
+
+
+        if (self.newQuestionMultipleChoice() == false) {
+            newQuestion.QuestionAnswers = ko.observableArray();
+            var questionAnswer = {
+                Text: ""
+            }
+            newQuestion.QuestionAnswers.push(ko.mapping.fromJS(questionAnswer));
         }
 
         var questionToSave = ko.toJS(newQuestion);
-        var questionAnswers = ko.toJS(self.newQuestionAnswerArray);
+        //var questionAnswers = ko.toJS(self.newQuestionAnswerArray);
 
         //gameToSave.GameDatetime = moment(gameToSave.GameDatetime).format("YYYY-MM-DD HH:mm:ss")
         $.post("/Bracket/addQuestion", {
-            questionIn: questionToSave,
-            questionAnswersIn: questionAnswers
+            questionIn: questionToSave
         }, function (returnedData) {
             response = JSON.parse(returnedData);
             msgs = response.msgs;
@@ -374,11 +367,54 @@
             if (response.success) {
                 var returnedQuestion = ko.mapping.fromJS(response.question);
                 returnedQuestion.isEditing = ko.observable(false);
+                returnedQuestion.answerPickID = ko.observable();
                 self.bonusQuestions.push(returnedQuestion);
-                $("#myModal").modal('hide');
+                $("#myModal2").modal('hide');
 
             }
         })
+    }
+
+    self.editBonusQuestion = function (bonusQuestion) {
+        bonusQuestion.isEditing(true);
+    }
+
+    //This method saves the game
+    self.saveBonusQuestion = function (bonusQuestion) {
+        bonusQuestionToSave = ko.toJS(bonusQuestion);
+
+        $.post("/Bracket/saveQuestion", { questionIn: bonusQuestionToSave, questionAnswersIn: ko.toJS(bonusQuestion.QuestionAnswers) }, function (returnedData) {
+            response = JSON.parse(returnedData);
+            msgs = response.msgs;
+            for (i = 0; i < msgs.length; i++) {
+                //Displays all messages
+                response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+            }
+            if (response.success) {
+                bonusQuestion.isEditing(false);
+            }
+        })
+    }
+
+
+    //Sends the id to a method that archives the selected game
+    self.deleteQuestion = function (question) {
+        alertify.confirm("Are you sure you wish to delete this question?", function (e) {
+            if (e) {
+                $.post("/Bracket/deleteQuestion", { bonusQuestionID: question.BonusQuestionID() }, function (returnedData) {
+                    response = JSON.parse(returnedData);
+                    msgs = response.msgs;
+                    for (i = 0; i < msgs.length; i++) {
+                        response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+                    }
+                    if (response.success) {
+                        self.bonusQuestions.remove(question);
+                    }
+                })
+            } else {
+                // user clicked "cancel"
+            }
+        });
     }
 
 
@@ -406,9 +442,12 @@
         var bonusQuestionPickInfo = [];
         self.bonusQuestions().forEach(function (bonusQuestion) {
             var bonusQuestionInfo = {
-                UserBonusQuestionPickID: bonusQuestion.BonusQuestionID(),
+                UserBonusQuestionPickID: bonusQuestion.UserBonusQuestionPickID(),
                 SelectedAnswerID: bonusQuestion.answerPickID(),
-                UsernameID: self.usernameID
+                UsernameID: self.usernameID,
+                Text: bonusQuestion.QuestionAnswers()[0].Text,
+                DisplayAsMultChoice: bonusQuestion.DisplayAsMultChoice(),
+                BonusQuestionID: bonusQuestion.BonusQuestionID
             };
             bonusQuestionPickInfo.push(bonusQuestionInfo);
         });

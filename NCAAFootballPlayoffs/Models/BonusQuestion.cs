@@ -24,6 +24,7 @@ namespace NCAAFootballPlayoffs.Models
         public string Text { get; set; }
         public bool DisplayAsMultChoice { get; set; }
         public int SeasonID { get; set; }
+        public bool Archived { get; set; }
     
         public virtual Season Season { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

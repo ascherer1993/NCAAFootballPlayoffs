@@ -1,0 +1,59 @@
+﻿<div class="modal fade bd-example-modal-2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myModal2">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Add Bonus Question</h3>
+            </div>
+            <div class="modal-body">
+                <form>
+                    @*<div class="form-group">
+                            <strong>Create a bonus question for <span data-bind=""></span></strong>
+                        </div>*@
+                    <div class="form-group">
+                        <label for="ntsd" class="form-control-label">Bonus Question Text:</label>
+                        <textarea class="form-control" id="new-question-question-text" data-bind="value: $root.newQuestionText" style="min-width: 100%"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fgsd" class="form-control-label">Display as multiple choice:</label>
+                        <input type="checkbox" id="new-question-multi-choice" data-bind="checked: $root.newQuestionMultipleChoice">
+                    </div>
+                    <div data-bind="visible: $root.newQuestionMultipleChoice()">
+                        <div class="form-group">
+                            <label for="ntsd" class="form-control-label">Answer Text:</label>
+                            <textarea class="form-control" id="new-question-answer-text" data-bind="value: $root.newQuestionAnswer" style="min-width: 100%"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-bind="click: $root.addQuestionAnswer">Add Answer</button>
+                        <hr />
+                        <div>
+                            <h4>Answers</h4>
+                        </div>
+                        <table style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Question Answer
+                                    </th>
+                                    <th>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: $root.newQuestionAnswerArray">
+                                <tr>
+                                    <td data-bind="text: Text"></td>
+                                    <td><a data-bind="click: $root.removeSeat">Delete</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bind="click: $root.addQuestion">Add Question</button>
+            </div>
+        </div>
+    </div>
+</div>

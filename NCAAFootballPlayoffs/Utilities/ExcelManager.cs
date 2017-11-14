@@ -45,12 +45,15 @@ namespace NCAAFootballPlayoffs.Utilities
         }
 
         //THIS USES EPPLUS
+        // [y, x?]
         public MemoryStream DownloadPicks(int? seasonID = 1)
         {
             MemoryStream memStream;
 
             List<Game> games;
+            List<BonusQuestion> bonusQuestions;
             List<Username> usernames;
+            List<UserBonusQuestionPick> userBonusQuestionPicks;
 
 
             using (var package = new ExcelPackage())
@@ -66,14 +69,22 @@ namespace NCAAFootballPlayoffs.Utilities
                 using (var db = new NCAAFootballPlayoffsEntities())
                 {
                     games = db.Games.Where(f => !f.Archived).ToList();
+                    bonusQuestions = db.BonusQuestions.Where(f => !f.Archived).ToList();
+                    userBonusQuestionPicks = db.UserBonusQuestionPicks.Where(f => !f.QuestionAnswer.BonusQuestion.Archived && !f.QuestionAnswer.Archived).ToList();
+
                     if (seasonID != null)
                     {
                         games = games.Where(f => f.SeasonID == seasonID).ToList();
+                        bonusQuestions = bonusQuestions.Where(f => f.SeasonID == seasonID).ToList();
+                        userBonusQuestionPicks = userBonusQuestionPicks.Where(f => f.QuestionAnswer.BonusQuestion.SeasonID == seasonID).ToList();
                         usernames = db.Usernames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == seasonID)).OrderBy(h => h.UsernameText).ToList();
+
                     }
                     else
                     {
                         games = games.Where(f => f.SeasonID == 1).ToList();
+                        bonusQuestions = bonusQuestions.Where(f => f.SeasonID == 1).ToList();
+                        userBonusQuestionPicks = userBonusQuestionPicks.Where(f => f.QuestionAnswer.BonusQuestion.SeasonID == 1).ToList();
                         usernames = db.Usernames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UsernameText).ToList();
                     }
 
@@ -155,10 +166,23 @@ namespace NCAAFootballPlayoffs.Utilities
                             }
                         }
                     }
+                    for (int i = 1; i <= bonusQuestions.Count; i++)
+                    {
+                        BonusQuestion bonusQuestion = bonusQuestions[i - 1];
+                        worksheet.Cells[games.Count + i + 1, 1].Value = bonusQuestion.Text;
+
+                        for (int j = 1; j <= usernames.Count; j++)
+                        {
+                            Username username = usernames[j - 1];
+                            //UserPick userpick = username.UserPicks.FirstOrDefault(f => f.GameID == games[i - 1].GameID);
+                            UserBonusQuestionPick userBonusQuestionPick = username.UserBonusQuestionPicks.FirstOrDefault(f => f.QuestionAnswer.BonusQuestionID == bonusQuestion.BonusQuestionID);
+                            if (userBonusQuestionPick != null)
+                            {
+                                worksheet.Cells[games.Count + i + 1, j + 1].Value = userBonusQuestionPick.QuestionAnswer.Text;
+                            }
+                        }
+                    }
                 }
-                    
-
-
                 //worksheet.Cells[1, 1, 1, 2].Style.TextRotation = 90;
                 //worksheet.Cells[1, 1, 1, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
                 //Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#B7DEE8");

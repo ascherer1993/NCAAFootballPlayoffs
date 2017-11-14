@@ -81,9 +81,7 @@ namespace NCAAFootballPlayoffs.Controllers
                                 QuestionAnswer questionAnswer = new QuestionAnswer();
                                 questionAnswer.Text = bonusQuestionPick.Text;
                                 questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
-                                db.QuestionAnswers.Add(questionAnswer);
-                                db.SaveChanges();
-                                bonusQuestionPick.SelectedAnswerID = questionAnswer.QuestionAnswerID;
+                                bonusQuestionPick.QuestionAnswer = questionAnswer;
                             }
                             db.UserBonusQuestionPicks.Add(bonusQuestionPick);
                         }
@@ -91,9 +89,12 @@ namespace NCAAFootballPlayoffs.Controllers
                         {
                             if (!bonusQuestionPick.DisplayAsMultChoice)
                             {
-                                db.Entry(temp.QuestionAnswer).State = EntityState.Modified;
+                                temp.QuestionAnswer.Text = bonusQuestionPick.QuestionAnswer.Text;
                             }
-                            temp.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                            else
+                            {
+                                temp.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                            }
                             db.Entry(temp).State = EntityState.Modified;
                         }
                     }
@@ -391,6 +392,11 @@ namespace NCAAFootballPlayoffs.Controllers
             {
                 try
                 {
+                    if (!questionIn.DisplayAsMultChoice)
+                    {
+                        //questionIn.QuestionAnswers = questionIn.QuestionAnswers.Select(f => new QuestionAnswer() { Text = "" }).ToList();
+                        questionIn.QuestionAnswers = null;
+                    }
                     db.BonusQuestions.Add(questionIn);
                     db.SaveChanges();
                     dbContextTransaction.Commit();

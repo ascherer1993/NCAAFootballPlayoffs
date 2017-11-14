@@ -87,6 +87,7 @@
                 $.each(self.bonusQuestions(), function (index, bonusQuestion) {
                     bonusQuestion.isEditing = ko.observable(false);
                     bonusQuestion.answerPickID = ko.observable();
+                    bonusQuestion.UserBonusQuestionPickID = ko.observable();
                     if (bonusQuestion.QuestionAnswers().length == 0)
                     {
                         bonusQuestion.QuestionAnswers = ko.observableArray();
@@ -105,6 +106,7 @@
                         if (bonusQuestion.BonusQuestionID() == userBonusQuestionPick.QuestionAnswer.BonusQuestionID())
                         {
                             bonusQuestion.answerPickID(userBonusQuestionPick.SelectedAnswerID());
+                            bonusQuestion.UserBonusQuestionPickID(userBonusQuestionPick.UserBonusQuestionPickID());
                         }
                     });
                 });
@@ -368,6 +370,15 @@
                 var returnedQuestion = ko.mapping.fromJS(response.question);
                 returnedQuestion.isEditing = ko.observable(false);
                 returnedQuestion.answerPickID = ko.observable();
+                if (!returnedQuestion.DisplayAsMultChoice())
+                {
+                    returnedQuestion.QuestionAnswers = ko.observableArray();
+                    var questionAnswer = {
+                        Text: "",
+                        BonusQuestionID: returnedQuestion.BonusQuestionID()
+                    }
+                    returnedQuestion.QuestionAnswers.push(ko.mapping.fromJS(questionAnswer));
+                }
                 self.bonusQuestions.push(returnedQuestion);
                 $("#myModal2").modal('hide');
 
@@ -442,18 +453,21 @@
         var bonusQuestionPickInfo = [];
         self.bonusQuestions().forEach(function (bonusQuestion) {
             var bonusQuestionInfo = {
-                UserBonusQuestionPickID: bonusQuestion.UserBonusQuestionPickID(),
                 SelectedAnswerID: bonusQuestion.answerPickID(),
                 UsernameID: self.usernameID,
                 Text: bonusQuestion.QuestionAnswers()[0].Text,
                 DisplayAsMultChoice: bonusQuestion.DisplayAsMultChoice(),
-                BonusQuestionID: bonusQuestion.BonusQuestionID
+                BonusQuestionID: bonusQuestion.BonusQuestionID,
+                QuestionAnswer: bonusQuestion.QuestionAnswers()[0]
             };
+            if (bonusQuestion.UserBonusQuestionPickID != null) {
+                bonusQuestionInfo.UserBonusQuestionPickID = bonusQuestion.UserBonusQuestionPickID()
+            }
             bonusQuestionPickInfo.push(bonusQuestionInfo);
         });
         $.post("/Bracket/submitBracket", {
-            userPicks: gamePickInfo,
-            bonusQuestionPicks: bonusQuestionPickInfo
+            userPicks: ko.toJS(gamePickInfo),
+            bonusQuestionPicks: ko.toJS(bonusQuestionPickInfo)
         }, function (returnedData) {
             response = JSON.parse(returnedData);
             msgs = response.msgs;

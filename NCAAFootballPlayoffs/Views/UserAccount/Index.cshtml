@@ -1,0 +1,50 @@
+﻿@model IEnumerable<NCAAFootballPlayoffs.Models.Username>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UsernameText)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.DisplayName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.EmailAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Approved)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UsernameText)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.DisplayName)
+        </td>
+        <td>
+            @Html.DisplayFor(model => item.User.EmailAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Approved)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { usernameID = item.UsernameID }) @*|*@
+            @*@Html.ActionLink("Delete", "Delete", new { id=item.UsernameID })*@
+        </td>
+    </tr>
+}
+
+</table>

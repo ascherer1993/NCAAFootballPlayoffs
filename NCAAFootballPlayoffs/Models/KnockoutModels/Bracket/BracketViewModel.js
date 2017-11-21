@@ -16,6 +16,8 @@
     self.newGameSelectFavorite = ko.observable();
     self.newGameSelectUnderdog = ko.observable();
 
+
+    self.modalInUse = '';
     //These are used for the new game modal
     self.newGameBowlName = ko.observable();
     self.newGameDatetime = ko.observable(null);
@@ -49,6 +51,17 @@
         var count = 0;
         self.games().forEach(function (game) {
             if (game.teamPickID() != undefined)
+            {
+                count++;
+            }
+        });
+        return count;
+    }, this);
+
+    self.questionPickMadeCount = ko.pureComputed(function () {
+        var count = 0;
+        self.bonusQuestions().forEach(function (bonusQuestion) {
+            if (bonusQuestion.answerPickID() != undefined || (!bonusQuestion.DisplayAsMultChoice() && bonusQuestion.QuestionAnswers()[0].Text() != ""))
             {
                 count++;
             }
@@ -216,7 +229,31 @@
         game.isEditing(true);
     }
 
-    
+    //This is used to check key presses
+    self.checkForEnter = function (data, event) {
+        if (event == 13)
+        {
+            if (self.modalInUse == 'Game')
+            {
+                self.addGame();
+            }
+            else if (self.modalInUse == 'Question')
+            {
+                self.addQuestion();
+            }
+        }
+    }
+
+    $(document).keypress(function (e) {
+        if (e.which == 13) {
+            if (self.modalInUse == 'Game') {
+                self.addGame();
+            }
+            else if (self.modalInUse == 'Question') {
+                self.addQuestion();
+            }
+        }
+    });
 
     //This method saves the game
     self.addGame = function () {
@@ -269,7 +306,7 @@
 
                 self.games.push(returnedGame);
                 $("#myModal").modal('hide');
-                
+                self.modalInUse = '';
             }
         })
     }
@@ -381,7 +418,7 @@
                 }
                 self.bonusQuestions.push(returnedQuestion);
                 $("#myModal2").modal('hide');
-
+                self.modalInUse = '';
             }
         })
     }
@@ -432,10 +469,12 @@
     //focuses when modal opens
     $('#myModal').on('shown.bs.modal', function () {
         $('#new-bowl-name').focus();
+        self.modalInUse = 'Game';
     })
 
     $('#myModal2').on('shown.bs.modal', function () {
         $('#new-question-question-text').focus();
+        self.modalInUse = 'Question';
     })
 
     self.submitBracket = function ()

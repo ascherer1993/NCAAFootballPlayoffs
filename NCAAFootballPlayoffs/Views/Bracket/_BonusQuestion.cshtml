@@ -7,9 +7,9 @@
                 <span data-bind="click: $root.editBonusQuestion" class="top-right glyphicon glyphicon-cog"></span>
             </div>
             <div class="row">
-                <div class="col-md-12" data-bind="text: Text()"></div>
+                <div class="col-md-12" data-bind="text: Text()" style="padding-top:5px"></div>
             </div>
-            <div class="row" data-bind="foreach: QuestionAnswers">
+            <div class="row" data-bind="foreach: QuestionAnswers" style="padding-bottom:5px">
                 <div class="col-md-12">
                     <!-- ko if: $parent.DisplayAsMultChoice() == true -->
                     <input type="radio" data-bind="checked: $parent.answerPickID, value: QuestionAnswerID" /><span data-bind="text: ' ' + Text()"></span>
@@ -23,12 +23,12 @@
     </div>
 </div>
 
-<div class="col-md-12" data-bind="visible: isEditing()">
+<div class="col-md-12" data-bind="visible: isEditing()" style="text-align:left">
     <div class="game-style row">
         <div class="col-md-12">
             <div class="row" style="border-bottom:1px solid black">
                 <div>
-                    <input data-bind="value: Text" />
+                    <span>Question: </span><input data-bind="value: Text" />
                 </div>
 
                 <span data-bind="click: $root.deleteQuestion" class="top-right glyphicon glyphicon-trash"></span>
@@ -37,7 +37,7 @@
             <div class="row" data-bind="foreach: QuestionAnswers">
                 <div class="col-md-12">
                     @*<input type="radio" data-bind="checked: teamPickID, value: Favorite.T" />*@
-                    <input data-bind="value: Text" />
+                    <span>Answer: </span><input data-bind="value: Text" />
                 </div>
             </div>
         </div>

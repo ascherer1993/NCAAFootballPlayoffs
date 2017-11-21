@@ -76,14 +76,20 @@ namespace NCAAFootballPlayoffs.Controllers
                         UserBonusQuestionPick temp = db.UserBonusQuestionPicks.FirstOrDefault(f => f.UsernameID == bonusQuestionPick.UsernameID && f.UserBonusQuestionPickID == bonusQuestionPick.UserBonusQuestionPickID);
                         if (temp == null)
                         {
+                            UserBonusQuestionPick newBonusQuestionPick = new UserBonusQuestionPick();
+                            newBonusQuestionPick.UsernameID = bonusQuestionPick.UsernameID;
                             if (!bonusQuestionPick.DisplayAsMultChoice)
                             {
                                 QuestionAnswer questionAnswer = new QuestionAnswer();
                                 questionAnswer.Text = bonusQuestionPick.Text;
                                 questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
-                                bonusQuestionPick.QuestionAnswer = questionAnswer;
+                                newBonusQuestionPick.QuestionAnswer = questionAnswer;
                             }
-                            db.UserBonusQuestionPicks.Add(bonusQuestionPick);
+                            else
+                            {
+                                newBonusQuestionPick.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                            }
+                            db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
                         }
                         else
                         {
@@ -536,7 +542,7 @@ namespace NCAAFootballPlayoffs.Controllers
             List<State> states = getStates();
             List<Team> teams = getTeams();
             List<UserPick> userPicks = getPicks(usernameID, seasonID);
-            List<BonusQuestion> bonusQuestions = getBonusQuestions(seasonID);
+            List<BonusQuestion> bonusQuestions = getBonusQuestions(usernameID, seasonID);
             List<UserBonusQuestionPick> userBonusQuestionPicks = getUserBonusQuestionPicks(usernameID, seasonID);
 
             var BracketJson = new {
@@ -673,7 +679,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// Gets all bonus questions for a season
         /// </summary>
         /// <returns></returns>
-        public List<BonusQuestion> getBonusQuestions(int seasonID)
+        public List<BonusQuestion> getBonusQuestions(int usernameID, int seasonID)
         {
             IEnumerable<BonusQuestion> bonusQuestions = db.BonusQuestions.Where(f => f.SeasonID == seasonID && f.Archived == false);
             bonusQuestions = bonusQuestions.Select(f => new BonusQuestion()
@@ -682,7 +688,8 @@ namespace NCAAFootballPlayoffs.Controllers
                 SeasonID = f.SeasonID,
                 Text = f.Text,
                 DisplayAsMultChoice = f.DisplayAsMultChoice,
-                QuestionAnswers = f.QuestionAnswers.Select(g => new QuestionAnswer()
+                //This is awful. I should have done a different database design
+                QuestionAnswers = f.QuestionAnswers.Where(g => !g.Archived && (g.BonusQuestion.DisplayAsMultChoice || g.UserBonusQuestionPicks.First().UsernameID == usernameID)).Select(g => new QuestionAnswer()
                     {
                     BonusQuestionID = f.BonusQuestionID,
                     QuestionAnswerID = g.QuestionAnswerID,

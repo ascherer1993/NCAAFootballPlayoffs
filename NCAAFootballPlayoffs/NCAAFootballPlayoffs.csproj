@@ -306,6 +306,8 @@
     <Content Include="Views\Bracket\_BonusQuestion.cshtml" />
     <Content Include="Views\Bracket\_GameModal.cshtml" />
     <Content Include="Views\Bracket\_BonusQuestionModal.cshtml" />
+    <Content Include="Views\UserAccount\Index.cshtml" />
+    <Content Include="Views\UserAccount\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -18,9 +18,24 @@ namespace NCAAFootballPlayoffs.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            IEnumerable<Username> usernames = db.Usernames.Where(f => !f.Archived).OrderBy(g => g.User.EmailAddress);
+            return View(usernames);
         }
         
+        [HttpGet]
+        public ActionResult Edit(int usernameID)
+        {
+            Username username = db.Usernames.Find(usernameID);
+            return View(username);
+        }
+        [HttpPost]
+        public ActionResult Edit(Username username)
+        {
+            db.Entry(username).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+            return View(username);
+        }
+
         [AuthorizeUser]
         public ActionResult MyAccount()
         {

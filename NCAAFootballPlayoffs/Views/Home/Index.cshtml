@@ -5,7 +5,7 @@
     ViewBag.Title = "NCAA Bracket - Home";
 }
 
-<h2>Home</h2>
+@*<h2>Home</h2>
 @Html.ActionLink("My bracket", "Index", "Bracket")
 
 @Html.ActionLink("DoStuff", "doWhatIWant", "Home")
@@ -26,5 +26,52 @@
             }
         }
         
+    </div>
+</div>*@
+
+<div id="gamesDiv" class="row" style="height: calc(100vh - 75px); background-color:#fff">
+    <div class="col-md-9 col-xs-12" style="overflow-y:scroll; height:calc(100vh - 75px)">
+        <div class="row title-bar">
+            <div class="col-md-6">
+                <span class="title"></span>
+            </div>
+            <div class="col-md-6" style="text-align:right">
+                @*<button class="btn btn-default" data-bind="">Add Game</button>*@
+            </div>
+        </div>
+        @Html.ActionLink("My bracket", "Index", "Bracket")
+
+        @Html.ActionLink("DoStuff", "doWhatIWant", "Home")
+
+        @Html.ActionLink("DoStuffTwo", "doWhatIWantTwo", "Home")
+    </div>
+    <div class="col-md-3 col-xs-12" style="height: calc(100vh - 75px); background-color:#d2d2d2">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1" style="background-color:#f2f2f2; margin-top: 15px; border-radius: 3px; min-height: 300px">
+                <div>
+                    <div class="row" style="padding:10px">
+                        <div class="col-sm-12">
+                            @if (Model != null)
+                            {
+                                <div>
+                                    <b>Account Email: @Model.EmailAddress</b>
+                                </div>
+                                <hr />
+                                <b>
+                                    Brackets:
+                                </b>
+                                foreach (var username in Model.Usernames)
+                                {
+                                    <div>
+                                        <b>@Html.ActionLink(username.UsernameText, "Index", "Bracket", new { usernameID = username.UsernameID }, new { })</b>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

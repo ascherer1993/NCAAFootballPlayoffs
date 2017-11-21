@@ -1,4 +1,8 @@
-﻿.navbar-brand-float-right {
+﻿.navbar {
+    position:absolute;
+}
+
+.navbar-brand-float-right {
   float: right;
   padding: 15px 15px;
   font-size: 18px;

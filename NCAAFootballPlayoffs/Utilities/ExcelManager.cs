@@ -53,7 +53,6 @@ namespace NCAAFootballPlayoffs.Utilities
             List<Game> games;
             List<BonusQuestion> bonusQuestions;
             List<Username> usernames;
-            List<UserBonusQuestionPick> userBonusQuestionPicks;
 
 
             using (var package = new ExcelPackage())
@@ -70,22 +69,19 @@ namespace NCAAFootballPlayoffs.Utilities
                 {
                     games = db.Games.Where(f => !f.Archived).ToList();
                     bonusQuestions = db.BonusQuestions.Where(f => !f.Archived).ToList();
-                    userBonusQuestionPicks = db.UserBonusQuestionPicks.Where(f => !f.QuestionAnswer.BonusQuestion.Archived && !f.QuestionAnswer.Archived).ToList();
 
                     if (seasonID != null)
                     {
                         games = games.Where(f => f.SeasonID == seasonID).ToList();
                         bonusQuestions = bonusQuestions.Where(f => f.SeasonID == seasonID).ToList();
-                        userBonusQuestionPicks = userBonusQuestionPicks.Where(f => f.QuestionAnswer.BonusQuestion.SeasonID == seasonID).ToList();
-                        usernames = db.Usernames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == seasonID)).OrderBy(h => h.UsernameText).ToList();
+                        usernames = db.Usernames.Where(f => f.Approved && f.UserPicks.Any(g => g.Game.SeasonID == seasonID)).OrderBy(h => h.UsernameText).ToList();
 
                     }
                     else
                     {
                         games = games.Where(f => f.SeasonID == 1).ToList();
                         bonusQuestions = bonusQuestions.Where(f => f.SeasonID == 1).ToList();
-                        userBonusQuestionPicks = userBonusQuestionPicks.Where(f => f.QuestionAnswer.BonusQuestion.SeasonID == 1).ToList();
-                        usernames = db.Usernames.Where(f => f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UsernameText).ToList();
+                        usernames = db.Usernames.Where(f => f.Approved && f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UsernameText).ToList();
                     }
 
 

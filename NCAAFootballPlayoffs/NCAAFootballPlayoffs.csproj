@@ -212,6 +212,7 @@
     <Compile Include="Controllers\BracketController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SeasonController.cs" />
     <Compile Include="Controllers\UserAccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -282,6 +283,7 @@
     <Compile Include="Utilities\Authentication.cs" />
     <Compile Include="Utilities\CustomAttributes.cs" />
     <Compile Include="Utilities\ExcelManager.cs" />
+    <Compile Include="Utilities\General.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -308,6 +310,8 @@
     <Content Include="Views\Bracket\_BonusQuestionModal.cshtml" />
     <Content Include="Views\UserAccount\Index.cshtml" />
     <Content Include="Views\UserAccount\Edit.cshtml" />
+    <Content Include="Views\UserAccount\Admin.cshtml" />
+    <Content Include="Views\Season\SetSeason.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

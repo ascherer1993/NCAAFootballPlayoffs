@@ -20,7 +20,7 @@ namespace NCAAFootballPlayoffs.Models
         public int SeasonID { get; set; }
         public int TeamID { get; set; }
     
-        public virtual Season Season { get; set; }
         public virtual Team Team { get; set; }
+        public virtual Season Season { get; set; }
     }
 }

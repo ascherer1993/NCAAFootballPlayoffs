@@ -9,6 +9,7 @@ using System.Web.Script.Serialization;
 using Newtonsoft;
 using NCAAFootballPlayoffs.Models.ViewModels;
 using System.Data.Entity;
+using NCAAFootballPlayoffs.Utilities;
 
 namespace NCAAFootballPlayoffs.Controllers
 {
@@ -20,19 +21,41 @@ namespace NCAAFootballPlayoffs.Controllers
         /// View for bracket page
         /// </summary>
         /// <returns></returns>
-        public ActionResult Index(int? usernameID)
+        public ActionResult Index(int? usernameID, int? seasonID)
         {
             if (usernameID == null)
             {
                 return RedirectToAction("Index", "Home");
             }
+            if (seasonID == null)
+            {
+                seasonID = Utilities.General.GetActiveSeasonID();
+            }
+
+            #region ValidUser
+            User user;
+            string email = Authentication.GetLoginInfo();
+            if (email != null)
+            {
+                user = db.Users.FirstOrDefault(f => f.EmailAddress == email);
+                if (!user.Usernames.Select(f => f.UsernameID).ToList().Contains((int)usernameID) && user.Permission.PermissionName != "Admin")
+                {
+                    return RedirectToAction("Unauthorized", "Error");
+                }
+            }
+            else
+            {
+                return RedirectToAction("SignIn", "UserAccount");
+            }
+            #endregion
+
             BracketViewModel bvm = new BracketViewModel();
             Username username = db.Usernames.FirstOrDefault(f => f.UsernameID == usernameID);
             if (username != null)
             {
                 bvm.UsernameID = (int)usernameID;
                 bvm.Username = username.UsernameText;
-                bvm.SeasonID = 1;
+                bvm.SeasonID = (int)seasonID;
                 return View(bvm);
             }
             return RedirectToAction("Unauthorized", "Error");

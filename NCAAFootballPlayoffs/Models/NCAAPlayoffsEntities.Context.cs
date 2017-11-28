@@ -28,7 +28,6 @@ namespace NCAAFootballPlayoffs.Models
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Record> Records { get; set; }
-        public virtual DbSet<Season> Seasons { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -38,5 +37,6 @@ namespace NCAAFootballPlayoffs.Models
         public virtual DbSet<UserPick> UserPicks { get; set; }
         public virtual DbSet<BonusQuestion> BonusQuestions { get; set; }
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+        public virtual DbSet<Season> Seasons { get; set; }
     }
 }

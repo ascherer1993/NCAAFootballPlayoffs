@@ -76,7 +76,7 @@
           </Key>
           <Property Name="SeasonID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SeasonYear" Type="smallint" Nullable="false" />
-          <Property Name="ActiveSeason" Type="bit" />
+          <Property Name="ActiveSeason" Type="bit" Nullable="false" />
           <Property Name="Archived" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="State">
@@ -448,7 +448,6 @@
           <EntitySet Name="Locations" EntityType="NCAAFootballPlayoffsModel.Location" />
           <EntitySet Name="Permissions" EntityType="NCAAFootballPlayoffsModel.Permission" />
           <EntitySet Name="Records" EntityType="NCAAFootballPlayoffsModel.Record" />
-          <EntitySet Name="Seasons" EntityType="NCAAFootballPlayoffsModel.Season" />
           <EntitySet Name="States" EntityType="NCAAFootballPlayoffsModel.State" />
           <EntitySet Name="Teams" EntityType="NCAAFootballPlayoffsModel.Team" />
           <EntitySet Name="Users" EntityType="NCAAFootballPlayoffsModel.User" />
@@ -464,10 +463,6 @@
             <End Role="Permission" EntitySet="Permissions" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
-          <AssociationSet Name="FK_Record_Season" Association="NCAAFootballPlayoffsModel.FK_Record_Season">
-            <End Role="Season" EntitySet="Seasons" />
-            <End Role="Record" EntitySet="Records" />
-          </AssociationSet>
           <AssociationSet Name="FK_Record_Team" Association="NCAAFootballPlayoffsModel.FK_Record_Team">
             <End Role="Team" EntitySet="Teams" />
             <End Role="Record" EntitySet="Records" />
@@ -479,10 +474,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_Game_Location" Association="NCAAFootballPlayoffsModel.FK_Game_Location">
             <End Role="Location" EntitySet="Locations" />
-            <End Role="Game" EntitySet="Games" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Game_Season" Association="NCAAFootballPlayoffsModel.FK_Game_Season">
-            <End Role="Season" EntitySet="Seasons" />
             <End Role="Game" EntitySet="Games" />
           </AssociationSet>
           <AssociationSet Name="FK_Game_Team" Association="NCAAFootballPlayoffsModel.FK_Game_Team">
@@ -518,10 +509,6 @@
           </AssociationSet>
           <EntitySet Name="BonusQuestions" EntityType="NCAAFootballPlayoffsModel.BonusQuestion" />
           <EntitySet Name="QuestionAnswers" EntityType="NCAAFootballPlayoffsModel.QuestionAnswer" />
-          <AssociationSet Name="FK_BonusQuestion_Season" Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season">
-            <End Role="Season" EntitySet="Seasons" />
-            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
-          </AssociationSet>
           <AssociationSet Name="FK_QuestionAnswer_BonusQuestion" Association="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion">
             <End Role="BonusQuestion" EntitySet="BonusQuestions" />
             <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
@@ -529,6 +516,19 @@
           <AssociationSet Name="FK_UserBonusQuestionPick_QuestionAnswer" Association="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer">
             <End Role="QuestionAnswer" EntitySet="QuestionAnswers" />
             <End Role="UserBonusQuestionPick" EntitySet="UserBonusQuestionPicks" />
+          </AssociationSet>
+          <EntitySet Name="Seasons" EntityType="NCAAFootballPlayoffsModel.Season" />
+          <AssociationSet Name="FK_BonusQuestion_Season" Association="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="BonusQuestion" EntitySet="BonusQuestions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Game_Season" Association="NCAAFootballPlayoffsModel.FK_Game_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="Game" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Record_Season" Association="NCAAFootballPlayoffsModel.FK_Record_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="Record" EntitySet="Records" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Location">
@@ -560,20 +560,8 @@
           <Property Name="Losses" Type="Int16" Nullable="false" />
           <Property Name="SeasonID" Type="Int32" Nullable="false" />
           <Property Name="TeamID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_Record_Season" FromRole="Record" ToRole="Season" />
           <NavigationProperty Name="Team" Relationship="NCAAFootballPlayoffsModel.FK_Record_Team" FromRole="Record" ToRole="Team" />
-        </EntityType>
-        <EntityType Name="Season">
-          <Key>
-            <PropertyRef Name="SeasonID" />
-          </Key>
-          <Property Name="SeasonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SeasonYear" Type="Int16" Nullable="false" />
-          <Property Name="ActiveSeason" Type="Boolean" />
-          <Property Name="Archived" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Records" Relationship="NCAAFootballPlayoffsModel.FK_Record_Season" FromRole="Season" ToRole="Record" />
-          <NavigationProperty Name="Games" Relationship="NCAAFootballPlayoffsModel.FK_Game_Season" FromRole="Season" ToRole="Game" />
-          <NavigationProperty Name="BonusQuestions" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="Season" ToRole="BonusQuestion" />
+          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_Record_Season" FromRole="Record" ToRole="Season" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -650,18 +638,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Record_Season">
-          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.Record" Role="Record" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Season">
-              <PropertyRef Name="SeasonID" />
-            </Principal>
-            <Dependent Role="Record">
-              <PropertyRef Name="SeasonID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Record_Team">
           <End Type="NCAAFootballPlayoffsModel.Team" Role="Team" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.Record" Role="Record" Multiplicity="*" />
@@ -694,10 +670,10 @@
           <Property Name="WinnerID" Type="Int32" />
           <NavigationProperty Name="Favorite" Relationship="NCAAFootballPlayoffsModel.FK_Game_Favorite" FromRole="Game" ToRole="Team" />
           <NavigationProperty Name="Location" Relationship="NCAAFootballPlayoffsModel.FK_Game_Location" FromRole="Game" ToRole="Location" />
-          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_Game_Season" FromRole="Game" ToRole="Season" />
           <NavigationProperty Name="Winner" Relationship="NCAAFootballPlayoffsModel.FK_Game_Team" FromRole="Game" ToRole="Team" />
           <NavigationProperty Name="Underdog" Relationship="NCAAFootballPlayoffsModel.FK_Game_Underdog" FromRole="Game" ToRole="Team" />
           <NavigationProperty Name="UserPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserPick_Game" FromRole="Game" ToRole="UserPick" />
+          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_Game_Season" FromRole="Game" ToRole="Season" />
         </EntityType>
         <Association Name="FK_Game_Favorite">
           <End Type="NCAAFootballPlayoffsModel.Team" Role="Team" Multiplicity="1" />
@@ -720,18 +696,6 @@
             </Principal>
             <Dependent Role="Game">
               <PropertyRef Name="LocationID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Game_Season">
-          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.Game" Role="Game" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Season">
-              <PropertyRef Name="SeasonID" />
-            </Principal>
-            <Dependent Role="Game">
-              <PropertyRef Name="SeasonID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -864,8 +828,8 @@
           <Property Name="DisplayAsMultChoice" Type="Boolean" Nullable="false" />
           <Property Name="SeasonID" Type="Int32" Nullable="false" />
           <Property Name="Archived" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="BonusQuestion" ToRole="Season" />
           <NavigationProperty Name="QuestionAnswers" Relationship="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" FromRole="BonusQuestion" ToRole="QuestionAnswer" />
+          <NavigationProperty Name="Season" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="BonusQuestion" ToRole="Season" />
         </EntityType>
         <EntityType Name="QuestionAnswer">
           <Key>
@@ -879,18 +843,6 @@
           <NavigationProperty Name="BonusQuestion" Relationship="NCAAFootballPlayoffsModel.FK_QuestionAnswer_BonusQuestion" FromRole="QuestionAnswer" ToRole="BonusQuestion" />
           <NavigationProperty Name="UserBonusQuestionPicks" Relationship="NCAAFootballPlayoffsModel.FK_UserBonusQuestionPick_QuestionAnswer" FromRole="QuestionAnswer" ToRole="UserBonusQuestionPick" />
         </EntityType>
-        <Association Name="FK_BonusQuestion_Season">
-          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
-          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Season">
-              <PropertyRef Name="SeasonID" />
-            </Principal>
-            <Dependent Role="BonusQuestion">
-              <PropertyRef Name="SeasonID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_QuestionAnswer_BonusQuestion">
           <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="1" />
           <End Type="NCAAFootballPlayoffsModel.QuestionAnswer" Role="QuestionAnswer" Multiplicity="*" />
@@ -912,6 +864,54 @@
             </Principal>
             <Dependent Role="UserBonusQuestionPick">
               <PropertyRef Name="SelectedAnswerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Season">
+          <Key>
+            <PropertyRef Name="SeasonID" />
+          </Key>
+          <Property Name="SeasonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SeasonYear" Type="Int16" Nullable="false" />
+          <Property Name="ActiveSeason" Type="Boolean" Nullable="false" />
+          <Property Name="Archived" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BonusQuestions" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="Season" ToRole="BonusQuestion" />
+          <NavigationProperty Name="Games" Relationship="NCAAFootballPlayoffsModel.FK_Game_Season" FromRole="Season" ToRole="Game" />
+          <NavigationProperty Name="Records" Relationship="NCAAFootballPlayoffsModel.FK_Record_Season" FromRole="Season" ToRole="Record" />
+        </EntityType>
+        <Association Name="FK_BonusQuestion_Season">
+          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.BonusQuestion" Role="BonusQuestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="SeasonID" />
+            </Principal>
+            <Dependent Role="BonusQuestion">
+              <PropertyRef Name="SeasonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Game_Season">
+          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.Game" Role="Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="SeasonID" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="SeasonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Record_Season">
+          <End Type="NCAAFootballPlayoffsModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="NCAAFootballPlayoffsModel.Record" Role="Record" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="SeasonID" />
+            </Principal>
+            <Dependent Role="Record">
+              <PropertyRef Name="SeasonID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -947,16 +947,6 @@
                 <ScalarProperty Name="Losses" ColumnName="Losses" />
                 <ScalarProperty Name="Wins" ColumnName="Wins" />
                 <ScalarProperty Name="RecordID" ColumnName="RecordID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Seasons">
-            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Season">
-              <MappingFragment StoreEntitySet="Season">
-                <ScalarProperty Name="Archived" ColumnName="Archived" />
-                <ScalarProperty Name="ActiveSeason" ColumnName="ActiveSeason" />
-                <ScalarProperty Name="SeasonYear" ColumnName="SeasonYear" />
-                <ScalarProperty Name="SeasonID" ColumnName="SeasonID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1063,6 +1053,16 @@
                 <ScalarProperty Name="BonusQuestionID" ColumnName="BonusQuestionID" />
                 <ScalarProperty Name="Text" ColumnName="Text" />
                 <ScalarProperty Name="QuestionAnswerID" ColumnName="QuestionAnswerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Seasons">
+            <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Season">
+              <MappingFragment StoreEntitySet="Season">
+                <ScalarProperty Name="Archived" ColumnName="Archived" />
+                <ScalarProperty Name="ActiveSeason" ColumnName="ActiveSeason" />
+                <ScalarProperty Name="SeasonYear" ColumnName="SeasonYear" />
+                <ScalarProperty Name="SeasonID" ColumnName="SeasonID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

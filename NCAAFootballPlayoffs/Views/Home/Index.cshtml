@@ -18,6 +18,8 @@
         @Html.ActionLink("DoStuff", "doWhatIWant", "Home")
 
         @Html.ActionLink("DoStuffTwo", "doWhatIWantTwo", "Home")
+
+        @Html.ActionLink("DoStuffThree", "doWhatIWantThree", "Home")
     </div>
     <div class="col-md-3 col-xs-12" style="height: calc(100vh - 75px); background-color:#d2d2d2">
         <div class="row">
@@ -42,7 +44,10 @@
                                     </div>
                                 }
                             }
-
+                        </div>
+                        <hr style="padding-bottom:40px" />
+                        <div style="position:absolute; bottom:10px; right:25%; width:50%">
+                            @Html.ActionLink("Create Bracket", "CreateBracket", "UserAccount", new { }, new { @class= "btn btn-success" })
                         </div>
                     </div>
                 </div>

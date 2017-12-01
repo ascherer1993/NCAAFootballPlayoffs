@@ -182,7 +182,18 @@ namespace NCAAFootballPlayoffs.Utilities
             return errors;
         }
 
+        public static byte[] getPasswordHash(byte[] salt, string password)
+        {
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(salt + password);
 
+            var SHA512 = new SHA512Managed();
+
+            MemoryStream stream = new MemoryStream(passwordBytes);
+
+            var md5Password = SHA512.ComputeHash(stream);
+
+            return md5Password;
+        }
 
 
         //Got from http://codereview.stackexchange.com/questions/93614/salt-generation-in-c

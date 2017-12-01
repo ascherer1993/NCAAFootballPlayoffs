@@ -3,6 +3,7 @@ using NCAAFootballPlayoffs.Models.ViewModels;
 using NCAAFootballPlayoffs.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -167,48 +168,40 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(username);
         }
 
-        /// <summary>
-        /// This was a temporary method used to create my account. This will later be modified to the postback of creating an account
-        /// </summary>
-        /// <returns></returns>
-        //public bool CreateAccount()
-        //{
-        //    string username = "ams0068";
-        //    string password = "1234";
-        //    string email = "ams0068@auburn.edu";
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string key = new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
 
-        //    byte[] newSalt = Authentication.GetSalt(32);
-        //    byte[] passwordBytes = Encoding.UTF8.GetBytes(newSalt + password);
+            ResetPasswordViewModel rpvm = new ResetPasswordViewModel();
+            rpvm.GeneratedKey = key;
 
-        //    var SHA512 = new SHA512Managed();
+            return View(rpvm);
+        }
 
-        //    MemoryStream stream = new MemoryStream(passwordBytes);
+        [HttpPost]
+        public ActionResult ResetPassword(ResetPasswordViewModel rpvm)
+        {
+            if (rpvm.GeneratedKey.ToLower() == rpvm.Key.ToLower() && rpvm.Password == rpvm.PasswordConfirm)
+            {
+                User user = db.Users.FirstOrDefault(f => f.EmailAddress == rpvm.EmailAddress);
+                if (user != null)
+                {
+                    user.Salt = Authentication.GetSalt(32);
+                    user.PasswordHash = Authentication.getPasswordHash(user.Salt, rpvm.Password);
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+                return RedirectToAction("SignIn", "UserAccount");
+            }
+            return View(rpvm);
+        }
 
-        //    var md5Password = SHA512.ComputeHash(stream);
-
-
-        //    User newUser = new User();
-        //    newUser.Salt = newSalt;
-        //    newUser.PasswordHash = md5Password;
-        //    newUser.EmailAddress = email;
-        //    newUser.Archived = false;
-        //    newUser.DisplayName = "Aaron Scherer";
-        //    newUser.PermissionID = 2;
-
-
-
-        //    db.Users.Add(newUser);
-
-        //    UserName newUsername = new UserName();
-        //    newUsername.UserNameText = username;
-        //    newUsername.UserID = newUser.UserID;
-        //    newUsername.Approved = false;
-        //    newUsername.Archived = false;
-
-        //    db.UserNames.Add(newUsername);
-        //    db.SaveChanges();
-
-        //    return true;
-        //}
+        public void SendKeyToEmail(string email, string generatedKey)
+        {
+            General.SendEmail(email, "Key: " + generatedKey, "Password Reset");
+        }
     }
 }

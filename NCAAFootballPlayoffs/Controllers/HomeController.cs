@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using NCAAFootballPlayoffs.Utilities;
 using NCAAFootballPlayoffs.Models;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace NCAAFootballPlayoffs.Controllers
 {
@@ -57,6 +58,12 @@ namespace NCAAFootballPlayoffs.Controllers
         public ActionResult doWhatIWantTwo()
         {
             Utilities.Authentication.SignIn("ams0068@auburn.edu", "1234");
+            return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult doWhatIWantThree()
+        {
+            General.SendEmail("ascherer1993@gmail.com", "This is the message", "Test");
             return RedirectToAction("Index", "Home");
         }
     }

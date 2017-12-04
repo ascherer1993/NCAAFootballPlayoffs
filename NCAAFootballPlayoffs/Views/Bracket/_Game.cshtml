@@ -2,9 +2,9 @@
     <div class="game-style row">
         <div class="col-md-12">
             @*<div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff,">*@
-            <div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff; -webkit-font-smoothing: antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased;">
+            <div class="row" data-bind="style: { backgroundColor: IsBCSBowl() ? '#5cb85c' : '#A8B2CD' }" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff; -webkit-font-smoothing: antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased;">
                 <div data-bind="text: GameName()"></div>
-                <span data-bind="click: $root.editGame" class="top-right glyphicon glyphicon-cog"></span>
+                <span data-bind="visible: $root.isAdmin, click: $root.editGame" class="top-right glyphicon glyphicon-cog"></span>
                 <div data-bind="text: moment(GameDatetime()).format('LLLL')" class="small-text"></div>
                 <div data-bind="text: Location.City() + ', ' + Location.State().StateName()" class="small-text"></div>
             </div>
@@ -13,20 +13,20 @@
                     <div class="small-text">Favorite</div>
                     <div data-bind="text: Favorite.TeamName()"></div>
                     <div data-bind="text: Favorite.TeamNickname()"></div>
-                    <input type="radio" data-bind="checked: teamPickID, value: Favorite.TeamID" />
+                    <input type="radio" data-bind="enable: $root.canEditPicks, checked: teamPickID, value: Favorite.TeamID" />
                 </div>
                 <div class="col-xs-4">
                     <div class="small-text">Spread</div>
                     <div data-bind="text: PointSpread()"></div>
                     <div>
-                        <span>Sure Pick: </span><input type="checkbox" data-bind="checked: isSurePick, disable: $root.surePickCount() >= 3 && !isSurePick()" />
+                        <span>Sure Pick: </span><input type="checkbox" data-bind="checked: isSurePick, disable: !$root.canEditPicks || ($root.surePickCount() >= 3 && !isSurePick())" />
                     </div>
                 </div>
                 <div class="col-xs-4">
                     <div class="small-text">Underdog</div>
                     <div data-bind="text: Underdog.TeamName()"></div>
                     <div data-bind="text: Underdog.TeamNickname()"></div>
-                    <input type="radio" data-bind="checked: teamPickID, value: Underdog.TeamID" />
+                    <input type="radio" data-bind="enable: $root.canEditPicks, checked: teamPickID, value: Underdog.TeamID" />
                 </div>
             </div>
         </div>

@@ -1,10 +1,13 @@
 ﻿<h2>Admin</h2>
 
 <div>
-    @Html.ActionLink("Brackets", "Index", "UserAccount")
+    @Html.ActionLink("Manage Brackets", "Index", "UserAccount")
 </div>
-<div>
+@*<div>
     @Html.ActionLink("Create New Season", "CreateSeason", "Season")
+</div>*@
+<div>
+    @Html.ActionLink("Manage Seasons", "Index", "Season")
 </div>
 <div>
     @Html.ActionLink("Set Active Season", "SetSeason", "Season")

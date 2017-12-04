@@ -49,7 +49,20 @@ namespace NCAAFootballPlayoffs.Controllers
             }
             #endregion
 
+            #region Permissions
             BracketViewModel bvm = new BracketViewModel();
+            bvm.IsAdmin = user.Permission.PermissionName == "Admin";
+
+            Season season = db.Seasons.Find(seasonID);
+            bvm.SeasonYear = season.SeasonYear;
+            bool inEditWindow = true;
+            if (season.RestrictPicksDate != null)
+            {
+                inEditWindow = season.RestrictPicksDate > DateTime.Now;
+            }
+            bvm.CanEditPicks = bvm.IsAdmin || inEditWindow;
+            #endregion
+
             Username username = db.Usernames.FirstOrDefault(f => f.UsernameID == usernameID);
             if (username != null)
             {
@@ -84,7 +97,11 @@ namespace NCAAFootballPlayoffs.Controllers
                         UserPick temp = db.UserPicks.FirstOrDefault(f => f.UsernameID == userPick.UsernameID && f.GameID == userPick.GameID);
                         if (temp == null)
                         {
-                            db.UserPicks.Add(userPick);
+                            Team chosenTeam = db.Teams.FirstOrDefault(f => f.TeamID == userPick.ChosenTeamID);
+                            if (chosenTeam != null)
+                            {
+                                db.UserPicks.Add(userPick);
+                            }
                         }
                         else
                         {
@@ -104,15 +121,24 @@ namespace NCAAFootballPlayoffs.Controllers
                             if (!bonusQuestionPick.DisplayAsMultChoice)
                             {
                                 QuestionAnswer questionAnswer = new QuestionAnswer();
-                                questionAnswer.Text = bonusQuestionPick.Text;
-                                questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
-                                newBonusQuestionPick.QuestionAnswer = questionAnswer;
+                                if (bonusQuestionPick.Text != null)
+                                {
+                                    questionAnswer.Text = bonusQuestionPick.Text;
+                                    questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
+                                    newBonusQuestionPick.QuestionAnswer = questionAnswer;
+                                    db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+                                }
                             }
                             else
                             {
-                                newBonusQuestionPick.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                                QuestionAnswer questionAnswer = db.QuestionAnswers.FirstOrDefault(f => f.QuestionAnswerID == bonusQuestionPick.SelectedAnswerID);
+                                if (questionAnswer != null)
+                                {
+                                    newBonusQuestionPick.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                                    db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+                                }
                             }
-                            db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+
                         }
                         else
                         {

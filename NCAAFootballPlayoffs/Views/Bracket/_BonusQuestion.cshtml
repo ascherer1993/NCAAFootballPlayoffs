@@ -4,7 +4,7 @@
             @*<div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff,">*@
             <div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff; -webkit-font-smoothing: antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased;">
                 <div class="col-md-12" data-bind="text: 'Bonus Question ' + ($index() + 1)"></div>
-                <span data-bind="click: $root.editBonusQuestion" class="top-right glyphicon glyphicon-cog"></span>
+                <span data-bind="visible: $root.isAdmin, click: $root.editBonusQuestion" class="top-right glyphicon glyphicon-cog"></span>
             </div>
             <div class="row">
                 <div class="col-md-12" data-bind="text: Text()" style="padding-top:5px"></div>
@@ -12,10 +12,10 @@
             <div class="row" data-bind="foreach: QuestionAnswers" style="padding-bottom:5px">
                 <div class="col-md-12">
                     <!-- ko if: $parent.DisplayAsMultChoice() == true -->
-                    <input type="radio" data-bind="checked: $parent.answerPickID, value: QuestionAnswerID" /><span data-bind="text: ' ' + Text()"></span>
+                    <input type="radio" data-bind="enable: $root.canEditPicks, checked: $parent.answerPickID, value: QuestionAnswerID" /><span data-bind="text: ' ' + Text()"></span>
                     <!-- /ko -->
                     <!-- ko if: $parent.DisplayAsMultChoice() == false -->
-                    <span>Answer: </span><input type="text" data-bind="value: Text" />
+                    <span>Answer: </span><input type="text" data-bind="enable: $root.canEditPicks, value: Text" />
                     <!-- /ko -->
                 </div>
             </div>

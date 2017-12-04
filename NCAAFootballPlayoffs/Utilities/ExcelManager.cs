@@ -46,8 +46,13 @@ namespace NCAAFootballPlayoffs.Utilities
 
         //THIS USES EPPLUS
         // [y, x?]
-        public MemoryStream DownloadPicks(int? seasonID = 1)
+        public MemoryStream DownloadPicks(int? seasonID = null)
         {
+            if (seasonID == null)
+            {
+                seasonID = General.GetActiveSeasonID();
+            }
+
             MemoryStream memStream;
 
             List<Game> games;

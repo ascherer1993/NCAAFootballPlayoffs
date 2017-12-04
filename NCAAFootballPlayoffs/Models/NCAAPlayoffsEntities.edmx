@@ -78,6 +78,7 @@
           <Property Name="SeasonYear" Type="smallint" Nullable="false" />
           <Property Name="ActiveSeason" Type="bit" Nullable="false" />
           <Property Name="Archived" Type="bit" Nullable="false" />
+          <Property Name="RestrictPicksDate" Type="datetime" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -875,6 +876,7 @@
           <Property Name="SeasonYear" Type="Int16" Nullable="false" />
           <Property Name="ActiveSeason" Type="Boolean" Nullable="false" />
           <Property Name="Archived" Type="Boolean" Nullable="false" />
+          <Property Name="RestrictPicksDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BonusQuestions" Relationship="NCAAFootballPlayoffsModel.FK_BonusQuestion_Season" FromRole="Season" ToRole="BonusQuestion" />
           <NavigationProperty Name="Games" Relationship="NCAAFootballPlayoffsModel.FK_Game_Season" FromRole="Season" ToRole="Game" />
           <NavigationProperty Name="Records" Relationship="NCAAFootballPlayoffsModel.FK_Record_Season" FromRole="Season" ToRole="Record" />
@@ -1059,6 +1061,7 @@
           <EntitySetMapping Name="Seasons">
             <EntityTypeMapping TypeName="NCAAFootballPlayoffsModel.Season">
               <MappingFragment StoreEntitySet="Season">
+                <ScalarProperty Name="RestrictPicksDate" ColumnName="RestrictPicksDate" />
                 <ScalarProperty Name="Archived" ColumnName="Archived" />
                 <ScalarProperty Name="ActiveSeason" ColumnName="ActiveSeason" />
                 <ScalarProperty Name="SeasonYear" ColumnName="SeasonYear" />

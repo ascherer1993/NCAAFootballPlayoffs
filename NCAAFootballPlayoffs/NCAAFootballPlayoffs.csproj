@@ -315,6 +315,8 @@
     <Content Include="Views\Season\SetSeason.cshtml" />
     <Content Include="Views\Season\CreateSeason.cshtml" />
     <Content Include="Views\UserAccount\ResetPassword.cshtml" />
+    <Content Include="Views\Season\Index.cshtml" />
+    <Content Include="Views\Season\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

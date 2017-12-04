@@ -26,6 +26,7 @@ namespace NCAAFootballPlayoffs.Models
         public short SeasonYear { get; set; }
         public bool ActiveSeason { get; set; }
         public bool Archived { get; set; }
+        public Nullable<System.DateTime> RestrictPicksDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BonusQuestion> BonusQuestions { get; set; }

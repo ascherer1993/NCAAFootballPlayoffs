@@ -1,4 +1,5 @@
 ﻿using NCAAFootballPlayoffs.Models;
+using NCAAFootballPlayoffs.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,14 @@ namespace NCAAFootballPlayoffs.Controllers
     public class SeasonController : Controller
     {
         NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities();
+
+        [AuthorizeUser("Admin")]
+        [HttpGet]
+        public ActionResult Index()
+        {
+            IEnumerable<Season> seasons = db.Seasons.Where(f => !f.Archived).AsEnumerable();
+            return View(seasons);
+        }
 
         [AuthorizeUser("Admin")]
         [HttpGet]
@@ -50,10 +59,49 @@ namespace NCAAFootballPlayoffs.Controllers
             
             return View();
         }
-    
+
+        [AuthorizeUser("Admin")]
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            Season season = db.Seasons.Find(id);
+            return View(season);
+        }
+
+        [AuthorizeUser("Admin")]
+        [HttpPost]
+        public ActionResult Edit(Season season)
+        {
+            try
+            {
+                db.Entry(season).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch
+            {
+                return View(season);
+            }
 
 
-    [AuthorizeUser("Admin")]
+            List<string> errors = new List<string>();
+            if (ModelState.IsValid)
+            {
+                //Calles my authentication utility and adds any returned errors to my error list to be displayed
+                //errors.AddRange(Utilities.Authentication.SignIn(signInVM.EmailAddress, signInVM.Password));
+                if (errors.Count == 0)
+                {
+                    return RedirectToAction("Admin", "UserAccount");
+                }
+            }
+            foreach (string error in errors)
+            {
+                ModelState.AddModelError(error, error);
+            }
+
+            return View();
+        }
+
+        [AuthorizeUser("Admin")]
         [HttpGet]
         public ActionResult SetSeason()
         {
@@ -103,6 +151,13 @@ namespace NCAAFootballPlayoffs.Controllers
 
             IEnumerable<Season> seasons = db.Seasons.Where(f => !f.Archived).AsEnumerable();
             return View(seasons);
+        }
+
+        public FileStreamResult SeasonPicksToExcel(int? seasonID)
+        {
+            ExcelManager em = new ExcelManager();
+            var memStream = em.DownloadPicks(seasonID);
+            return File(memStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "NCAAFootballPicks.xlsx");
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿function BracketViewModel(ModelIn) {
     var self = this;
     //Setup
+    self.isAdmin = ModelIn.IsAdmin;
+    self.canEditPicks = ModelIn.CanEditPicks;
     self.username = ModelIn.Username;
     self.usernameID = ModelIn.UsernameID;
     self.seasonID = ko.observable(ModelIn.SeasonID);
+    self.seasonYear = ko.observable(ModelIn.SeasonYear);
 
     self.isLoaded = ko.observable(false);
     self.games = ko.observableArray();

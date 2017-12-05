@@ -32,9 +32,39 @@ namespace NCAAFootballPlayoffs.Controllers
         [HttpPost]
         public ActionResult Edit(Username username)
         {
-            db.Entry(username).State = System.Data.Entity.EntityState.Modified;
-            db.SaveChanges();
-            return View(username);
+            try
+            {
+                db.Entry(username).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                return View(username);
+            }
+            return RedirectToAction("Admin");
+        }
+
+        [AuthorizeUser("Admin")]
+        [HttpGet]
+        public ActionResult Impersonate()
+        {
+            IEnumerable<User> users = db.Users.Where(f => !f.Archived).OrderBy(g => g.EmailAddress);
+            return View(users);
+        }
+
+        [AuthorizeUser("Admin")]
+        [HttpPost]
+        public ActionResult Impersonate(int userID)
+        {
+            User user = db.Users.Find(userID);
+            if (user != null)
+            {
+                Authentication.Impersonate(user.EmailAddress);
+                return RedirectToAction("Index", "Home");
+            }
+
+            IEnumerable<User> users = db.Users.Where(f => !f.Archived).OrderBy(g => g.EmailAddress);
+            return View(users);
         }
 
         [AuthorizeUser]
@@ -202,6 +232,17 @@ namespace NCAAFootballPlayoffs.Controllers
         public void SendKeyToEmail(string email, string generatedKey)
         {
             General.SendEmail(email, "Key: " + generatedKey, "Password Reset");
+        }
+
+
+        [AjaxOnly]
+        public bool IsAdmin()
+        {
+            if (Authentication.IsMemberOf("Admin"))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

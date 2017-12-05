@@ -317,6 +317,7 @@
     <Content Include="Views\UserAccount\ResetPassword.cshtml" />
     <Content Include="Views\Season\Index.cshtml" />
     <Content Include="Views\Season\Edit.cshtml" />
+    <Content Include="Views\UserAccount\Impersonate.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

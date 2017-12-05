@@ -78,6 +78,18 @@ namespace NCAAFootballPlayoffs.Utilities
             return isMember;
         }
 
+        [AuthorizeUser("Admin")]
+        public static bool Impersonate(string email)
+        {
+            using (var db = new NCAAFootballPlayoffsEntities())
+            {
+                User user = db.Users.FirstOrDefault(f => f.EmailAddress == email);
+                HttpContext.Current.Session["loginEmail"] = user.EmailAddress;
+            }
+            return true;
+        }
+
+
         //signs the user in if their log in credentials are correct
         public static List<string> SignIn(string email, string password)
         {

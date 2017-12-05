@@ -37,7 +37,7 @@
                     @Html.ActionLink("Sign Out", "SignOut", "UserAccount", new { area = "" }, new { @class = "navbar-brand-float-right navbar-subtitle", @style = "" })
                 }
 
-                @Html.ActionLink("Admin", "Admin", "UserAccount", new { area = "" }, new { @class = "navbar-brand-float-right navbar-subtitle", @style = "" })
+                @Html.ActionLink("Admin", "Admin", "UserAccount", new { area = "" }, new { @id = "AdminButton", @class = "navbar-brand-float-right navbar-subtitle", @style = "display: none" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -50,4 +50,23 @@
         @RenderBody()
     </div>
 </body>
+
+
+
+
 </html>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url: window.location .protocol + "//" + window.location.host + "/" + "UserAccount/IsAdmin",
+            context: document.body,
+            success: function (isAdmin) {
+                if (isAdmin == "True")
+                {
+                    $("#AdminButton").show();
+                }
+            }
+        });
+    });
+</script>

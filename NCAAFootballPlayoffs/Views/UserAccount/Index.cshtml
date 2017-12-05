@@ -41,7 +41,8 @@
             @Html.DisplayFor(modelItem => item.Approved)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { usernameID = item.UsernameID }) @*|*@
+            @Html.ActionLink("Edit", "Edit", new { usernameID = item.UsernameID }) |
+            @Html.ActionLink("View Bracket", "Index", "Bracket", new { usernameID = item.UsernameID }, new { })
             @*@Html.ActionLink("Delete", "Delete", new { id=item.UsernameID })*@
         </td>
     </tr>

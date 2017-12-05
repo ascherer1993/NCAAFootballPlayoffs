@@ -13,22 +13,24 @@
                 @*<button class="btn btn-default" data-bind="">Add Game</button>*@
             </div>
         </div>
-        @Html.ActionLink("My bracket", "Index", "Bracket")
-
-        @Html.ActionLink("DoStuff", "doWhatIWant", "Home")
-
-        @Html.ActionLink("DoStuffTwo", "doWhatIWantTwo", "Home")
-
-        @Html.ActionLink("DoStuffThree", "doWhatIWantThree", "Home")
+        @if (Model == null)
+        {
+            <h3>This page currently doesn't do anything. In order to get started, press sign in, and then create an account.</h3>
+        }
+        else
+        {
+            <h3>All your brackets are on the right side of the screen. You can create as many brackets as you want, but each must be approved individually.</h3>
+        }
     </div>
     <div class="col-md-3 col-xs-12" style="height: calc(100vh - 75px); background-color:#d2d2d2">
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1" style="background-color:#f2f2f2; margin-top: 15px; border-radius: 3px; min-height: 300px">
                 <div>
                     <div class="row" style="padding:10px">
-                        <div class="col-sm-12">
-                            @if (Model != null)
-                            {
+                        @if (Model != null)
+                        {
+                            <div class="col-sm-12">
+                            
                                 <div>
                                     <b>Account Email: @Model.EmailAddress</b>
                                 </div>
@@ -36,19 +38,32 @@
                                 <b>
                                     Brackets:
                                 </b>
-                                foreach (var username in Model.Usernames)
+                                @foreach (var username in Model.Usernames.OrderBy(f => f.UsernameText))
                                 {
                                     //Seasons!!
                                     <div>
                                         <b>@Html.ActionLink(username.UsernameText, "Index", "Bracket", new { usernameID = username.UsernameID }, new { })</b>
+                                        @if (username.Approved)
+                                        {
+                                        <span style="color:green">&#10003;</span>
+                                        }
+                                        else
+                                        {
+                                        <span style="color:red">&#128500;</span>
+                                        }
                                     </div>
                                 }
-                            }
-                        </div>
-                        <hr style="padding-bottom:40px" />
-                        <div style="position:absolute; bottom:10px; right:25%; width:50%">
-                            @Html.ActionLink("Create Bracket", "CreateBracket", "UserAccount", new { }, new { @class= "btn btn-success" })
-                        </div>
+
+                            </div>
+                            <hr style="padding-bottom:40px" />
+                            <div style="position:absolute; bottom:10px; right:25%; width:50%">
+                                @Html.ActionLink("Create Bracket", "CreateBracket", "UserAccount", new { }, new { @class = "btn btn-success" })
+                            </div>
+                        }
+                        else
+                        {
+                            <h5>You are currently not signed in.</h5>
+                        }
                     </div>
                 </div>
             </div>

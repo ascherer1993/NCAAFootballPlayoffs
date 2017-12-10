@@ -35,12 +35,12 @@ namespace NCAAFootballPlayoffs.Models
         public bool Archived { get; set; }
         public Nullable<int> WinnerID { get; set; }
     
-        public virtual Team Favorite { get; set; }
         public virtual Location Location { get; set; }
-        public virtual Team Winner { get; set; }
-        public virtual Team Underdog { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPick> UserPicks { get; set; }
         public virtual Season Season { get; set; }
+        public virtual Team Favorite { get; set; }
+        public virtual Team Winner { get; set; }
+        public virtual Team Underdog { get; set; }
     }
 }

@@ -51,15 +51,12 @@
     </div>
 </body>
 
-
-
-
 </html>
 
 <script type="text/javascript">
     $(document).ready(function () {
         $.ajax({
-            url: window.location .protocol + "//" + window.location.host + "/" + "UserAccount/IsAdmin",
+            url: window.location.protocol + "//" + window.location.host + "/" + "UserAccount/IsAdmin",
             context: document.body,
             success: function (isAdmin) {
                 if (isAdmin == "True")

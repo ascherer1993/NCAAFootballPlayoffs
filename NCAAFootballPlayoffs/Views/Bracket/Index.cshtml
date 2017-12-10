@@ -35,7 +35,6 @@
     <div class="col-md-3 col-xs-12" style="height: calc(100vh - 75px); background-color:#d2d2d2">
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1" style="background-color:#f2f2f2; margin-top: 15px; border-radius: 3px; text-align:center">
-                <div>
                     <div style="padding-top:10px">
                         <b>Game picks remaining: <span data-bind="text: $root.games().length - $root.pickMadeCount()"></span></b>
                     </div>
@@ -51,9 +50,38 @@
                     <div style="position:absolute; bottom:10px; right:25%; width:50%">
                         <div class="btn btn-success" data-bind="click: $root.submitBracket">Save Bracket</div>
                     </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-10" style="margin-top: 15px; border-radius: 3px">
+                    <div>
+                        <div style="padding-top:10px; font-size:11px">
+                           <ul>
+                               <li>
+                                   All non-BCS games are valued at 1 pt; All BCS (Orange, Rose, Sugar, Fiesta, Championship) games are valued at 2 points 
+                               </li>
+                               <li>
+                                   Pick 3 "sure things" will get 1 extra point for each one if correct.   Bonus Q's worth 1 pt each
+                               </li>
+                               <li>
+                                   Underdogs who  win will receive 25% add'l credit if they are 2.0-3.5 point underdogs;
+                               </li>
+                               <li>
+                                   Underdogs who  win will receive 50% add'l credit if they are 4-7.0 point underdogs;
+                               </li>
+                               <li>
+                                   Underdogs who win that are 7.5-10  point underdoges will receive 100% add'l (double) credit.
+                               </li>
+                               <li>
+                                   Underdogs who win that are 10.5-13.5 pt underdogs receive 150% add'l credit.
+                               </li>
+                               <li>
+                                   Underdogs who win that are m 14pt underdogs or more will receive 200% add'l credit.
+                               </li>
+                           </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 

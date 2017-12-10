@@ -178,13 +178,16 @@ namespace NCAAFootballPlayoffs.Utilities
                     newUser.PermissionID = 2;
                     db.Users.Add(newUser);
 
-                    Username newUsername = new Username();
-                    newUsername.UsernameText = signInVM.BracketName;
-                    newUsername.UserID = newUser.UserID;
-                    newUsername.Approved = false;
-                    newUsername.Archived = false;
+                    if (!String.IsNullOrEmpty(signInVM.BracketName))
+                    {
+                        Username newUsername = new Username();
+                        newUsername.UsernameText = signInVM.BracketName;
+                        newUsername.UserID = newUser.UserID;
+                        newUsername.Approved = false;
+                        newUsername.Archived = false;
 
-                    db.Usernames.Add(newUsername);
+                        db.Usernames.Add(newUsername);
+                    }
                     db.SaveChanges();
 
                     SignIn(signInVM.EmailAddress, signInVM.Password);

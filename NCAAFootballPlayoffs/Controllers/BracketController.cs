@@ -185,7 +185,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// <param name="gameIn"></param>
         /// <returns></returns>
         [AjaxOnly]
-        public string addGame(Game gameIn, string favoriteNameIn, string favoriteNicknameIn, string underdogNameIn, string underdogNicknameIn)
+        public string addGame(Game gameIn, string favoriteNameIn, string favoriteNicknameIn, string favoriteURLIn, string underdogNameIn, string underdogNicknameIn, string underdogURLIn)
         {
             //Messages to return to ajax call
             List<string> msgs = new List<string>();

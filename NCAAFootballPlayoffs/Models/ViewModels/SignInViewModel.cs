@@ -8,10 +8,11 @@ namespace NCAAFootballPlayoffs.Models.ViewModels
 {
     public class SignInViewModelMetaData
     {
-        [Required(ErrorMessage = "A username or email address is required.")]
+        [Required(ErrorMessage = "An email address is required.")]
         [Display(Name = "Email Address")]
         public string EmailAddress { get; set; }
-
+        [Display(Name = "Confirm Email Address")]
+        public string ConfirmEmailAddress { get; set; }
         [Required(ErrorMessage = "A password is required.")]
         public string Password { get; set; }
         [Display(Name = "Confirm Password")]
@@ -26,6 +27,7 @@ namespace NCAAFootballPlayoffs.Models.ViewModels
     public class SignInViewModel
     {
         public string EmailAddress { get; set; }
+        public string ConfirmEmailAddress { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public string BracketName { get; set; }

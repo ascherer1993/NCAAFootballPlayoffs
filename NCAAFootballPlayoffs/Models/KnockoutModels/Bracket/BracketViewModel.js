@@ -32,8 +32,10 @@
     self.newGameIsBCSBowl = ko.observable();
     self.newGameFavoriteName = ko.observable();
     self.newGameFavoriteNickname = ko.observable();
+    self.newGameFavoriteURL = ko.observable();
     self.newGameUnderdogName = ko.observable();
     self.newGameUnderdogNickname = ko.observable();
+    self.newGameUnderdogURL = ko.observable();
 
     //These are used for the new bonus question modal
     self.newQuestionText = ko.observable();
@@ -281,8 +283,10 @@
             gameIn: gameToSave,
             favoriteNameIn: self.newGameFavoriteName(),
             favoriteNicknameIn: self.newGameFavoriteNickname(),
+            favoriteURLIn: self.newGameFavoriteURL(),
             underdogNameIn: self.newGameUnderdogName(),
-            underdogNicknameIn: self.newGameUnderdogNickname()
+            underdogNicknameIn: self.newGameUnderdogNickname(),
+            underdogURLIn: self.newGameUnderdogURL()
         }, function (returnedData) {
             response = JSON.parse(returnedData);
             msgs = response.msgs;
@@ -309,6 +313,22 @@
 
                 self.games.push(returnedGame);
                 $("#myModal").modal('hide');
+                self.newGameBowlName("");
+                self.newGameDatetime("");
+                self.newGameCity("");
+                self.newGameSelectedStateID("");
+                self.newGameSelectFavorite(-1);
+                self.newGameSelectUnderdog(-1);
+                self.newGameFavoriteID(-1);
+                self.newGameUnderdogID(-1);
+                self.newGamePointSpread("");
+                self.newGameIsBCSBowl(false);
+                self.newGameFavoriteName("");
+                self.newGameFavoriteNickname("");
+                self.newGameFavoriteURL("");
+                self.newGameUnderdogName("");
+                self.newGameUnderdogNickname("");
+                self.newGameUnderdogURL("");
                 self.modalInUse = '';
             }
         })
@@ -421,6 +441,10 @@
                 }
                 self.bonusQuestions.push(returnedQuestion);
                 $("#myModal2").modal('hide');
+                self.newQuestionText("");
+                self.newQuestionMultipleChoice(false);
+                self.newQuestionAnswer("");
+                self.newQuestionAnswerArray([]);
                 self.modalInUse = '';
             }
         })

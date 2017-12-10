@@ -142,6 +142,10 @@ namespace NCAAFootballPlayoffs.Controllers
             {
                 ModelState.AddModelError("PasswordMismatch", "Your passwords did not match");
             }
+            if (signInVM.EmailAddress != signInVM.ConfirmEmailAddress)
+            {
+                ModelState.AddModelError("EmailMismatch", "Your emails did not match");
+            }
 
             if (ModelState.IsValid)
             {

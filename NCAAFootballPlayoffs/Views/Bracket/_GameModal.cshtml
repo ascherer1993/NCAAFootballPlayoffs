@@ -41,11 +41,15 @@
                         <div data-bind="visible: $root.newGameSelectFavorite() == -1">
                             <div>
                                 <label for="new-bowl-favorite-name" class="form-control-label">Team Name:</label>
-                                <input type="text" class="form-control" id="new-bowl-favorite-name" data-bind="value: $root.newGameFavoriteName">
+                                <input type="text" id="new-bowl-favorite-name" data-bind="value: $root.newGameFavoriteName">
                             </div>
                             <div>
                                 <label for="new-bowl-favorite-nickname" class="form-control-label">Team Nickname:</label>
-                                <input type="text" class="form-control" id="new-bowl-favorite-nickname" data-bind="value: $root.newGameFavoriteNickname">
+                                <input type="text" id="new-bowl-favorite-nickname" data-bind="value: $root.newGameFavoriteNickname">
+                            </div>
+                            <div>
+                                <label for="new-bowl-favorite-URL" class="form-control-label">Team URL:</label>
+                                <input type="text" id="new-bowl-favorite-URL" data-bind="value: $root.newGameFavoriteURL">
                             </div>
                         </div>
                     </div>
@@ -65,6 +69,10 @@
                             <div>
                                 <label for="new-bowl-underdog-nickname">Team Nickname:</label>
                                 <input type="text" id="new-bowl-underdog-nickname" data-bind="value: $root.newGameUnderdogNickname">
+                            </div>
+                            <div>
+                                <label for="new-bowl-underdog-URL" class="form-control-label">Team URL:</label>
+                                <input type="text" id="new-bowl-underdog-URL" data-bind="value: $root.newGameUnderdogURL">
                             </div>
                         </div>
                     </div>

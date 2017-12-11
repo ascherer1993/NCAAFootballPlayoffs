@@ -264,13 +264,14 @@
     self.addGame = function () {
         var newGame = {
             'GameName': self.newGameBowlName,
-            'GameDatetime': moment(self.newGameTime).format("YYYY-MM-DD HH:mm:ss"),
+            'GameDatetime': moment(self.newGameDatetime()).format("YYYY-MM-DD HH:mm:ss"),
             'Location.City': self.newGameCity,
             'Location.StateID': self.newGameSelectedStateID,
             'FavoriteID': self.newGameSelectFavorite,
             'UnderdogID': self.newGameSelectUnderdog,
             'PointSpread': self.newGamePointSpread,
-            'IsBCSBowl': self.newGameIsBCSBowl
+            'IsBCSBowl': self.newGameIsBCSBowl,
+            'SeasonID' : self.seasonID
         }
 
         //Need to get values from the temporary state chosen from the dropdown

@@ -28,19 +28,19 @@ namespace NCAAFootballPlayoffs.Models
         public Nullable<int> LocationID { get; set; }
         public int FavoriteID { get; set; }
         public int UnderdogID { get; set; }
-        public Nullable<short> PointSpread { get; set; }
+        public Nullable<double> PointSpread { get; set; }
         public Nullable<short> FavoriteScore { get; set; }
         public Nullable<short> UnderdogScore { get; set; }
         public bool IsBCSBowl { get; set; }
         public bool Archived { get; set; }
         public Nullable<int> WinnerID { get; set; }
     
-        public virtual Location Location { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPick> UserPicks { get; set; }
-        public virtual Season Season { get; set; }
         public virtual Team Favorite { get; set; }
+        public virtual Location Location { get; set; }
+        public virtual Season Season { get; set; }
         public virtual Team Winner { get; set; }
         public virtual Team Underdog { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPick> UserPicks { get; set; }
     }
 }

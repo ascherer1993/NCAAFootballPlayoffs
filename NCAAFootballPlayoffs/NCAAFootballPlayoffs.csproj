@@ -200,11 +200,15 @@
     <Content Include="Models\NCAAPlayoffsEntities.edmx.diagram">
       <DependentUpon>NCAAPlayoffsEntities.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\footballbracket.cf - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\WebRoot.pubxml" />
     <None Include="scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="scripts\jquery-1.10.2.js" />
     <Content Include="scripts\jquery-1.10.2.min.js" />
     <Content Include="scripts\modernizr-2.6.2.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -287,7 +291,9 @@
     <Compile Include="Utilities\General.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\web.config" />
+    <Content Include="Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

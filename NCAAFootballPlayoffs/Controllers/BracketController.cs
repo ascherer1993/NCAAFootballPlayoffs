@@ -197,7 +197,6 @@ namespace NCAAFootballPlayoffs.Controllers
             {
                 try
                 {
-
                     //This is a check to make sure that the location doesn't already exist in the db. If it does, it uses that location
                     Location locationCheck = db.Locations.FirstOrDefault(f => f.StateID == gameIn.Location.StateID && f.City == gameIn.Location.City);
                     if (locationCheck == null)
@@ -262,7 +261,10 @@ namespace NCAAFootballPlayoffs.Controllers
                         gameIn.Underdog = db.Teams.Find(gameIn.UnderdogID);
                     }
 
-                    gameIn.SeasonID = 1;
+                    if (gameIn.SeasonID == 0)
+                    {
+                        gameIn.SeasonID = 2;
+                    }
 
                     db.Games.Add(gameIn);
                     db.SaveChanges();

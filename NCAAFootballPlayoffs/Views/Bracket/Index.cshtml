@@ -12,8 +12,8 @@
 @Html.Partial("_GameModal")
 @Html.Partial("_BonusQuestionModal")
 
-<div id="gamesDiv" class="row" style="height: calc(100vh - 75px); background-color:#fff; visibility:hidden">
-    <div class="col-md-9 col-xs-12" style="overflow-y:scroll; height:calc(100vh - 75px)">
+<div id="gamesDiv" class="row" style="height: calc(100vh - 70px); background-color:#fff; visibility:hidden">
+    <div class="col-md-9 col-xs-12" style="overflow-y:scroll; height:calc(100vh - 70px)">
         <div class="row title-bar">
             <div class="col-md-6">
                 <span class="title" data-bind="text: $root.SeasonYear"></span>
@@ -32,56 +32,57 @@
             @Html.Partial("_BonusQuestion")
         </div>
     </div>
-    <div class="col-md-3 col-xs-12" style="height: calc(100vh - 75px); background-color:#d2d2d2">
+    <div class="col-md-3 col-xs-12" style="height: calc(100vh - 70px); background-color:#d2d2d2">
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1" style="background-color:#f2f2f2; margin-top: 15px; border-radius: 3px; text-align:center">
-                    <div style="padding-top:10px">
-                        <b>Game picks remaining: <span data-bind="text: $root.games().length - $root.pickMadeCount()"></span></b>
-                    </div>
-                    <hr />
-                    <div>
-                        <b>Sure picks remaining: <span data-bind="text: 3 - $root.surePickCount()"></span></b>
-                    </div>
-                    <hr />
-                    <div style="padding-bottom:20px">
-                        <b>Bonus question picks remaining: <span data-bind="text: $root.bonusQuestions().length - $root.questionPickMadeCount()"></span></b>
-                    </div>
-                    <hr style="padding-bottom:40px"/>
-                    <div style="position:absolute; bottom:10px; right:25%; width:50%">
-                        <div class="btn btn-success" data-bind="click: $root.submitBracket">Save Bracket</div>
-                    </div>
+                <div style="padding-top:10px">
+                    <b>Game picks remaining: <span data-bind="text: $root.games().length - $root.pickMadeCount()"></span></b>
+                </div>
+                <hr />
+                <div>
+                    <b>Sure picks remaining: <span data-bind="text: 3 - $root.surePickCount()"></span></b>
+                </div>
+                <hr />
+                <div style="padding-bottom:20px">
+                    <b>Bonus question picks remaining: <span data-bind="text: $root.bonusQuestions().length - $root.questionPickMadeCount()"></span></b>
+                </div>
+                <hr style="padding-bottom:40px" />
+                <div style="position:absolute; bottom:10px; right:25%; width:50%">
+                    <div class="btn btn-success" data-bind="click: $root.submitBracket">Save Bracket</div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-10" style="margin-top: 15px; border-radius: 3px">
                     <div>
                         <div style="padding-top:10px; font-size:11px">
-                           <ul>
-                               <li>
-                                   All non-BCS games are valued at 1 pt; All BCS (Orange, Rose, Sugar, Fiesta, Championship) games are valued at 2 points 
-                               </li>
-                               <li>
-                                   Pick 3 "sure things" will get 1 extra point for each one if correct.   Bonus Q's worth 1 pt each
-                               </li>
-                               <li>
-                                   Underdogs who  win will receive 25% add'l credit if they are 2.0-3.5 point underdogs;
-                               </li>
-                               <li>
-                                   Underdogs who  win will receive 50% add'l credit if they are 4-7.0 point underdogs;
-                               </li>
-                               <li>
-                                   Underdogs who win that are 7.5-10  point underdoges will receive 100% add'l (double) credit.
-                               </li>
-                               <li>
-                                   Underdogs who win that are 10.5-13.5 pt underdogs receive 150% add'l credit.
-                               </li>
-                               <li>
-                                   Underdogs who win that are m 14pt underdogs or more will receive 200% add'l credit.
-                               </li>
-                           </ul>
+                            <ul>
+                                <li>
+                                    All non-BCS games are valued at 1 pt. All BCS (Orange, Rose, Sugar, Fiesta, Championship) games are valued at 2 points.
+                                </li>
+                                <li>
+                                    Pick 3 "sure things" will get 1 extra point for each one if correct.   Bonus Q's worth 1 pt each.
+                                </li>
+                                <li>
+                                    Underdogs who  win will receive 25% add'l credit if they are 2.0-3.5 point underdogs.
+                                </li>
+                                <li>
+                                    Underdogs who  win will receive 50% add'l credit if they are 4-7.0 point underdogs.
+                                </li>
+                                <li>
+                                    Underdogs who win that are 7.5-10  point underdoges will receive 100% add'l (double) credit.
+                                </li>
+                                <li>
+                                    Underdogs who win that are 10.5-13.5 pt underdogs receive 150% add'l credit.
+                                </li>
+                                <li>
+                                    Underdogs who win that are 14pt underdogs or more will receive 200% add'l credit.
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </div>
 
@@ -89,10 +90,9 @@
 <script src="~/Models/KnockoutModels/Bracket/BracketViewModel.js"></script>
 <script type="text/javascript">
     //bad. this is for testing
-    var vm;
     $(function () {
         var model = @Html.Raw(Json.Encode(Model));
-        vm = new BracketViewModel(model);
+        var vm = new BracketViewModel(model);
         vm.loadAjax();
     });
 </script>

@@ -17,11 +17,11 @@ namespace NCAAFootballPlayoffs.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Team()
         {
-            this.GamesWonAsFavorite = new HashSet<Game>();
-            this.GamesWon = new HashSet<Game>();
-            this.GamesWonAsUnderdog = new HashSet<Game>();
             this.Records = new HashSet<Record>();
             this.UserPicks = new HashSet<UserPick>();
+            this.GamesAsFavorite = new HashSet<Game>();
+            this.GamesWon = new HashSet<Game>();
+            this.GamesAsUnderdog = new HashSet<Game>();
         }
     
         public int TeamID { get; set; }
@@ -31,16 +31,16 @@ namespace NCAAFootballPlayoffs.Models
         public bool Archived { get; set; }
         public string WebURL { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Game> GamesWonAsFavorite { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Game> GamesWon { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Game> GamesWonAsUnderdog { get; set; }
         public virtual Location Location { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Record> Records { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPick> UserPicks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Game> GamesAsFavorite { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Game> GamesWon { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Game> GamesAsUnderdog { get; set; }
     }
 }

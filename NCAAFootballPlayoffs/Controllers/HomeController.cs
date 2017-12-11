@@ -16,6 +16,7 @@ namespace NCAAFootballPlayoffs.Controllers
 
         // GET: Home
         //https://github.com/ascherer1993/NCAAFootballPlayoffs.git
+        [AuthorizeUser]
         public ActionResult Index()
         {
             User user = null;

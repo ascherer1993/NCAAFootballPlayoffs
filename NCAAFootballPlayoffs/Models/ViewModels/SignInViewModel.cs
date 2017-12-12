@@ -19,7 +19,7 @@ namespace NCAAFootballPlayoffs.Models.ViewModels
         public string ConfirmPassword { get; set; }
         [Display(Name = "Bracket Name")]
         public string BracketName { get; set; }
-        [Display(Name = "Display Name")]
+        [Display(Name = "First and Last Name")]
         public string DisplayName { get; set; }
     }
 

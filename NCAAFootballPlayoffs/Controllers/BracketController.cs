@@ -144,7 +144,7 @@ namespace NCAAFootballPlayoffs.Controllers
                         {
                             if (!bonusQuestionPick.DisplayAsMultChoice)
                             {
-                                temp.QuestionAnswer.Text = bonusQuestionPick.QuestionAnswer.Text;
+                                temp.QuestionAnswer.Text = bonusQuestionPick.QuestionAnswer.Text == null ? "" : bonusQuestionPick.QuestionAnswer.Text;
                             }
                             else
                             {
@@ -624,7 +624,7 @@ namespace NCAAFootballPlayoffs.Controllers
         {
 
             int currentSeasonID = seasonID == -1 ? db.Seasons.FirstOrDefault(f => f.ActiveSeason == true).SeasonID : (int)seasonID;
-            IEnumerable<Game> seasonGames = db.Games.Where(f => f.SeasonID == currentSeasonID && f.Archived == false);
+            IEnumerable<Game> seasonGames = db.Games.Where(f => f.SeasonID == currentSeasonID && f.Archived == false).OrderBy(g => g.GameDatetime);
 
             #region GetGames
             seasonGames = seasonGames.Select(g => new Game
@@ -634,14 +634,16 @@ namespace NCAAFootballPlayoffs.Controllers
                 {
                     TeamID = g.FavoriteID,
                     TeamName = g.Favorite.TeamName,
-                    TeamNickname = g.Favorite.TeamNickname
+                    TeamNickname = g.Favorite.TeamNickname,
+                    WebURL = g.Favorite.WebURL
                 },
                 UnderdogID = g.UnderdogID,
                 Underdog = new Team
                 {
                     TeamID = g.UnderdogID,
                     TeamName = g.Underdog.TeamName,
-                    TeamNickname = g.Underdog.TeamNickname
+                    TeamNickname = g.Underdog.TeamNickname,
+                    WebURL = g.Underdog.WebURL
                 },
                 LocationID = g.LocationID,
                 Location = g.LocationID != null ? new Location()
@@ -701,7 +703,8 @@ namespace NCAAFootballPlayoffs.Controllers
             {
                 TeamName = f.TeamName,
                 TeamNickname = f.TeamNickname,
-                TeamID = f.TeamID
+                TeamID = f.TeamID,
+                WebURL = f.WebURL
             });
 
             return teams.ToList();

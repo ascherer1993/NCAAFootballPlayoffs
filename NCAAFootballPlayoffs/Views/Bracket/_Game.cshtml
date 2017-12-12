@@ -3,16 +3,26 @@
         <div class="col-md-12">
             @*<div class="row" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff,">*@
             <div class="row" data-bind="style: { backgroundColor: IsBCSBowl() ? '#5cb85c' : '#A8B2CD' }" style="border-bottom:1px solid black; background-color:#A8B2CD; color:#fff; -webkit-font-smoothing: antialiased; -moz-font-smoothing: antialiased; -o-font-smoothing: antialiased;">
-                <div data-bind="text: GameName()"></div>
+                <div data-bind="text: GameName()" style="font-size:22px; font-weight:bold"></div>
                 <span data-bind="visible: $root.isAdmin, click: $root.editGame" class="top-right glyphicon glyphicon-cog"></span>
-                <div data-bind="text: moment(GameDatetime()).format('LLLL')" class="small-text"></div>
-                <div data-bind="text: Location.City() + ', ' + Location.State().StateName()" class="small-text"></div>
+                <div> <span data-bind="text: moment(GameDatetime()).format('LLLL') + ' CT'" class="small-text" style="font-size:12px"></span></div>
+                <div data-bind="text: Location.City() + ', ' + Location.State().StateName()" class="small-text" style="font-size:12px"></div>
             </div>
             <div class="row">
                 <div class="col-xs-4">
                     <div class="small-text">Favorite</div>
-                    <div data-bind="text: Favorite.TeamName()"></div>
-                    <div data-bind="text: Favorite.TeamNickname()"></div>
+                    <div>
+                        <!-- ko if: Favorite.WebURL -->
+                        <a data-bind="attr: { href: Favorite.WebURL, title: Favorite.WebURL, target: '_blank' }">
+                            <span data-bind="text: Favorite.TeamName() + ' '"></span>
+                            <span data-bind="text: Favorite.TeamNickname() + ' '"></span>
+                        </a>
+                        <!-- /ko -->
+                        <!-- ko ifnot: Favorite.WebURL -->
+                        <span data-bind="text: Favorite.TeamName() + ' '"></span>
+                        <span data-bind="text: Favorite.TeamNickname() + ' '"></span>
+                        <!-- /ko -->
+                    </div>
                     <input type="radio" data-bind="enable: $root.canEditPicks, checked: teamPickID, value: Favorite.TeamID" />
                 </div>
                 <div class="col-xs-4">

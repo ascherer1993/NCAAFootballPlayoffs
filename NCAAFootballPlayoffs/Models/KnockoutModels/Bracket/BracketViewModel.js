@@ -99,6 +99,7 @@
                     game.teamPickID = ko.observable();
                     game.isSurePick = ko.observable();
                 });
+                self.games.sort(function (l, r) { return l.GameDatetime() > r.GameDatetime() ? 1 : -1 });
 
                 //Bonus Questions
                 self.bonusQuestions = returnObject.bonusQuestions;
@@ -147,7 +148,7 @@
                         }
                     });
                 });
-        });
+            });
     };
 
     self.loadTeams = function () {
@@ -191,18 +192,18 @@
                 seasonID: self.seasonID()
             },
             function (data) {
-            var picks = ko.mapping.fromJSON(data);
+                var picks = ko.mapping.fromJSON(data);
             
-            self.games().forEach(function (game) {
-                picks().forEach(function (pick) {
-                    if (pick.GameID() == game.GameID())
-                    {
-                        game.teamPickID(pick.ChosenTeamID());
-                        game.isSurePick(pick.IsSurePick());
-                    }
+                self.games().forEach(function (game) {
+                    picks().forEach(function (pick) {
+                        if (pick.GameID() == game.GameID())
+                        {
+                            game.teamPickID(pick.ChosenTeamID());
+                            game.isSurePick(pick.IsSurePick());
+                        }
+                    });
                 });
             });
-        });
     };
 
 
@@ -331,6 +332,7 @@
                 self.newGameUnderdogNickname("");
                 self.newGameUnderdogURL("");
                 self.modalInUse = '';
+                self.games.sort(function (l, r) { return l.GameDatetime() > r.GameDatetime() ? 1 : -1 });
             }
         })
     }
@@ -352,7 +354,7 @@
             }
             if (response.success) {
                 game.isEditing(false);
-                
+                self.games.sort(function (l, r) { return l.GameDatetime() > r.GameDatetime() ? 1 : -1 });
             }
         })
     }
@@ -505,8 +507,20 @@
         self.modalInUse = 'Question';
     })
 
-    self.submitBracket = function ()
-    {
+    self.submitBracketButton = function () {
+        if (self.games().length - self.pickMadeCount() != 0 || 3 - self.surePickCount() != 0 || self.bonusQuestions().length - self.questionPickMadeCount()) {
+            alertify.confirm("You still have some picks remaining. Do you want to submit your bracket anyways? You can always come back and modify your bracket later (until the bowl games have begun).", function (e) {
+                if (e) {
+                    self.submitBracket();
+                }
+            });
+        }
+        else {
+            self.submitBracket();
+        }
+    }
+
+    self.submitBracket = function () {
         var gamePickInfo = [];
         self.games().forEach(function (game) {
             var gameInfo = {
@@ -548,5 +562,4 @@
             }
         })
     }
-
 }

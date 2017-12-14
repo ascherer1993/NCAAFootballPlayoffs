@@ -341,6 +341,7 @@ namespace NCAAFootballPlayoffs.Controllers
         /// </summary>
         /// <param name="gameIn"></param>
         /// <returns></returns>
+        [AjaxOnly]
         public string saveGame(Game gameIn)
         {
             //Messages to return to ajax call
@@ -771,6 +772,13 @@ namespace NCAAFootballPlayoffs.Controllers
                 }
             });
             return userBonysQuestionPicks.ToList();
+        }
+
+        public FileStreamResult DownloadBracket(int seasonID, int usernameID)
+        {
+            ExcelManager em = new ExcelManager();
+            var memStream = em.DownloadBracketPicks(seasonID, usernameID);
+            return File(memStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "NCAAFootballPicks.xlsx");
         }
 
         #region ajaxCalls

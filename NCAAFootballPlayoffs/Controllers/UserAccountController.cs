@@ -17,6 +17,7 @@ namespace NCAAFootballPlayoffs.Controllers
     {
         NCAAFootballPlayoffsEntities db = new NCAAFootballPlayoffsEntities();
 
+        [AuthorizeUser("Admin")]
         public ActionResult Index()
         {
             IEnumerable<Username> usernames = db.Usernames.Where(f => !f.Archived).OrderBy(g => g.User.EmailAddress);
@@ -24,12 +25,14 @@ namespace NCAAFootballPlayoffs.Controllers
         }
         
         [HttpGet]
+        [AuthorizeUser("Admin")]
         public ActionResult Edit(int usernameID)
         {
             Username username = db.Usernames.Find(usernameID);
             return View(username);
         }
         [HttpPost]
+        [AuthorizeUser("Admin")]
         public ActionResult Edit(Username username)
         {
             try
@@ -41,7 +44,7 @@ namespace NCAAFootballPlayoffs.Controllers
             {
                 return View(username);
             }
-            return RedirectToAction("Admin");
+            return RedirectToAction("Index");
         }
 
         [AuthorizeUser("Admin")]
@@ -164,6 +167,7 @@ namespace NCAAFootballPlayoffs.Controllers
         }
 
         [HttpGet]
+        [AuthorizeUser]
         public ActionResult CreateBracket()
         {
             //If already signed in, redirect to home page
@@ -180,6 +184,7 @@ namespace NCAAFootballPlayoffs.Controllers
 
         //Postback for signing in, redirects 
         [HttpPost]
+        [AuthorizeUser]
         public ActionResult CreateBracket(Username username)
         {
             List<string> errors = new List<string>();

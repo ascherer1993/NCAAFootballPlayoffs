@@ -213,28 +213,64 @@ namespace NCAAFootballPlayoffs.Utilities
             List<UserPick> userpicks;
             List<Game> games;
 
+            
+
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add("New Sheet");
 
-                //worksheet.Cells[1, 1].Value = "ID";
-                //worksheet.Cells[1, 2].Value = "Name";
-                //worksheet.Cells[2, 1].Value = "1";
-                //worksheet.Cells[2, 2].Value = "One";
-                //worksheet.Cells[3, 1].Value = "2";
-                //worksheet.Cells[3, 2].Value = "Two";
                 using (var db = new NCAAFootballPlayoffsEntities())
                 {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        worksheet.Cells[1, 1 + (5 * i)].Value = "Favorite";
+                        worksheet.Cells[1, 2 + (5 * i)].Value = "Pick";
+                        worksheet.Cells[1, 3 + (5 * i)].Value = "Odds";
+                        worksheet.Cells[1, 4 + (5 * i)].Value = "Pick";
+                        worksheet.Cells[1, 5 + (5 * i)].Value = "Underdog";
+                    }
+
+                    games = db.Games.Where(f => !f.Archived && f.SeasonID == seasonID).OrderBy(g => g.GameDatetime).ToList();
                     username = db.Usernames.FirstOrDefault(f => !f.Archived && f.UsernameID == usernameID);
                     userpicks = username.UserPicks.Where(f => f.Game.SeasonID == seasonID).ToList();
-                    games = userpicks.Select(f => f.Game).Where(g => !g.Archived).ToList();
 
+                    for (int i = 0; i < games.Count; i++)
+                    {
+                        int bracketColumn = 0;
+                        if (i % 2 == 0)
+                        {
+                            bracketColumn = 1;
+                        }
+                        for (int gameLine = 0; gameLine < 2; gameLine++)
+                        {
+                            if (gameLine == 0)
+                            {
+                                worksheet.Cells[2 + i + gameLine, 1 + (5 * bracketColumn), 2 + i + gameLine, 5 + (5 * bracketColumn)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#79B979");
+                                worksheet.Cells[2 + i + gameLine, 1 + (5 * bracketColumn), 2 + i + gameLine, 5 + (5 * bracketColumn)].Style.Fill.BackgroundColor.SetColor(bcsBackground);
 
+                                worksheet.Cells[2 + i + gameLine, 1 + (5 * bracketColumn)].Value = games[i].GameName;
+                                worksheet.Cells[2 + i + gameLine, 1 + 2 +(5 * bracketColumn)].Value = games[i].GameDatetime.ToString() + " CT " + "--" + games[i].Location.City + ", " + games[i].Location.State.StateName;
+                            }
+                            else
+                            {
+                                worksheet.Cells[2 + i + gameLine, 1 + (5 * bracketColumn)].Value = games[i].Favorite.TeamName;
+                                worksheet.Cells[2 + i + gameLine, 3 + (5 * bracketColumn)].Value = games[i].PointSpread;
+                                worksheet.Cells[2 + i + gameLine, 5 + (5 * bracketColumn)].Value = games[i].Underdog.TeamName;
+                            }
+                            
+                        }
+                    }
+
+                    worksheet.Cells[1, 1, ((games.Count / 2) + 1) * 2, 10].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, ((games.Count / 2) + 1) * 2, 10].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, ((games.Count / 2) + 1) * 2, 10].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, ((games.Count / 2) + 1) * 2, 10].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                 }
 
-                worksheet.Cells[1, 1, games.Count() + 1, 1].AutoFitColumns();
-                //worksheet.Cells[1, 1, maxY, 1].
-                worksheet.View.FreezePanes(2, 2);
+                //worksheet.Cells[1, 1, games.Count() + 1, 1].AutoFitColumns();
+                ////worksheet.Cells[1, 1, maxY, 1].
+                //worksheet.View.FreezePanes(2, 2);
 
                 memStream = new MemoryStream(package.GetAsByteArray());
             }

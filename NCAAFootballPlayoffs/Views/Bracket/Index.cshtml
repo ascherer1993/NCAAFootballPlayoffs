@@ -22,6 +22,7 @@
                 @*<button class="btn btn-default" data-bind="">Add Game</button>*@
                 <button class="btn btn-default" data-toggle="modal" data-target=".bd-example-modal-lg">Add Game</button>
                 <button class="btn btn-default" data-toggle="modal" data-target=".bd-example-modal-2">Add Bonus Question</button>
+                @Html.ActionLink("Download Bracket", "DownloadBracket", new { seasonID = Model.SeasonID, usernameID = Model.UsernameID })
             </div>
         </div>
         <div class="row center-all">

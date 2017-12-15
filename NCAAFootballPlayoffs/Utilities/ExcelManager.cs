@@ -209,10 +209,14 @@ namespace NCAAFootballPlayoffs.Utilities
             MemoryStream memStream;
 
             Username username;
-            List<UserPick> userpicks;
             List<Game> games;
+            List<UserPick> userpicks;
+            List<BonusQuestion> bonusQuestions;
+            List<UserBonusQuestionPick> userBonusQuestionPicks;
 
-            
+            Color titleFontColor = System.Drawing.ColorTranslator.FromHtml("#0000FF");
+            Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#5cb85c");
+            Color gameBackground = System.Drawing.ColorTranslator.FromHtml("#A8B2CD");
 
             using (var package = new ExcelPackage())
             {
@@ -225,27 +229,24 @@ namespace NCAAFootballPlayoffs.Utilities
 
                 using (var db = new NCAAFootballPlayoffsEntities())
                 {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        worksheet.Cells[1, 1 + (5 * i)].Value = "Favorite";
-                        worksheet.Cells[1, 2 + (5 * i)].Value = "Pick";
-                        worksheet.Cells[1, 3 + (5 * i)].Value = "Odds";
-                        worksheet.Cells[1, 4 + (5 * i)].Value = "Pick";
-                        worksheet.Cells[1, 5 + (5 * i)].Value = "Underdog";
-                    }
+                    Season season = db.Seasons.Find(seasonID);
 
-                    games = db.Games.Where(f => !f.Archived && f.SeasonID == seasonID).OrderBy(g => g.GameDatetime).ToList();
+                    //Get Data
                     username = db.Usernames.FirstOrDefault(f => !f.Archived && f.UsernameID == usernameID);
+                    games = db.Games.Where(f => !f.Archived && f.SeasonID == seasonID).OrderBy(g => g.GameDatetime).ToList();
                     userpicks = username.UserPicks.Where(f => f.Game.SeasonID == seasonID).ToList();
+                    bonusQuestions = db.BonusQuestions.Where(f => !f.Archived && f.SeasonID == seasonID).ToList();
+                    userBonusQuestionPicks = username.UserBonusQuestionPicks.Where(f => f.QuestionAnswer.BonusQuestion.SeasonID == seasonID).ToList();
 
-                    worksheet.Cells[1, 1, ((games.Count / 2) * 2) + 1, 10].Style.Font.Size = 10;
+                    //Styling
+                    worksheet.Cells[1, 1, (((games.Count / 2) + 1) * 2) + 1, 10].Style.Font.Size = 10;
 
-                    worksheet.Cells[1, 1, ((games.Count / 2) * 2) + 1, 10].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    worksheet.Cells[1, 1, ((games.Count / 2) * 2) + 1, 10].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    worksheet.Cells[1, 1, ((games.Count / 2) * 2) + 1, 10].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    worksheet.Cells[1, 1, ((games.Count / 2) * 2) + 1, 10].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, (((games.Count / 2) + 1) * 2) + 1, 10].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, (((games.Count / 2) + 1) * 2) + 1, 10].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, (((games.Count / 2) + 1) * 2) + 1, 10].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[1, 1, (((games.Count / 2) + 1) * 2) + 1, 10].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
-                    worksheet.Cells[1, 5, ((games.Count / 2) * 2) + 1, 5].Style.Border.Right.Style = ExcelBorderStyle.Double;
+                    worksheet.Cells[1, 5, (((games.Count / 2) + 1) * 2) + 1, 5].Style.Border.Right.Style = ExcelBorderStyle.Double;
 
                     worksheet.Column(1).Width = 20;
                     worksheet.Column(2).Width = 4;
@@ -257,10 +258,18 @@ namespace NCAAFootballPlayoffs.Utilities
                     worksheet.Column(8).Width = 15;
                     worksheet.Column(9).Width = 4;
                     worksheet.Column(10).Width = 20;
-
-
-                    Color titleFontColor = System.Drawing.ColorTranslator.FromHtml("#0000FF");
+                    
                     worksheet.Cells[1, 1, 1, 10].Style.Font.Color.SetColor(titleFontColor);
+                    worksheet.Cells[1, 1, 1, 10].Style.Font.Bold = true;
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        worksheet.Cells[1, 1 + (5 * i)].Value = "Favorite";
+                        worksheet.Cells[1, 2 + (5 * i)].Value = "Pick";
+                        worksheet.Cells[1, 3 + (5 * i)].Value = "Odds";
+                        worksheet.Cells[1, 4 + (5 * i)].Value = "Pick";
+                        worksheet.Cells[1, 5 + (5 * i)].Value = "Underdog";
+                    }
 
 
                     for (int i = 0; i < games.Count; i++)
@@ -274,7 +283,6 @@ namespace NCAAFootballPlayoffs.Utilities
                         }
 
                         worksheet.Cells[1 + (2 * yCoordinate) + 1, 1 + (5 * bracketColumn), 1 + (2 * yCoordinate) + 1, 5 + (5 * bracketColumn)].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        Color gameBackground = System.Drawing.ColorTranslator.FromHtml("#A8B2CD");
                         worksheet.Cells[1 + (2 * yCoordinate) + 1, 1 + (5 * bracketColumn), 1 + (2 * yCoordinate) + 1, 5 + (5 * bracketColumn)].Style.Fill.BackgroundColor.SetColor(gameBackground);
 
                         worksheet.Cells[1 + (2 * yCoordinate) + 1, 1 + (5 * bracketColumn)].Value = games[i].GameName;
@@ -296,12 +304,11 @@ namespace NCAAFootballPlayoffs.Utilities
                         if (games[i].IsBCSBowl)
                         {
                             worksheet.Cells[1 + (2 * yCoordinate) + 2, 1 + (5 * bracketColumn), 1 + (2 * yCoordinate) + 2, 5 + (5 * bracketColumn)].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#5cb85c");
                             worksheet.Cells[1 + (2 * yCoordinate) + 2, 1 + (5 * bracketColumn), 1 + (2 * yCoordinate) + 2, 5 + (5 * bracketColumn)].Style.Fill.BackgroundColor.SetColor(bcsBackground);
                         }
 
                         int gameID = games[i].GameID;
-                        UserPick userpick = db.UserPicks.FirstOrDefault(f => f.GameID == gameID);
+                        UserPick userpick = username.UserPicks.FirstOrDefault(f => f.GameID == gameID);
                         if (userpick != null)
                         {
                             if (userpick.ChosenTeamID == games[i].FavoriteID)
@@ -314,15 +321,80 @@ namespace NCAAFootballPlayoffs.Utilities
                             }
                         }
                     }
+                    
 
-                    worksheet.Cells[((games.Count / 2) * 2) + 2, 1].Value = username.UsernameText;
-                    worksheet.Cells[((games.Count / 2) * 2) + 3, 1].Value = username.User.DisplayName;
-                    worksheet.Cells[((games.Count / 2) * 2) + 4, 1].Value = username.User.EmailAddress;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5].Value = "Bonus Questions";
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5].Style.Font.Bold = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5].Style.Fill.BackgroundColor.SetColor(bcsBackground);
 
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5, ((games.Count / 2) * 2) + 5, 10].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5, ((games.Count / 2) * 2) + 5, 10].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5, ((games.Count / 2) * 2) + 5, 10].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5, ((games.Count / 2) * 2) + 5, 10].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 5, ((games.Count / 2) * 2) + 5, 7].Merge = true;
+
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 8].Value = "Question Answers";
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 8].Style.Font.Bold = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 8].Style.Fill.BackgroundColor.SetColor(bcsBackground);
+                                                                 
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 8, ((games.Count / 2) * 2) + 5, 10].Merge = true;
+
+                    for (int i = 0; i < bonusQuestions.Count; i++)
+                    {
+                        //worksheet.Cells[1, 1, ((games.Count / 2) * 2) + 1, 10].Style.Font.Size = 10;
+
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 10].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 10].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 10].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 10].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        
+
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5].Value = bonusQuestions[i].Text;
+
+                        List<QuestionAnswer> questionAnswers = bonusQuestions[i].QuestionAnswers.ToList();
+                        QuestionAnswer questionAnswer = questionAnswers.FirstOrDefault(f => userBonusQuestionPicks.Any(g => g.SelectedAnswerID == f.QuestionAnswerID));
+                        if (questionAnswer != null)
+                        {
+                                worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 8].Value = questionAnswer.Text;
+                        }
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 10].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 10].Style.Fill.BackgroundColor.SetColor(bcsBackground);
+
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 5, ((games.Count / 2) * 2) + 6 + i, 7].Merge = true;
+                        worksheet.Cells[((games.Count / 2) * 2) + 6 + i, 8, ((games.Count / 2) * 2) + 6 + i, 10].Merge = true;
+
+                    }
+
+
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 1].Value = "Bracket Name";
+                    worksheet.Cells[((games.Count / 2) * 2) + 6, 1].Value = "Real Name";
+                    worksheet.Cells[((games.Count / 2) * 2) + 7, 1].Value = "Email";
+                    worksheet.Cells[((games.Count / 2) * 2) + 8, 1].Value = "Season";
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 1].Style.Font.Bold = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 6, 1].Style.Font.Bold = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 7, 1].Style.Font.Bold = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 8, 1].Style.Font.Bold = true;
+
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 2].Value = username.UsernameText;
+                    worksheet.Cells[((games.Count / 2) * 2) + 6, 2].Value = username.User.DisplayName;
+                    worksheet.Cells[((games.Count / 2) * 2) + 7, 2].Value = username.User.EmailAddress;
+                    worksheet.Cells[((games.Count / 2) * 2) + 8, 2].Value = season.SeasonYear.ToString();
+
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 2, ((games.Count / 2) * 2) + 5, 4].Merge = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 6, 2, ((games.Count / 2) * 2) + 6, 4].Merge = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 7, 2, ((games.Count / 2) * 2) + 7, 4].Merge = true;
+                    worksheet.Cells[((games.Count / 2) * 2) + 8, 2, ((games.Count / 2) * 2) + 8, 4].Merge = true;
+
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 1, ((games.Count / 2) * 2) + 8, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 1, ((games.Count / 2) * 2) + 8, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 1, ((games.Count / 2) * 2) + 8, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    worksheet.Cells[((games.Count / 2) * 2) + 5, 1, ((games.Count / 2) * 2) + 8, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+
+                    //worksheet.Cells[((games.Count / 2) * 2) + 2, 1, ((games.Count / 2) * 2) + 2, 10].Style.Border.Top.Style = ExcelBorderStyle.Double;
                 }
-
-
-
                 memStream = new MemoryStream(package.GetAsByteArray());
             }
 

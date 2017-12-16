@@ -16,13 +16,24 @@
     <div class="col-md-9 col-xs-12" style="overflow-y:scroll; height:calc(100vh - 70px)">
         <div class="row title-bar">
             <div class="col-md-6">
-                <span class="title" data-bind="text: $root.SeasonYear"></span>
+                <div></div>
             </div>
+            
             <div class="col-md-6" style="text-align:right" data-bind="visible: $root.isAdmin">
                 @*<button class="btn btn-default" data-bind="">Add Game</button>*@
                 <button class="btn btn-default" data-toggle="modal" data-target=".bd-example-modal-lg">Add Game</button>
                 <button class="btn btn-default" data-toggle="modal" data-target=".bd-example-modal-2">Add Bonus Question</button>
-                @Html.ActionLink("Download Bracket", "DownloadBracket", new { seasonID = Model.SeasonID, usernameID = Model.UsernameID })
+            </div>
+            
+        </div>
+        <div class="row hidden-sm hidden-md hidden-lg">
+            <div class="col-md-10">
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" style="margin-left:6px">
+                @Html.ActionLink("Download Bracket", "DownloadBracket", new { seasonID = Model.SeasonID, usernameID = Model.UsernameID }, new { @style = "margin-right: 15px", @class = "btn btn-default" })
             </div>
         </div>
         <div class="row center-all">
@@ -36,13 +47,13 @@
         </div>
 
         @*<div data-bind="foreach: $root.games" class="row center-all">
-            
-            @Html.Partial("_Game")
-            <!-- ko if: $index % 2 != 0-->
-            <br />
-            <!-- /ko -->
-            
-        </div>*@
+
+                @Html.Partial("_Game")
+                <!-- ko if: $index % 2 != 0-->
+                <br />
+                <!-- /ko -->
+
+            </div>*@
         <hr />
         <div data-bind="foreach: $root.bonusQuestions" class="row center-all">
             @Html.Partial("_BonusQuestion")
@@ -67,34 +78,32 @@
                     <div class="btn btn-success" data-bind="click: $root.submitBracketButton">Save Bracket</div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-10" style="margin-top: 10px; border-radius: 3px">
-                    <div>
-                        <div style="padding-top:5px; font-size:11px">
-                            <ul>
-                                <li>
-                                    All non-selection committee games are valued at 1 pt. All selection committee (Orange, Rose, Sugar, Fiesta, Championship) games are valued at 2 points.
-                                </li>
-                                <li>
-                                    Pick 3 "sure things" will get 1 extra point for each one if correct.   Bonus Q's worth 1 pt each.
-                                </li>
-                                <li>
-                                    Underdogs who  win will receive 25% add'l credit if they are 2.0-3.5 point underdogs.
-                                </li>
-                                <li>
-                                    Underdogs who  win will receive 50% add'l credit if they are 4-7.0 point underdogs.
-                                </li>
-                                <li>
-                                    Underdogs who win that are 7.5-10  point underdoges will receive 100% add'l (double) credit.
-                                </li>
-                                <li>
-                                    Underdogs who win that are 10.5-13.5 pt underdogs receive 150% add'l credit.
-                                </li>
-                                <li>
-                                    Underdogs who win that are 14pt underdogs or more will receive 200% add'l credit.
-                                </li>
-                            </ul>
-                        </div>
+            <div class="col-sm-10" style="margin-top: 10px; border-radius: 3px">
+                <div>
+                    <div style="padding-top:5px; font-size:11px">
+                        <ul>
+                            <li>
+                                All non-selection committee games are valued at 1 pt. All selection committee (Orange, Rose, Sugar, Fiesta, Championship) games are valued at 2 points.
+                            </li>
+                            <li>
+                                Pick 3 "sure things" will get 1 extra point for each one if correct.   Bonus Q's worth 1 pt each.
+                            </li>
+                            <li>
+                                Underdogs who  win will receive 25% add'l credit if they are 2.0-3.5 point underdogs.
+                            </li>
+                            <li>
+                                Underdogs who  win will receive 50% add'l credit if they are 4-7.0 point underdogs.
+                            </li>
+                            <li>
+                                Underdogs who win that are 7.5-10  point underdoges will receive 100% add'l (double) credit.
+                            </li>
+                            <li>
+                                Underdogs who win that are 10.5-13.5 pt underdogs receive 150% add'l credit.
+                            </li>
+                            <li>
+                                Underdogs who win that are 14pt underdogs or more will receive 200% add'l credit.
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -69,6 +69,7 @@ namespace NCAAFootballPlayoffs.Controllers
                 bvm.UsernameID = (int)usernameID;
                 bvm.Username = username.UsernameText;
                 bvm.SeasonID = (int)seasonID;
+                bvm.SeasonYear = (int)season.SeasonYear;
                 return View(bvm);
             }
             return RedirectToAction("Unauthorized", "Error");

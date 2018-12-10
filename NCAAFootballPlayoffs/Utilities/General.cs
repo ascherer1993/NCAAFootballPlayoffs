@@ -37,9 +37,14 @@ namespace NCAAFootballPlayoffs.Utilities
             {
                 using (var smtp = new SmtpClient())
                 {
+                    //var credential = new NetworkCredential
+                    //{
+                    //    UserName = "CFBBowlBracket@gmail.com",  // replace with valid value
+                    //    Password = "robsenders"  // replace with valid value
+                    //};
                     var credential = new NetworkCredential
                     {
-                        UserName = "CFBBowlBracket@gmail.com",  // replace with valid value
+                        UserName = "bowlseasonpickem@gmail.com",  // replace with valid value
                         Password = "robsenders"  // replace with valid value
                     };
                     smtp.Credentials = credential;

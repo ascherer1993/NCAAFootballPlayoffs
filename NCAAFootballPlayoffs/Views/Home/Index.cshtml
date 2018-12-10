@@ -13,16 +13,19 @@
                 @*<button class="btn btn-default" data-bind="">Add Game</button>*@
             </div>
         </div>
+        <div style="padding-top: 10px">
+                @Html.ActionLink("Download Blank Bracket", "DownloadBracket", "Bracket", new { }, new { @style = "margin-right: 15px", @class = "btn btn-default" })
+        </div>
         @if (Model == null)
         {
-            <h3>Hello! Welcome to the bowl season bracket for 2017! This page currently doesn't do anything. In order to get started, press the sign in button in the navigation bar. Once redirected, select the create an account button.</h3>
+            <h3>Hello! Welcome to the bowl season bracket for 2018! This page currently doesn't do anything. In order to get started, press the sign in button in the navigation bar. Once redirected, select the create an account button.</h3>
         }
         else
         {
             <br />
             <br />
             <h3>
-                Welcome to your home page for the 2017 bowl season! All your brackets are located on the right side of the screen. You can create as many brackets as you would like, but each bracket must be approved individually. 
+                Welcome to your home page for the 2018 bowl season! All your brackets are located on the right side of the screen. You can create as many brackets as you would like, but each bracket must be approved individually. 
             </h3>
             <h3>
                 In order to create your first bracket, press the 'Create Bracket' button on the side bar. Once you have created one or more brackets, press the bracket names to make your picks for that bracket.
@@ -63,6 +66,7 @@
 
                             </div>
                             <hr style="padding-bottom:40px" />
+                            
                             <div style="position:absolute; bottom:10px; right:25%; width:50%">
                                 @Html.ActionLink("Create Bracket", "CreateBracket", "UserAccount", new { }, new { @class = "btn btn-success" })
                             </div>

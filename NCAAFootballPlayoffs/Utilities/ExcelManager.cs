@@ -63,13 +63,7 @@ namespace NCAAFootballPlayoffs.Utilities
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add("New Sheet");
-
-                //worksheet.Cells[1, 1].Value = "ID";
-                //worksheet.Cells[1, 2].Value = "Name";
-                //worksheet.Cells[2, 1].Value = "1";
-                //worksheet.Cells[2, 2].Value = "One";
-                //worksheet.Cells[3, 1].Value = "2";
-                //worksheet.Cells[3, 2].Value = "Two";
+                
                 using (var db = new NCAAFootballPlayoffsEntities())
                 {
                     games = db.Games.Where(f => !f.Archived).ToList();
@@ -89,43 +83,40 @@ namespace NCAAFootballPlayoffs.Utilities
                         usernames = db.Usernames.Where(f => f.Approved && f.UserPicks.Any(g => g.Game.SeasonID == 1)).OrderBy(h => h.UsernameText).ToList();
                     }
 
-
                     for (int i = 1; i <= usernames.Count; i++)
                     {
                         worksheet.Cells[1, 1 + i].Style.WrapText = true;
 
-                        worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UsernameText + "\n"
-                            + usernames[i - 1].User.EmailAddress + "\n"
-                            + usernames[i - 1].User.DisplayName;
-
-                        //worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UserNameText;
+                        worksheet.Cells[1, 1 + i].Value = usernames[i - 1].UsernameText;
+                        worksheet.Cells[2, 1 + i].Value = usernames[i - 1].User.EmailAddress;
+                        worksheet.Cells[3, 1 + i].Value = usernames[i - 1].User.DisplayName;
 
                         worksheet.Cells[1, 1 + i].Style.TextRotation = 90;
-                        worksheet.Cells[1, 1 + i].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        worksheet.Cells[1, 1 + i, 3, 1 + i].Style.Fill.PatternType = ExcelFillStyle.Solid;
                         Color usernameColor = System.Drawing.ColorTranslator.FromHtml("#B7DEE8");
-                        worksheet.Cells[1, 1 + i].Style.Fill.BackgroundColor.SetColor(usernameColor);
+                        worksheet.Cells[1, 1 + i, 3, 1 + i].Style.Fill.BackgroundColor.SetColor(usernameColor);
                         
-                        worksheet.Cells[1, 1 + i].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                        worksheet.Cells[1, 1 + i].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                        worksheet.Cells[1, 1 + i].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                        worksheet.Cells[1, 1 + i].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i, 3, 1 + i].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i, 3, 1 + i].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i, 3, 1 + i].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        worksheet.Cells[1, 1 + i, 3, 1 + i].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                     }
 
                     for (int i = 1; i <= games.Count; i++)
                     {
                         Game game = games[i - 1];
-                        worksheet.Cells[i + 1, 1].Value = game.Favorite.TeamName + " vs. " + game.Underdog.TeamName;
+                        worksheet.Cells[i + 3, 1].Value = game.Favorite.TeamName + " vs. " + game.Underdog.TeamName;
 
                         if (game.IsBCSBowl)
                         {
-                            worksheet.Cells[i + 1, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            worksheet.Cells[i + 3, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
                             Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#79B979");
-                            worksheet.Cells[i + 1, 1].Style.Fill.BackgroundColor.SetColor(bcsBackground);
+                            worksheet.Cells[i + 3, 1].Style.Fill.BackgroundColor.SetColor(bcsBackground);
 
-                            worksheet.Cells[i + 1, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                            worksheet.Cells[i + 1, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                            worksheet.Cells[i + 1, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                            worksheet.Cells[i + 1, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 3, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 3, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 3, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            worksheet.Cells[i + 3, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                         }
 
                         for (int j = 1; j <= usernames.Count; j++)
@@ -134,27 +125,27 @@ namespace NCAAFootballPlayoffs.Utilities
 
                             if (game.IsBCSBowl)
                             {
-                                worksheet.Cells[i + 1, j + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[i + 3, j + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 Color bcsBackground = System.Drawing.ColorTranslator.FromHtml("#79B979");
-                                worksheet.Cells[i + 1, j + 1].Style.Fill.BackgroundColor.SetColor(bcsBackground);
+                                worksheet.Cells[i + 3, j + 1].Style.Fill.BackgroundColor.SetColor(bcsBackground);
 
-                                worksheet.Cells[i + 1, j + 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                worksheet.Cells[i + 1, j + 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                worksheet.Cells[i + 1, j + 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                worksheet.Cells[i + 1, j + 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 3, j + 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 3, j + 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 3, j + 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                worksheet.Cells[i + 3, j + 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                             }
 
 
-                            UserPick userpick = username.UserPicks.FirstOrDefault(f => f.GameID == games[i - 1].GameID);
+                            UserPick userpick = username.UserPicks.LastOrDefault(f => f.GameID == games[i - 1].GameID);
                             if (userpick != null)
                             {
                                 if (userpick.ChosenTeamID == game.FavoriteID)
                                 {
-                                    worksheet.Cells[i + 1, j + 1].Value = "F";
+                                    worksheet.Cells[i + 3, j + 1].Value = "F";
                                 }
                                 else if (userpick.ChosenTeamID == game.UnderdogID)
                                 {
-                                    worksheet.Cells[i + 1, j + 1].Value = "U";
+                                    worksheet.Cells[i + 3, j + 1].Value = "U";
                                 }
                                 else
                                 {
@@ -162,7 +153,7 @@ namespace NCAAFootballPlayoffs.Utilities
 
                                 if (userpick.IsSurePick)
                                 {
-                                    worksheet.Cells[i + 1, j + 1].Value += "S";
+                                    worksheet.Cells[i + 3, j + 1].Value += "S";
                                 }
                             }
                         }
@@ -170,31 +161,21 @@ namespace NCAAFootballPlayoffs.Utilities
                     for (int i = 1; i <= bonusQuestions.Count; i++)
                     {
                         BonusQuestion bonusQuestion = bonusQuestions[i - 1];
-                        worksheet.Cells[games.Count + i + 1, 1].Value = bonusQuestion.Text;
+                        worksheet.Cells[games.Count + i + 3, 1].Value = bonusQuestion.Text;
 
                         for (int j = 1; j <= usernames.Count; j++)
                         {
                             Username username = usernames[j - 1];
-                            UserBonusQuestionPick userBonusQuestionPick = username.UserBonusQuestionPicks.FirstOrDefault(f => f.QuestionAnswer.BonusQuestionID == bonusQuestion.BonusQuestionID);
+                            UserBonusQuestionPick userBonusQuestionPick = username.UserBonusQuestionPicks.LastOrDefault(f => f.QuestionAnswer.BonusQuestionID == bonusQuestion.BonusQuestionID);
                             if (userBonusQuestionPick != null)
                             {
-                                worksheet.Cells[games.Count + i + 1, j + 1].Value = userBonusQuestionPick.QuestionAnswer.Text;
+                                worksheet.Cells[games.Count + i + 3, j + 1].Value = userBonusQuestionPick.QuestionAnswer.Text;
                             }
                         }
                     }
                 }
-                //worksheet.Cells[1, 1, 1, 2].Style.TextRotation = 90;
-                //worksheet.Cells[1, 1, 1, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                //Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#B7DEE8");
-                //worksheet.Cells[1, 1, 1, 2].Style.Fill.BackgroundColor.SetColor(colFromHex);
 
-                //worksheet.Cells[1, 1, 1, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                //worksheet.Cells[1, 1, 1, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                //worksheet.Cells[1, 1, 1, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                //worksheet.Cells[1, 1, 1, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-
-                worksheet.Cells[1, 1, games.Count() + 1, 1].AutoFitColumns();
-                //worksheet.Cells[1, 1, maxY, 1].
+                worksheet.Cells[1, 1, games.Count() + 3, 1].AutoFitColumns();
                 worksheet.View.FreezePanes(2, 2);
 
                 memStream = new MemoryStream(package.GetAsByteArray());
@@ -318,7 +299,7 @@ namespace NCAAFootballPlayoffs.Utilities
                         }
 
                         int gameID = games[i].GameID;
-                        UserPick userpick = username.UserPicks.FirstOrDefault(f => f.GameID == gameID);
+                        UserPick userpick = username.UserPicks.LastOrDefault(f => f.GameID == gameID);
                         if (userpick != null)
                         {
                             if (userpick.ChosenTeamID == games[i].FavoriteID)
@@ -364,7 +345,7 @@ namespace NCAAFootballPlayoffs.Utilities
                         worksheet.Cells[games.Count + (games.Count % 2 == 0 ? 4 : 5) + i, 5].Value = bonusQuestions[i].Text;
 
                         List<QuestionAnswer> questionAnswers = bonusQuestions[i].QuestionAnswers.ToList();
-                        QuestionAnswer questionAnswer = questionAnswers.FirstOrDefault(f => userBonusQuestionPicks.Any(g => g.SelectedAnswerID == f.QuestionAnswerID));
+                        QuestionAnswer questionAnswer = questionAnswers.LastOrDefault(f => userBonusQuestionPicks.Any(g => g.SelectedAnswerID == f.QuestionAnswerID));
                         if (questionAnswer != null)
                         {
                                 worksheet.Cells[games.Count + (games.Count % 2 == 0 ? 4 : 5) + i, 10].Value = questionAnswer.Text;
@@ -420,7 +401,7 @@ namespace NCAAFootballPlayoffs.Utilities
                     worksheet.Cells[games.Count + (games.Count % 2 == 0 ? 3 : 4) + 4, 1, games.Count + (games.Count % 2 == 0 ? 3 : 4) + 6, 4].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     worksheet.Cells[games.Count + (games.Count % 2 == 0 ? 3 : 4) + 4, 1, games.Count + (games.Count % 2 == 0 ? 3 : 4) + 6, 4].Style.Fill.BackgroundColor.SetColor(gameBackground);
                     
-                    worksheet.PrinterSettings.PrintArea = worksheet.Cells[1, 1, games.Count + (games.Count % 2 == 0 ? 3 : 4) + 6, 10];
+                    worksheet.PrinterSettings.PrintArea = worksheet.Cells[1, 1, games.Count + (games.Count % 2 == 0 ? 3 : 4) + 8, 10];
                 }
                 memStream = new MemoryStream(package.GetAsByteArray());
             }

@@ -111,49 +111,51 @@ namespace NCAAFootballPlayoffs.Controllers
                             db.Entry(temp).State = EntityState.Modified;
                         }
                     }
-
-                    foreach (var bonusQuestionPick in bonusQuestionPicks)
+                    if (bonusQuestionPicks != null)
                     {
-                        UserBonusQuestionPick temp = db.UserBonusQuestionPicks.FirstOrDefault(f => f.UsernameID == bonusQuestionPick.UsernameID && f.UserBonusQuestionPickID == bonusQuestionPick.UserBonusQuestionPickID);
-                        if (temp == null)
+                        foreach (var bonusQuestionPick in bonusQuestionPicks)
                         {
-                            UserBonusQuestionPick newBonusQuestionPick = new UserBonusQuestionPick();
-                            newBonusQuestionPick.UsernameID = bonusQuestionPick.UsernameID;
-                            if (!bonusQuestionPick.DisplayAsMultChoice)
+                            UserBonusQuestionPick temp = db.UserBonusQuestionPicks.FirstOrDefault(f => f.UsernameID == bonusQuestionPick.UsernameID && f.UserBonusQuestionPickID == bonusQuestionPick.UserBonusQuestionPickID);
+                            if (temp == null)
                             {
-                                QuestionAnswer questionAnswer = new QuestionAnswer();
-                                if (bonusQuestionPick.Text != null)
+                                UserBonusQuestionPick newBonusQuestionPick = new UserBonusQuestionPick();
+                                newBonusQuestionPick.UsernameID = bonusQuestionPick.UsernameID;
+                                if (!bonusQuestionPick.DisplayAsMultChoice)
                                 {
-                                    questionAnswer.Text = bonusQuestionPick.Text;
-                                    questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
-                                    newBonusQuestionPick.QuestionAnswer = questionAnswer;
-                                    db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+                                    QuestionAnswer questionAnswer = new QuestionAnswer();
+                                    if (bonusQuestionPick.Text != null)
+                                    {
+                                        questionAnswer.Text = bonusQuestionPick.Text;
+                                        questionAnswer.BonusQuestionID = bonusQuestionPick.BonusQuestionID;
+                                        newBonusQuestionPick.QuestionAnswer = questionAnswer;
+                                        db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                QuestionAnswer questionAnswer = db.QuestionAnswers.FirstOrDefault(f => f.QuestionAnswerID == bonusQuestionPick.SelectedAnswerID);
-                                if (questionAnswer != null)
+                                else
                                 {
-                                    newBonusQuestionPick.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
-                                    db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+                                    QuestionAnswer questionAnswer = db.QuestionAnswers.FirstOrDefault(f => f.QuestionAnswerID == bonusQuestionPick.SelectedAnswerID);
+                                    if (questionAnswer != null)
+                                    {
+                                        newBonusQuestionPick.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                                        db.UserBonusQuestionPicks.Add(newBonusQuestionPick);
+                                    }
                                 }
-                            }
 
-                        }
-                        else
-                        {
-                            if (!bonusQuestionPick.DisplayAsMultChoice)
-                            {
-                                temp.QuestionAnswer.Text = bonusQuestionPick.QuestionAnswer.Text == null ? "" : bonusQuestionPick.QuestionAnswer.Text;
                             }
                             else
                             {
-                                temp.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                                if (!bonusQuestionPick.DisplayAsMultChoice)
+                                {
+                                    temp.QuestionAnswer.Text = bonusQuestionPick.QuestionAnswer.Text == null ? "" : bonusQuestionPick.QuestionAnswer.Text;
+                                }
+                                else
+                                {
+                                    temp.SelectedAnswerID = bonusQuestionPick.SelectedAnswerID;
+                                }
+                                db.Entry(temp).State = EntityState.Modified;
                             }
-                            db.Entry(temp).State = EntityState.Modified;
                         }
-                    }
+                    } 
 
                     db.SaveChanges();
                     dbContextTransaction.Commit();
@@ -775,10 +777,14 @@ namespace NCAAFootballPlayoffs.Controllers
             return userBonysQuestionPicks.ToList();
         }
 
-        public FileStreamResult DownloadBracket(int seasonID, int usernameID)
+        public FileStreamResult DownloadBracket(int? seasonID, int? usernameID)
         {
             ExcelManager em = new ExcelManager();
-            var memStream = em.DownloadBracketPicks(seasonID, usernameID);
+            if (seasonID == null)
+            {
+                seasonID = General.GetActiveSeasonID();
+            }
+            var memStream = em.DownloadBracketPicks((int)seasonID, usernameID != null ? (int) usernameID : -1);
             return File(memStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "NCAAFootballPicks.xlsx");
         }
 

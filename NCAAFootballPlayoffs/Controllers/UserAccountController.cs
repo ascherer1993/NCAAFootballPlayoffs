@@ -207,6 +207,27 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(username);
         }
 
+        [AuthorizeUser]
+        public ActionResult EmailList(int? seasonID)
+        {
+            if (seasonID == null)
+            {
+                seasonID = General.GetActiveSeasonID();
+            }
+
+            string emailListString = "";
+
+            IEnumerable<User> users = db.Users.Where(f => !f.Archived && f.Usernames.Any(g => g.Approved && !g.Archived)).OrderBy(h => h.EmailAddress);
+
+            foreach (var user in users)
+            {
+                emailListString += user.EmailAddress + "; ";
+            }
+
+
+            return View(emailListString);
+        }
+
         [HttpGet]
         public ActionResult ResetPassword()
         {

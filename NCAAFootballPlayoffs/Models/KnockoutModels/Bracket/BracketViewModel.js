@@ -14,6 +14,8 @@
     self.states = [];
     self.teams = [];
 
+    self.isSubmittingBracket = ko.observable(false);
+
     //This is used for select lists for states
     self.selectState = ko.observable();
     self.newGameSelectFavorite = ko.observable();
@@ -508,7 +510,7 @@
     })
 
     self.submitBracketButton = function () {
-        if (self.games().length - self.pickMadeCount() != 0 || 3 - self.surePickCount() != 0 || self.bonusQuestions().length - self.questionPickMadeCount()) {
+        if (self.isSubmittingBracket() == false && self.games().length - self.pickMadeCount() != 0 || 3 - self.surePickCount() != 0 || self.bonusQuestions().length - self.questionPickMadeCount()) {
             alertify.confirm("You still have some picks remaining. Do you want to submit your bracket anyways? You can always come back and modify your bracket later (until the bowl games have begun).", function (e) {
                 if (e) {
                     self.submitBracket();
@@ -521,6 +523,7 @@
     }
 
     self.submitBracket = function () {
+        self.isSubmittingBracket(true);
         var gamePickInfo = [];
         self.games().forEach(function (game) {
             var gameInfo = {
@@ -556,6 +559,7 @@
             for (i = 0; i < msgs.length; i++) {
                 //Displays all messages
                 response.success ? alertify.success(msgs[i]) : alertify.error(msgs[i]);
+                self.isSubmittingBracket(false);
             }
             if (response.success) {
 

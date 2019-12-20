@@ -244,17 +244,35 @@ namespace NCAAFootballPlayoffs.Controllers
         [HttpPost]
         public ActionResult ResetPassword(ResetPasswordViewModel rpvm)
         {
-            if (rpvm.GeneratedKey.ToLower() == rpvm.Key.ToLower() && rpvm.Password == rpvm.PasswordConfirm)
+            List<string> errors = new List<string>();
+
+            if (rpvm.GeneratedKey.ToLower() != rpvm.Key.ToLower())
             {
-                User user = db.Users.FirstOrDefault(f => f.EmailAddress == rpvm.EmailAddress);
-                if (user != null)
-                {
-                    user.Salt = Authentication.GetSalt(32);
-                    user.PasswordHash = Authentication.getPasswordHash(user.Salt, rpvm.Password);
-                    db.Entry(user).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
+                errors.Add("Your key did not match the key sent to " + rpvm.EmailAddress + ".");
+            }
+
+            if (rpvm.Password.ToLower() != rpvm.PasswordConfirm.ToLower())
+            {
+                errors.Add("Your passwords do not match.");
+            }
+
+            User user = db.Users.FirstOrDefault(f => f.EmailAddress == rpvm.EmailAddress.ToLower());
+            if (user != null && errors.Count == 0)
+            {
+                user.Salt = Authentication.GetSalt(32);
+                user.PasswordHash = Authentication.getPasswordHash(user.Salt, rpvm.Password.ToLower());
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("SignIn", "UserAccount");
+            }
+            else if (user == null)
+            {
+                errors.Add("This email could not be found in the database.");
+            }
+
+            foreach (string error in errors)
+            {
+                ModelState.AddModelError(error, error);
             }
             return View(rpvm);
         }

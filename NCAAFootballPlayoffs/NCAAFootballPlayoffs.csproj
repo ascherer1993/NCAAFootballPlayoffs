@@ -26,6 +26,7 @@
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -200,6 +201,7 @@
     <Content Include="Models\NCAAPlayoffsEntities.edmx.diagram">
       <DependentUpon>NCAAPlayoffsEntities.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\footballbracket.cf - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\WebRoot.pubxml" />
     <None Include="scripts\jquery-1.10.2.intellisense.js" />

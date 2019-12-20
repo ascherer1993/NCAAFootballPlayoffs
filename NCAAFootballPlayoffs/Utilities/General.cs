@@ -37,26 +37,15 @@ namespace NCAAFootballPlayoffs.Utilities
             {
                 using (var smtp = new SmtpClient())
                 {
-                    //var credential = new NetworkCredential
-                    //{
-                    //    UserName = "CFBBowlBracket@gmail.com",  // replace with valid value
-                    //    Password = "robsenders"  // replace with valid value
-                    //};
-                    var credential = new NetworkCredential
-                    {
-                        UserName = "bowlseasonpickem@gmail.com",  // replace with valid value
-                        Password = "robsenders"  // replace with valid value
-                    };
-                    smtp.Credentials = credential;
+                    smtp.EnableSsl = true;
+                    smtp.Credentials = new NetworkCredential("bowlseasonpickem@gmail.com", "robsenders");
                     smtp.Host = "smtp.gmail.com";
                     smtp.Port = 587;
-                    smtp.EnableSsl = true;
-                    //await smtp.SendMailAsync(message);
                     smtp.Send(message);
-                }
+                    }
                 return 1;
             }
-            catch
+            catch(Exception e)
             {
                 return -1;
             }

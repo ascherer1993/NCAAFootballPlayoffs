@@ -109,15 +109,7 @@ namespace NCAAFootballPlayoffs.Utilities
                 }
                 if (user != null)
                 {
-                    //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
-                    //And http://stackoverflow.com/questions/11367727/how-can-i-sha512-a-string-in-c
-                    var SHA512 = new SHA512Managed();
-
-                    byte[] passwordBytes = Encoding.UTF8.GetBytes(user.Salt + password);
-                    MemoryStream stream = new MemoryStream(passwordBytes);
-                    var md5Password = SHA512.ComputeHash(stream);
-
-                    if (md5Password.SequenceEqual(user.PasswordHash))
+                    if (DoPasswordsMatch(user, password))
                     {
                         HttpContext.Current.Session["loginEmail"] = user.EmailAddress;
                     }
@@ -130,6 +122,52 @@ namespace NCAAFootballPlayoffs.Utilities
 
             return errors;
         }
+
+        public static bool DoPasswordsMatch(string email, string password)
+        {
+            using (var db = new NCAAFootballPlayoffsEntities())
+            {
+                User user = db.Users.FirstOrDefault(f => f.EmailAddress.ToLower() == email);
+
+                //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
+                //And http://stackoverflow.com/questions/11367727/how-can-i-sha512-a-string-in-c
+                var SHA512 = new SHA512Managed();
+
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(user.Salt + password);
+                MemoryStream stream = new MemoryStream(passwordBytes);
+                var md5Password = SHA512.ComputeHash(stream);
+
+                if (md5Password.SequenceEqual(user.PasswordHash))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public static bool DoPasswordsMatch(User user, string password)
+        {
+            //Hash info found at http://stackoverflow.com/questions/4181198/how-to-hash-a-password
+            //And http://stackoverflow.com/questions/11367727/how-can-i-sha512-a-string-in-c
+            var SHA512 = new SHA512Managed();
+
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(user.Salt + password);
+            MemoryStream stream = new MemoryStream(passwordBytes);
+            var md5Password = SHA512.ComputeHash(stream);
+
+            if (md5Password.SequenceEqual(user.PasswordHash))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         //Signs the user out
         public static bool SignOut()
         {

@@ -10,7 +10,7 @@
             <PropertyRef Name="BonusQuestionID" />
           </Key>
           <Property Name="BonusQuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Text" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Text" Type="varchar" MaxLength="4000" Nullable="false" />
           <Property Name="DisplayAsMultChoice" Type="bit" Nullable="false" />
           <Property Name="SeasonID" Type="int" Nullable="false" />
           <Property Name="Archived" Type="bit" Nullable="false" />
@@ -689,7 +689,7 @@
             <PropertyRef Name="BonusQuestionID" />
           </Key>
           <Property Name="BonusQuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Text" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Text" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="false" />
           <Property Name="DisplayAsMultChoice" Type="Boolean" Nullable="false" />
           <Property Name="SeasonID" Type="Int32" Nullable="false" />
           <Property Name="Archived" Type="Boolean" Nullable="false" />

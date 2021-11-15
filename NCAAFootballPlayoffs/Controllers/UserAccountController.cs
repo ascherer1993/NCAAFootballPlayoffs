@@ -228,6 +228,95 @@ namespace NCAAFootballPlayoffs.Controllers
             return View(emailListString);
         }
 
+        [AuthorizeUser]
+        [HttpGet]
+        public ActionResult ChangePassword ()
+            {
+            //If not signed in, redirect to home page
+            if ( !Utilities.Authentication.IsSignedIn() )
+                {
+                return RedirectToAction("SignIn", "UserAccount");
+                }
+            ChangePasswordViewModel changePasswordViewModel = new ChangePasswordViewModel();
+            string email = Authentication.GetLoginInfo();
+            User user = db.Users.FirstOrDefault(f => f.EmailAddress == email);
+            changePasswordViewModel.UserID = user.UserID;
+            changePasswordViewModel.EmailAddress = email;
+            return View(changePasswordViewModel);
+            }
+
+        [AuthorizeUser]
+        [HttpPost]
+        public ActionResult ChangePassword (ChangePasswordViewModel changePasswordVM)
+            {
+            List<string> errors = new List<string>();
+
+            if ( changePasswordVM.Password != changePasswordVM.ConfirmPassword )
+                {
+                ModelState.AddModelError("ConfirmPassword", "Your new password did not match the confirmation password");
+                }
+
+            
+            if ( ModelState.IsValid )
+                {
+                if ( errors.Count == 0 && ModelState.IsValid )
+                    {
+                    //Modify users password
+                    string userEmail = Authentication.GetLoginInfo();
+                    User user = db.Users.FirstOrDefault(f => f.EmailAddress == userEmail);
+
+                    if (changePasswordVM.UserID != user.UserID)
+                    {
+                        ModelState.AddModelError("NoPermission", "You don't have permission to do that.");
+                        return View(changePasswordVM);
+                    }
+
+                    if (!Utilities.Authentication.DoPasswordsMatch(changePasswordVM.EmailAddress, changePasswordVM.OldPassword))
+                    {
+                        ModelState.AddModelError("OldPassword", "Your previous password does not match the password in the database");
+                        return View(changePasswordVM);
+                    }
+
+                    user.Salt = Authentication.GetSalt(32);
+                    user.PasswordHash = Authentication.getPasswordHash(user.Salt, changePasswordVM.ConfirmPassword);
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                    }
+                }
+            foreach ( string error in errors )
+                {
+                ModelState.AddModelError(error, error);
+                }
+            return View(changePasswordVM);
+            }
+
+        [AuthorizeUser("Admin")]
+        [HttpGet]
+        public ActionResult ResetUsersPassword ()
+            {
+            IEnumerable<User> users = db.Users.Where(f => !f.Archived).OrderBy(g => g.EmailAddress);
+            return View(users);
+            }
+
+        [AuthorizeUser("Admin")]
+        [HttpPost]
+        public ActionResult ResetUsersPassword (int userID)
+            {
+            User user = db.Users.FirstOrDefault(f => f.UserID == userID);
+            if ( user != null)
+                {
+                user.Salt = Authentication.GetSalt(32);
+                user.PasswordHash = Authentication.getPasswordHash(user.Salt, "1111");
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("SignIn", "UserAccount");
+                }
+            IEnumerable<User> users = db.Users.Where(f => !f.Archived).OrderBy(g => g.EmailAddress);
+            return View(users);
+            }
+
+
         [HttpGet]
         public ActionResult ResetPassword()
         {

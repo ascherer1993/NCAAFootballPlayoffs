@@ -29,13 +29,18 @@
                 @Html.ActionLink("NCAA Bracket", "Index", "Home", new { area = "" }, new { @class = "navbar-brand navbar-title" })
             </div>
             <div class="navbar-header" style="float: right">
-                @if (Session["loginEmail"] == null)
-                {
+                @if ( Session["loginEmail"] == null )
+                    {
                     @Html.ActionLink("Sign In", "SignIn", "UserAccount", new { area = "" }, new { @class = "navbar-brand-float-right navbar-subtitle", @style = "" })
-                }
-                else {
+                    }
+                else
+                    {
                     @Html.ActionLink("Sign Out", "SignOut", "UserAccount", new { area = "" }, new { @class = "navbar-brand-float-right navbar-subtitle", @style = "" })
-                }
+                    }
+                @if ( Session["loginEmail"] != null )
+                    {
+                    @Html.ActionLink("Change Password", "ChangePassword", "UserAccount", new { area = "" }, new { @id = "ChangePassword", @class = "navbar-brand-float-right navbar-subtitle" })
+                    }
 
                 @Html.ActionLink("Admin", "Admin", "UserAccount", new { area = "" }, new { @id = "AdminButton", @class = "navbar-brand-float-right navbar-subtitle", @style = "display: none" })
             </div>
